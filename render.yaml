@@ -1,0 +1,23 @@
+# One-click deploy on Render (free plan): Dashboard → New → Blueprint → pick this repo.
+# You'll be asked for MONGODB_URI (free MongoDB Atlas cluster connection string).
+services:
+  - type: web
+    name: codecrack
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/auth/providers
+    autoDeploy: true
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: ENABLED_LANGUAGES
+        value: python
+      - key: RUNNER_CONCURRENCY
+        value: "2"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false

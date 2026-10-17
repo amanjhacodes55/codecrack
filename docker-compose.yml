@@ -1,0 +1,26 @@
+# docker compose up -d   →   http://localhost:3000
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes: [mongo-data:/data/db]
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on: [mongo]
+    ports: ["3000:3000"]
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/codecrack
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?set NEXTAUTH_SECRET in .env}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
+      ENABLED_LANGUAGES: ${ENABLED_LANGUAGES:-python}
+    # extra isolation for the judge
+    pids_limit: 512
+    mem_limit: 2g
+volumes:
+  mongo-data:
