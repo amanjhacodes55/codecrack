@@ -173,7 +173,7 @@ export async function trace(code: string, input: string, maxSteps = 4000): Promi
             "prlimit",
             ["--as=1073741824", "--cpu=10", "--fsize=67108864", `--nproc=${userProcessLimit()}`, PYTHON, "-I", "tracer.py", jobPath, resPath],
             "",
-            15_000
+            15_000 * Math.max(1, WALL_FACTOR / 2)
           );
     try {
       return JSON.parse(await readFile(resPath, "utf8")) as TraceResult;
