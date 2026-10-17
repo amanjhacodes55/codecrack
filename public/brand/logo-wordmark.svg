@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 72" role="img" aria-label="CodeCrack">
+  <defs>
+    <linearGradient id="w-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d97a"/><stop offset="1" stop-color="#0f8f4a"/></linearGradient>
+    <linearGradient id="w-bolt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff8c2"/><stop offset="1" stop-color="#facc15"/></linearGradient>
+  </defs>
+  <g transform="translate(4 4)">
+    <rect width="64" height="64" rx="15" fill="url(#w-bg)"/>
+    <path d="M21 19 10.5 32 21 45" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M43 19 53.5 32 43 45" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M37.5 11 26 33.5h8.5L27 53l13.5-24H32l5.5-18z" fill="url(#w-bolt)" stroke="#0b5e31" stroke-width="1.6" stroke-linejoin="round"/>
+  </g>
+  <text x="84" y="49" font-family="Inter, 'Segoe UI', Roboto, Arial, sans-serif" font-size="38" font-weight="800" letter-spacing="-1"><tspan fill="#8b95a7">Code</tspan><tspan fill="#1fb85f">Crack</tspan></text>
+</svg>
