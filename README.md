@@ -1,5 +1,7 @@
 <p align="center"><img src="public/brand/logo-wordmark.svg" alt="CodeCrack" width="360"></p>
 
+<p align="center"><b><a href="https://codecrack-6okk.onrender.com">▶ Live demo: codecrack-6okk.onrender.com</a></b><br><sub>Free hosting: the first visit after a while can take ~1 minute to wake up. Demo data resets on restart.</sub></p>
+
 # CodeCrack — practise like it's the real exam
 
 **🚀 Live demo: [codecrack-6okk.onrender.com](https://codecrack-6okk.onrender.com)** (free instance, so the first load can take ~1 minute while it wakes up)
