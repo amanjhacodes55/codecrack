@@ -33,6 +33,8 @@ const ProblemSchema = new Schema(
     youtube: { type: [VideoSchema], default: [], select: false },
     solution: { type: Map, of: String, default: {}, select: false },
     tests: { type: [TestSchema], default: [], select: false },
+    // Official problems store tests gzip-compressed (≈60% smaller) — read them through loadTests().
+    testsGz: { type: Buffer, select: false },
     timeLimitMs: { type: Number, default: 2000, min: 500, max: 10000 },
     memoryMb: { type: Number, default: 256, min: 32, max: 1024 },
     starter: { type: Map, of: String, default: {} },

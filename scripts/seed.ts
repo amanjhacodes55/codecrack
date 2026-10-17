@@ -5,11 +5,16 @@
  */
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { gzipSync } from "node:zlib";
 import path from "node:path";
 import mongoose from "mongoose";
 import { dbConnect } from "../src/lib/db";
 import { Problem } from "../src/lib/models/Problem";
 import { Track } from "../src/lib/models/Track";
+import { User } from "../src/lib/models/User";
+import { Submission } from "../src/lib/models/Submission";
+import { Comment, Discussion, Draft, Note } from "../src/lib/models/Discussion";
+import { Notification } from "../src/lib/models/Notification";
 
 const ROOT = path.join(process.cwd(), "content");
 
@@ -30,6 +35,8 @@ function contentHash() {
 
 async function main() {
   await dbConnect();
+  // Make sure all indexes exist (incl. TTL auto-cleanup for notifications and stale drafts).
+  for (const m of [User, Problem, Submission, Discussion, Comment, Note, Draft, Notification, Track]) await m.createIndexes();
   const meta = mongoose.connection.collection("meta");
   const hash = contentHash();
   if (process.argv.includes("--if-changed")) {
@@ -53,7 +60,7 @@ async function main() {
       continue;
     }
     const meta = JSON.parse(readFileSync(metaPath, "utf8"));
-    const tests = JSON.parse(readFileSync(testsPath, "utf8"));
+    const testsGz = gzipSync(readFileSync(testsPath), { level: 9 });
     const solution = existsSync(path.join(dir, "solution.py")) ? readFileSync(path.join(dir, "solution.py"), "utf8") : "";
     await Problem.updateOne(
       { slug: meta.slug },
@@ -74,7 +81,8 @@ async function main() {
           editorial: meta.editorial || "",
           youtube: meta.youtube || [],
           solution: { python: solution },
-          tests,
+          tests: [],
+          testsGz,
           timeLimitMs: meta.timeLimitMs || 2000,
           memoryMb: meta.memoryMb || 256,
           starter: meta.starter || {},

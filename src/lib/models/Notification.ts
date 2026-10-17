@@ -10,6 +10,8 @@ const NotificationSchema = new Schema(
   { timestamps: true }
 );
 NotificationSchema.index({ user: 1, read: 1, createdAt: -1 });
+// Auto-delete notifications after 30 days (keeps the free 512 MB Atlas tier lean).
+NotificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 30 * 24 * 3600 });
 
 export const Notification: Model<InferSchemaType<typeof NotificationSchema>> =
   models.Notification || model("Notification", NotificationSchema);

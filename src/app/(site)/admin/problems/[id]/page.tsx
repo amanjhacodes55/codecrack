@@ -4,6 +4,7 @@ import { isValidObjectId } from "mongoose";
 import { ExternalLink } from "lucide-react";
 import { dbConnect } from "@/lib/db";
 import { Problem } from "@/lib/models/Problem";
+import { loadTests } from "@/lib/tests";
 import "@/lib/models/User";
 import Markdown from "@/components/Markdown";
 import StatusBadge from "@/components/StatusBadge";
@@ -18,11 +19,11 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
   const { id } = await params;
   if (!isValidObjectId(id)) notFound();
   await dbConnect();
-  const p = await Problem.findById(id).select("+tests +solution +editorial +youtube").populate("author", "name username email").lean();
+  const p = await Problem.findById(id).select("+tests +testsGz +solution +editorial +youtube").populate("author", "name username email").lean();
   if (!p) notFound();
   const author = p.author as unknown as { name: string; username: string; email: string } | null;
   const sol = (p.solution as unknown as Record<string, string>)?.python || "";
-  const hidden = p.tests.filter((t) => !t.sample);
+  const hidden = loadTests(p).filter((t) => !t.sample);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_380px]">

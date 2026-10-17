@@ -51,6 +51,8 @@ const DraftSchema = new Schema(
   { timestamps: true }
 );
 DraftSchema.index({ user: 1, problem: 1, language: 1 }, { unique: true });
+// Drafts untouched for 120 days are removed automatically.
+DraftSchema.index({ updatedAt: 1 }, { expireAfterSeconds: 120 * 24 * 3600 });
 
 export const Discussion: Model<InferSchemaType<typeof DiscussionSchema>> =
   models.Discussion || model("Discussion", DiscussionSchema);

@@ -18,7 +18,7 @@ export const POST = withUser<{ params: Promise<{ id: string }> }>(
     if (!isValidObjectId(id)) return error("Not found", 404);
     const parsed = Body.safeParse(await req.json());
     if (!parsed.success) return error("Invalid request");
-    const p = await Problem.findById(id).select("+tests +solution");
+    const p = await Problem.findById(id).select("+tests +testsGz +solution");
     if (!p) return error("Not found", 404);
     const { action, notes } = parsed.data;
     if (action === "approve") {

@@ -29,6 +29,7 @@ const SubmissionSchema = new Schema(
 SubmissionSchema.index({ user: 1, createdAt: -1 });
 SubmissionSchema.index({ user: 1, verdict: 1, problem: 1 });
 SubmissionSchema.index({ problem: 1, createdAt: -1 });
+SubmissionSchema.index({ user: 1, problem: 1, createdAt: -1 });
 
 export const Submission: Model<InferSchemaType<typeof SubmissionSchema>> =
   models.Submission || model("Submission", SubmissionSchema);

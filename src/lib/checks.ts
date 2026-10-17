@@ -1,6 +1,7 @@
 import "server-only";
 import { judge } from "@/lib/runner";
 import { Problem } from "@/lib/models/Problem";
+import { loadTests } from "@/lib/tests";
 
 export type Check = { name: string; ok: boolean; detail: string; severity: "error" | "warn" };
 
@@ -21,7 +22,8 @@ type P = {
 };
 
 /** Automated verification run before an admin approves a community problem. */
-export async function runChecks(p: P): Promise<Check[]> {
+export async function runChecks(p0: P & { testsGz?: unknown }): Promise<Check[]> {
+  const p = { ...p0, tests: loadTests(p0) } as P;
   const checks: Check[] = [];
   const add = (name: string, ok: boolean, detail: string, severity: "error" | "warn" = "error") =>
     checks.push({ name, ok, detail: ok ? detail || "OK" : detail, severity });

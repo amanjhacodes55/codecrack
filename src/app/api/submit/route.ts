@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { withUser, error, json, rateLimit } from "@/lib/api";
 import { enabledLanguages, judge } from "@/lib/runner";
+import { loadTests } from "@/lib/tests";
 import { clip, findVisibleProblem, verdictFromCode } from "@/lib/problems";
 import { Problem } from "@/lib/models/Problem";
 import { Submission } from "@/lib/models/Submission";
@@ -17,11 +18,12 @@ export const POST = withUser(async (req, _ctx, user) => {
   const language = parsed.data.language as LanguageId;
   if (!enabledLanguages().includes(language)) return error("This language is not enabled yet.");
 
-  const problem = await findVisibleProblem(slug, user, "+tests");
+  const problem = await findVisibleProblem(slug, user, "+tests +testsGz");
   if (!problem) return error("Problem not found", 404);
-  if (!problem.tests.length) return error("This problem has no test cases yet.");
+  const allTests = loadTests(problem);
+  if (!allTests.length) return error("This problem has no test cases yet.");
 
-  const tests = problem.tests.map((t) => ({ input: t.input ?? "", output: t.output ?? "" }));
+  const tests = allTests.map((t) => ({ input: t.input, output: t.output }));
   const result = await judge({
     language,
     code,
@@ -44,7 +46,7 @@ export const POST = withUser(async (req, _ctx, user) => {
         continue;
       }
       verdictCode = r.verdict;
-      const t = problem.tests[i];
+      const t = allTests[i];
       failed = {
         index: i + 1,
         sample: Boolean(t.sample),
@@ -77,9 +79,10 @@ export const POST = withUser(async (req, _ctx, user) => {
     timeMs,
     memoryKb,
     failed,
-    compileError: result.compile.ok ? "" : result.compile.message,
+    compileError: result.compile.ok ? "" : clip(result.compile.message, 3000),
     assisted,
   });
+  await pruneSubmissions(user.id, problem._id);
   await Problem.updateOne(
     { _id: problem._id },
     { $inc: { "stats.submissions": 1, "stats.accepted": verdict === "Accepted" ? 1 : 0, "stats.solvedBy": firstSolve ? 1 : 0 } }
@@ -98,3 +101,19 @@ export const POST = withUser(async (req, _ctx, user) => {
     assisted,
   });
 });
+
+/**
+ * Storage budget: keep only the newest KEEP submissions per user+problem, plus the first Accepted one
+ * (it records when the problem was solved). Older attempts are deleted.
+ */
+const KEEP = 15;
+async function pruneSubmissions(userId: string, problemId: unknown) {
+  try {
+    const firstAc = await Submission.findOne({ user: userId, problem: problemId, verdict: "Accepted" }).sort({ createdAt: 1 }).select("_id").lean();
+    const old = await Submission.find({ user: userId, problem: problemId }).sort({ createdAt: -1 }).skip(KEEP).select("_id").lean();
+    const ids = old.map((o) => o._id).filter((id) => String(id) !== String(firstAc?._id));
+    if (ids.length) await Submission.deleteMany({ _id: { $in: ids } });
+  } catch (e) {
+    console.error("prune failed", e);
+  }
+}

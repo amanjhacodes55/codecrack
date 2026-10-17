@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { dbConnect } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { Problem } from "@/lib/models/Problem";
+import { loadTests } from "@/lib/tests";
 import ProblemForm, { type ProblemFormValue } from "@/components/ProblemForm";
 
 export const metadata = { title: "Edit problem" };
@@ -11,7 +12,7 @@ export default async function EditProblemPage({ params }: { params: Promise<{ sl
   const me = await getCurrentUser();
   if (!me) redirect(`/login?callbackUrl=/contribute/${slug}/edit`);
   await dbConnect();
-  const p = await Problem.findOne({ slug }).select("+tests +solution +editorial +youtube").lean();
+  const p = await Problem.findOne({ slug }).select("+tests +testsGz +solution +editorial +youtube").lean();
   if (!p || (String(p.author) !== me.id && me.role !== "admin")) notFound();
   const sol = p.solution as unknown as Record<string, string> | undefined;
   const starter = p.starter as unknown as Record<string, string> | undefined;
@@ -26,7 +27,7 @@ export default async function EditProblemPage({ params }: { params: Promise<{ sl
     outputFormat: p.outputFormat || "",
     constraints: p.constraints || "",
     samples: p.samples.map((s) => ({ input: s.input || "", output: s.output || "", explanation: s.explanation || "" })),
-    tests: p.tests.filter((t) => !t.sample).map((t) => ({ input: t.input || "", output: t.output || "" })),
+    tests: loadTests(p).filter((t) => !t.sample).map((t) => ({ input: t.input || "", output: t.output || "" })),
     hints: p.hints.length ? p.hints : [""],
     editorial: p.editorial || "",
     youtube: (p.youtube || []).map((y) => ({ title: y.title || "", url: y.url || "", kind: (y.kind as "video" | "search") || "video" })),

@@ -7,7 +7,7 @@ export const POST = withUser<{ params: Promise<{ id: string }> }>(
   async (_req, ctx) => {
     const { id } = await ctx.params;
     if (!isValidObjectId(id)) return error("Not found", 404);
-    const p = await Problem.findById(id).select("+tests +solution");
+    const p = await Problem.findById(id).select("+tests +testsGz +solution");
     if (!p) return error("Not found", 404);
     p.set("checks", await runChecks(p));
     p.checkedAt = new Date();
