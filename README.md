@@ -2,6 +2,8 @@
 
 # CodeCrack — practise like it's the real exam
 
+**🚀 Live demo: [codecrack-6okk.onrender.com](https://codecrack-6okk.onrender.com)** (free instance, so the first load can take ~1 minute while it wakes up)
+
 A full-stack, HackerRank-style coding practice platform built to crack the **Infosys Specialist Programmer (SP) / Digital Specialist Engineer (DSE)** coding assessment, plus HackWithInfy and InfyTQ.
 
 It has a real judge with hidden test cases, a **line-by-line step debugger**, a 12-step Infosys preparation track, timed mock tests with partial scoring, discussions, profiles, a leaderboard, and a community pipeline: anyone can submit a problem, automated checks verify it, and an admin approves it.
