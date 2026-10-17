@@ -13,6 +13,7 @@ const CONCURRENCY = Math.max(1, Number(process.env.RUNNER_CONCURRENCY || 4));
 // "docker" runs it in a throwaway container: no network, read-only FS, capped memory/CPU/PIDs, nobody user.
 const SANDBOX = process.env.RUNNER_SANDBOX === "docker" ? "docker" : "local";
 const IMAGE = process.env.RUNNER_IMAGE || "python:3.12-slim";
+const WALL_FACTOR = Number(process.env.JUDGE_WALL_FACTOR || 2);
 
 function dockerArgs(extraMounts: string[], cmd: string[]) {
   return [
@@ -76,7 +77,7 @@ function release() {
 function runProcess(cmd: string, args: string[], stdin: string, timeoutMs: number) {
   return new Promise<{ stdout: string; stderr: string; code: number | null }>((resolve, reject) => {
     // Never hand server secrets (DB URL, auth secret, OAuth keys) to the judge / user code.
-    const env: Record<string, string> = { PATH: process.env.PATH || "/usr/local/bin:/usr/bin:/bin", LANG: "C.UTF-8", HOME: os.tmpdir() };
+    const env: Record<string, string> = { PATH: process.env.PATH || "/usr/local/bin:/usr/bin:/bin", LANG: "C.UTF-8", HOME: os.tmpdir(), JUDGE_WALL_FACTOR: String(WALL_FACTOR) };
     if (process.env.DOCKER_HOST) env.DOCKER_HOST = process.env.DOCKER_HOST;
     const child = spawn(cmd, args, { cwd: RUNNER_DIR, stdio: ["pipe", "pipe", "pipe"], env: env as unknown as NodeJS.ProcessEnv });
     const out: Buffer[] = [];
@@ -118,7 +119,7 @@ export async function judge(job: {
 }): Promise<JudgeResult> {
   await acquire();
   try {
-    const budget = job.tests.length * (job.timeLimitMs * 2 + 1500) + 40_000;
+    const budget = job.tests.length * (job.timeLimitMs * WALL_FACTOR + 1500) + 40_000;
     const { stdout, stderr } =
       SANDBOX === "docker"
         ? await runProcess("docker", dockerArgs([], ["python3", "-I", "/runner/judge.py"]), JSON.stringify(job), budget + 15_000)

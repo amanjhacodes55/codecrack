@@ -36,6 +36,7 @@ OUTPUT_LIMIT = 8 * 1024 * 1024          # bytes a program may write to stdout
 STDERR_LIMIT = 1 * 1024 * 1024
 RETURN_LIMIT = 64 * 1024                 # bytes of stdout/stderr returned to the client
 PY = sys.executable or "python3"
+WALL_FACTOR = float(os.environ.get("JUDGE_WALL_FACTOR", "2"))
 
 LANGUAGES = {
     "python": {
@@ -109,7 +110,9 @@ def limiter(cpu_seconds: int, memory_bytes: int):
 
 
 def run_one(cmd, cwd, stdin_text, time_limit_ms, memory_mb, env):
-    wall_limit = time_limit_ms / 1000.0 * 2 + 1.0
+    # Wall-clock safety net. CPU time (RLIMIT_CPU + measured cpu_ms) decides TLE; on slow shared CPUs
+    # (e.g. 0.1-CPU free hosts) raise JUDGE_WALL_FACTOR so throttling isn't mistaken for TLE.
+    wall_limit = time_limit_ms / 1000.0 * WALL_FACTOR + 1.0
     cpu_limit = max(1, int(time_limit_ms / 1000.0 + 0.999) + 1)
     in_path = os.path.join(cwd, ".stdin")
     out_path = os.path.join(cwd, ".stdout")

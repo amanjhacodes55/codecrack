@@ -19,7 +19,7 @@ RUN apt-get update \
  && apt-get update && apt-get install -y --no-install-recommends mongodb-org-server \
  && apt-get purge -y curl gnupg && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-ENV NODE_ENV=production PORT=3000 PYTHON_BIN=python3 RUNNER_SANDBOX=local RUNNER_CONCURRENCY=1
+ENV NODE_ENV=production PORT=3000 PYTHON_BIN=python3 RUNNER_SANDBOX=local RUNNER_CONCURRENCY=1 JUDGE_WALL_FACTOR=10
 COPY --from=build /app ./
 EXPOSE 3000
 # Seeds problems/tracks on start (idempotent), then serves. User code runs as "nobody" inside the container.
