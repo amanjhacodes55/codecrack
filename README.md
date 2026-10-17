@@ -140,6 +140,7 @@ npm run dev                     # http://localhost:3000
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | empty | Shows "Continue with Google" when set |
 | `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | empty | Shows "Continue with GitHub" when set |
 | `ADMIN_EMAILS` | empty | Comma-separated emails that are always admin |
+| `FIRST_USER_ADMIN` | `true` | Set `false` on public deployments so the first sign-up isn't made admin |
 | `ENABLED_LANGUAGES` | `python` | `python,cpp,java` (C++ needs g++, Java needs a JDK) |
 | `RUNNER_SANDBOX` | `local` | `local` or `docker` (see [Security model](#security-model)) |
 | `RUNNER_IMAGE` | `python:3.12-slim` | Image used in docker mode |
@@ -221,7 +222,13 @@ Other protections:
 - The site is up only while this computer is on and connected.
 - ngrok's free plan shows a one-time "Visit site" warning page to visitors.
 
-### Option B — any VPS or Docker host (always on)
+### Option B — Render free tier (always reachable, zero config)
+
+Render → **New → Web Service → Public Git Repository** → `https://github.com/amanjhacodes55/codecrack` → Docker, **Free** instance. Add the environment variables `FIRST_USER_ADMIN=false` and `ADMIN_EMAILS=<your email>`, then deploy.
+
+With no `MONGODB_URI`, the container starts its own password-protected MongoDB. This is **demo mode**: accounts and submissions reset whenever the free instance restarts or sleeps. Problems are re-seeded automatically. For permanent data, create a free MongoDB Atlas cluster and set `MONGODB_URI`. The free instance sleeps after 15 minutes idle, so the first request then takes about a minute.
+
+### Option C — any VPS or Docker host (always on)
 
 ```bash
 echo "NEXTAUTH_SECRET=$(openssl rand -base64 32)" > .env

@@ -25,6 +25,8 @@ export async function uniqueUsername(seed: string): Promise<string> {
 /** Role a brand-new account should get: admin for the very first account or a listed admin email. */
 export async function initialRole(email: string): Promise<"admin" | "user"> {
   if (adminEmails().includes(email.toLowerCase())) return "admin";
+  // On public deployments set FIRST_USER_ADMIN=false so a stranger can't become admin by signing up first.
+  if (process.env.FIRST_USER_ADMIN === "false") return "user";
   const anyAdmin = await User.exists({ role: "admin" });
   return anyAdmin ? "user" : "admin";
 }

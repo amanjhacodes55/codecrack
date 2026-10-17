@@ -1,5 +1,6 @@
 # One-click deploy on Render (free plan): Dashboard → New → Blueprint → pick this repo.
-# You'll be asked for MONGODB_URI (free MongoDB Atlas cluster connection string).
+# Works with zero config (embedded MongoDB, data resets on restart). For permanent data set MONGODB_URI
+# to a free MongoDB Atlas connection string.
 services:
   - type: web
     name: codecrack
@@ -13,10 +14,14 @@ services:
         sync: false
       - key: NEXTAUTH_SECRET
         generateValue: true
+      - key: FIRST_USER_ADMIN
+        value: "false"
+      - key: ADMIN_EMAILS
+        sync: false
       - key: ENABLED_LANGUAGES
         value: python
       - key: RUNNER_CONCURRENCY
-        value: "2"
+        value: "1"
       - key: GOOGLE_CLIENT_ID
         sync: false
       - key: GOOGLE_CLIENT_SECRET

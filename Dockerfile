@@ -13,12 +13,15 @@ RUN node scripts/copy-monaco.mjs && npx next build
 
 FROM node:20-bookworm-slim
 RUN apt-get update \
- && apt-get install -y --no-install-recommends python3 g++ util-linux ca-certificates \
- && rm -rf /var/lib/apt/lists/*
+ && apt-get install -y --no-install-recommends python3 g++ util-linux ca-certificates curl gnupg \
+ && curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+ && echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" > /etc/apt/sources.list.d/mongodb-org-7.0.list \
+ && apt-get update && apt-get install -y --no-install-recommends mongodb-org-server \
+ && apt-get purge -y curl gnupg && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-ENV NODE_ENV=production PORT=3000 PYTHON_BIN=python3 RUNNER_SANDBOX=local
+ENV NODE_ENV=production PORT=3000 PYTHON_BIN=python3 RUNNER_SANDBOX=local RUNNER_CONCURRENCY=1
 COPY --from=build /app ./
 EXPOSE 3000
 # Seeds problems/tracks on start (idempotent), then serves. User code runs as "nobody" inside the container.
-# NEXTAUTH_URL falls back to Render's public URL; seeding is skipped when content/ hasn't changed.
-CMD ["sh", "-c", "export NEXTAUTH_URL=${NEXTAUTH_URL:-$RENDER_EXTERNAL_URL}; npx tsx scripts/seed.ts --if-changed && exec npx next start -p ${PORT}"]
+# Zero-config: embedded MongoDB + generated secret unless MONGODB_URI / NEXTAUTH_SECRET are provided.
+CMD ["sh", "scripts/docker-start.sh"]
