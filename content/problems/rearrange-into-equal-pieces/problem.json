@@ -1,0 +1,62 @@
+{
+  "slug": "rearrange-into-equal-pieces",
+  "title": "Rearrange into Equal Pieces",
+  "difficulty": "Easy",
+  "tags": [
+    "Strings",
+    "Hashing",
+    "Math",
+    "GCD"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates: 'cut a (rearrangeable) string into the maximum number of equal pieces' appears in PrepInsta's Infosys SP/DSE coding question list. Original wording.",
+  "statement": "You are given a string `S` of lowercase English letters.\n\nFirst you may **rearrange** the characters of `S` in any order you like. Then you cut the rearranged string into `k` **contiguous** pieces, all of the same length, such that **all `k` pieces are identical strings**.\n\nFind the **maximum possible `k`**. (`k = 1` is always possible: don't cut at all.)",
+  "inputFormat": "A single line containing the string `S`.",
+  "outputFormat": "Print one integer: the maximum number of identical pieces.",
+  "constraints": "- `1 ≤ |S| ≤ 2 × 10^5`\n- `S` contains only `'a'`–`'z'`",
+  "samples": [
+    {
+      "input": "aabbbbaa\n",
+      "output": "4\n",
+      "explanation": "Counts: a → 4, b → 4. Rearrange to `abababab` and cut into `ab | ab | ab | ab`."
+    },
+    {
+      "input": "aaaabbbbbb\n",
+      "output": "2\n",
+      "explanation": "Counts: a → 4, b → 6, and gcd(4, 6) = 2. Rearrange to `aabbbaabbb` → `aabbb | aabbb`."
+    },
+    {
+      "input": "abc\n",
+      "output": "1\n",
+      "explanation": "Every letter occurs once, so the string can't be split into more than one identical piece."
+    }
+  ],
+  "hints": [
+    "If the final string is `k` copies of a piece `P`, then each letter's count must be `k ×` (its count in `P`).",
+    "So `k` must divide the count of **every** letter that appears. Conversely, any such `k` works: build `P` with `count/k` copies of each letter.",
+    "The answer is the GCD of all non-zero letter counts."
+  ],
+  "editorial": "### Reasoning\nSuppose the rearranged string is `P P … P` (`k` copies). A letter `c` occurring `x` times in `P` occurs `k·x` times in `S`. So `k` divides `cnt[c]` for every letter.\n\nConversely, if `k` divides every count, let `P` contain `cnt[c] / k` copies of each letter `c`. Then `P` repeated `k` times is a rearrangement of `S`.\n\nSo the answer is the **largest `k` dividing all counts**, which is `gcd` of the non-zero counts.\n\n### Algorithm\nCount letters (26 buckets), then fold `math.gcd` over non-zero counts.\n\n### Complexity\n**O(|S|)** time, **O(26)** space.\n\n### Common mistakes\n- Including zero counts in a hand-written GCD. `gcd(0, x) = x`, which is harmless, but some custom implementations break on it.\n- Answering with the *minimum* count instead of the GCD. With counts 4 and 6 the answer is 2, not 4.\n- Trying to actually construct and cut strings. It isn't needed.",
+  "youtube": [
+    {
+      "title": "Search YouTube: GCD of frequencies string rearrange equal parts",
+      "url": "https://www.youtube.com/results?search_query=GCD+of+frequencies+string+rearrange+equal+parts",
+      "kind": "search"
+    },
+    {
+      "title": "Search YouTube: Euclidean algorithm GCD explained",
+      "url": "https://www.youtube.com/results?search_query=Euclidean+algorithm+GCD+explained",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef max_equal_pieces(s):\n    # Rearrange s freely, then cut it into the maximum number of identical contiguous pieces.\n    # Return that maximum number of pieces.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    s = data[0]\n    print(max_equal_pieces(s))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

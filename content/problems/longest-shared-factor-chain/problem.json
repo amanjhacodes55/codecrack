@@ -1,0 +1,77 @@
+{
+  "slug": "longest-shared-factor-chain",
+  "title": "Longest Shared-Factor Chain",
+  "difficulty": "Hard",
+  "tags": [
+    "Dynamic Programming",
+    "Number Theory",
+    "Sieve",
+    "Hashing",
+    "GCD"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by an Infosys SP candidate (LeetCode Discuss, March 2025: online-test problems tagged 'DP + GCD' and 'DP + HashMap + Prime Factorization (Hard)') - the exact statement was not published; this is an original problem built on that pattern",
+  "statement": "You are given an array `A` of `N` positive integers.\n\nChoose a subsequence `B[1], B[2], …, B[m]` (keep the original order, delete any elements) such that every two **consecutive** chosen elements share a common factor greater than `1`:\n\n`gcd(B[j], B[j+1]) > 1` for all `1 ≤ j < m`.\n\nA single element is always a valid chain (even `1`). Print the maximum possible length `m`.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the length of the longest chain.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `1 ≤ A[i] ≤ 10^5`",
+  "samples": [
+    {
+      "input": "7\n2 3 6 7 9 14 4\n",
+      "output": "4\n",
+      "explanation": "`2 → 6 → 14 → 4`: every consecutive pair is even."
+    },
+    {
+      "input": "6\n10 21 15 7 35 1\n",
+      "output": "3\n",
+      "explanation": "For example `21 → 15 → 35` (`gcd = 3`, then `5`) or `10 → 15 → 35`. No chain of length 4 exists."
+    },
+    {
+      "input": "5\n1 5 7 11 1\n",
+      "output": "1\n",
+      "explanation": "No two elements share a factor greater than 1."
+    }
+  ],
+  "hints": [
+    "The `O(N^2)` LIS-style DP (`dp[i] = 1 + max dp[j]` with `gcd(A[j], A[i]) > 1`) is correct but needs `5·10^9` gcd calls for `N = 10^5`.",
+    "`gcd(x, y) > 1` ⇔ `x` and `y` have a **common prime factor**. A number `≤ 10^5` has at most 6 distinct prime factors.",
+    "Keep `best[p]` = longest chain found so far whose last element is divisible by prime `p`. For each `x` with distinct primes `P(x)`: `cur = 1 + max(best[p] for p in P(x))`, then set `best[p] = max(best[p], cur)` for every `p` in `P(x)`. Factorise quickly with a smallest-prime-factor sieve."
+  ],
+  "editorial": "### Reformulate the condition\n`gcd(x, y) > 1` exactly when some prime `p` divides both. So the previous element of the chain only matters through **which primes divide it**.\n\n### State\n`best[p]` = maximum length of a valid chain among the elements processed so far whose **last element is divisible by `p`**.\n\n### Transition (scan left to right)\nFor element `x` with distinct prime factors `P(x)`:\n- `cur = 1 + max(best[p] for p in P(x))` (or `1` if `x = 1`, which has no primes)\n- for every `p` in `P(x)`: `best[p] = max(best[p], cur)`\n\nCompute **all** reads before any writes for the same `x` (otherwise `x` could chain to itself).\n\n### Factorisation\nA smallest-prime-factor sieve up to `max(A)` lets you factor each number in `O(log x)`.\n\n### Complexity\nSieve `O(M log log M)`, DP `O(N · 6)`. Answer = max `cur` seen.\n\n### Common mistakes\n- Using the `O(N^2)` gcd DP - TLE.\n- Iterating over all divisors instead of prime divisors (more work, same answer).\n- Updating `best[p]` while still reading other primes of the same `x`.\n- Forgetting that `1` forms a chain of length 1 but can never be linked to anything.",
+  "youtube": [
+    {
+      "title": "DP 44. Largest Divisible Subset | LIS (take U forward)",
+      "url": "https://www.youtube.com/watch?v=gDuZwBW9VvM",
+      "kind": "video"
+    },
+    {
+      "title": "L8. Smallest Prime Factor (SPF) | Prime Factorisation | Query Based Problem | Maths Playlist — take U forward",
+      "url": "https://www.youtube.com/watch?v=glKWkmKFlMw",
+      "kind": "video"
+    },
+    {
+      "title": "Sieve Algorithm: How to find Prime Numbers Optimally ? | CP Course | EP 59 — Luv",
+      "url": "https://www.youtube.com/watch?v=T8PaMnb0GPo",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: longest subsequence adjacent gcd greater than 1 dp prime factors",
+      "url": "https://www.youtube.com/results?search_query=longest+subsequence+adjacent+gcd+greater+than+1+dp+prime+factors",
+      "kind": "search"
+    },
+    {
+      "title": "Search YouTube: smallest prime factor sieve factorization",
+      "url": "https://www.youtube.com/results?search_query=smallest+prime+factor+sieve+factorization",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef longest_shared_factor_chain(arr):\n    # Return the max length of a subsequence where every two consecutive elements have gcd > 1\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    print(longest_shared_factor_chain(arr))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

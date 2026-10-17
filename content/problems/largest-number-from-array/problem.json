@@ -1,0 +1,77 @@
+{
+  "slug": "largest-number-from-array",
+  "title": "Largest Number from Array",
+  "difficulty": "Medium",
+  "tags": [
+    "Sorting",
+    "Greedy",
+    "Strings",
+    "Custom Comparator"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates: 'Largest Number from Array' is listed among frequently reported 2025 Infosys SP/DSE questions in community prep sheets (GitHub: bhasidhshaik/Infosys-SP-DSE-resources, karthikreddy-7/Infosys-SP-Coding-Questions). Classic problem, original wording.",
+  "statement": "You are given `N` non-negative integers. Arrange **all** of them in some order and write them one after another (concatenate their decimal representations) to form one big number.\n\nPrint the **largest** number that can be formed this way.\n\nThe result can be very long, so print it as a string. If the result consists only of zeros, print a single `0`.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print the largest number as a string without leading zeros (or `0`).",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `0 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "5\n3 30 34 5 9\n",
+      "output": "9534330\n",
+      "explanation": "Order 9, 5, 34, 3, 30. Note that `3` must come before `30` because `330 > 303`."
+    },
+    {
+      "input": "4\n54 546 548 60\n",
+      "output": "6054854654\n",
+      "explanation": "Order 60, 548, 546, 54."
+    },
+    {
+      "input": "3\n0 0 0\n",
+      "output": "0\n",
+      "explanation": "Concatenation gives `000`, which is printed as `0`."
+    }
+  ],
+  "hints": [
+    "Sorting numerically fails (`9` must come before `34`), and so does plain string sorting (`3` vs `30`).",
+    "For two strings `x` and `y`, decide which goes first by comparing `x + y` with `y + x`.",
+    "Sort with that comparator (`functools.cmp_to_key` in Python). Handle the all-zeros case at the end."
+  ],
+  "editorial": "### Comparator\nPut `x` before `y` iff `x + y > y + x` (as strings of equal length, so lexicographic comparison = numeric comparison). This relation is transitive, so it defines a valid total order. Sorting by it and concatenating gives the optimum: an exchange argument shows that any adjacent pair in the wrong order can be swapped without making the number smaller.\n\n### Python\n```python\nfrom functools import cmp_to_key\ns = list(map(str, A))\ns.sort(key=cmp_to_key(lambda x, y: (y + x > x + y) - (y + x < x + y)))\nres = ''.join(s)\nprint('0' if res[0] == '0' else res)\n```\n\n### Complexity\n**O(N log N · L)** where `L ≤ 10` is the digit length.\n\n### Common mistakes\n- Numeric or plain lexicographic sort (fails on `3`/`30`, `9`/`34`).\n- Printing `000…` instead of `0`.\n- Comparing `int(x+y)`. It works but is slower and pointless.",
+  "youtube": [
+    {
+      "title": "Largest Number formed from an Array | Comparators Application | Leetcode 179 - codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=oJyl4fbfpM0",
+      "kind": "video"
+    },
+    {
+      "title": "LARGEST NUMBER | LEETCODE 179 | PYTHON SOLUTION - Cracking FAANG",
+      "url": "https://www.youtube.com/watch?v=dwZKfnhB-xo",
+      "kind": "video"
+    },
+    {
+      "title": "179. Largest Number | sorting | string | Leetcode Daily Challenge | DSA | Java | hindi — ShashCode",
+      "url": "https://www.youtube.com/watch?v=x0pc-z2BxPM",
+      "kind": "video"
+    },
+    {
+      "title": "179 | Leetcode |  Largest Number | Java | Hindi — Coding Nation",
+      "url": "https://www.youtube.com/watch?v=63MIV-epe3s",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: largest number formed from array custom comparator",
+      "url": "https://www.youtube.com/results?search_query=largest+number+formed+from+array+custom+comparator",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef largest_number(nums):\n    # nums: list of non-negative integers\n    # Return (as a string) the largest number formed by concatenating all of them in some order.\n    # Write your code here\n    return \"\"\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    nums = list(map(int, data[1:1 + n]))\n    print(largest_number(nums))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

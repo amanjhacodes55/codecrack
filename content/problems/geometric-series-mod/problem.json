@@ -1,0 +1,75 @@
+{
+  "slug": "geometric-series-mod",
+  "title": "Geometric Series Modulo a Prime",
+  "difficulty": "Medium",
+  "tags": [
+    "Math",
+    "Modular Arithmetic",
+    "Binary Exponentiation"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Fundamental technique drill (fast modular exponentiation + modular inverse via Fermat's little theorem)",
+  "statement": "Let `MOD = 1 000 000 007` (a prime).\n\nFor integers `a ≥ 0` and `n ≥ 1`, define\n\n`S(a, n) = a^0 + a^1 + a^2 + … + a^(n-1)`\n\n(`n` terms; by convention `a^0 = 1`, even when `a = 0`).\n\nYou are given `T` independent queries `(a, n)`. For each, print `S(a, n) mod MOD`.\n\nNote that `n` can be as large as `10^18`, so you cannot add the terms one by one.",
+  "inputFormat": "The first line contains an integer `T`.\nEach of the next `T` lines contains two integers `a` and `n`.",
+  "outputFormat": "Print `T` lines; the `i`-th line contains `S(a, n) mod 1000000007` for the `i`-th query.",
+  "constraints": "- `1 ≤ T ≤ 10^4`\n- `0 ≤ a ≤ 10^9`\n- `1 ≤ n ≤ 10^18`",
+  "samples": [
+    {
+      "input": "3\n2 10\n3 3\n1 1000000000000000000\n",
+      "output": "1023\n13\n49\n",
+      "explanation": "`1+2+…+2^9 = 1023`; `1+3+9 = 13`; with `a = 1` every term is 1, so the sum is `10^18`, and `10^18 mod (10^9+7) = 49`."
+    },
+    {
+      "input": "2\n0 5\n5 1\n",
+      "output": "1\n1\n",
+      "explanation": "`0^0 + 0^1 + … = 1 + 0 + 0 + 0 + 0 = 1`. With `n = 1` the sum is just `a^0 = 1`."
+    }
+  ],
+  "hints": [
+    "Closed form: for `a ≠ 1`, `S(a, n) = (a^n − 1) / (a − 1)`. Compute `a^n mod MOD` with **binary exponentiation** in O(log n): square the base, and multiply into the result whenever the current bit of `n` is 1.",
+    "You cannot divide under a modulus directly. Because `MOD` is prime, dividing by `d` (with `d mod MOD ≠ 0`) equals multiplying by `d^(MOD−2) mod MOD` (Fermat's little theorem).",
+    "Watch the special case `a mod MOD = 1`: then `a − 1 ≡ 0` has no inverse, but every term is 1, so the answer is `n mod MOD`."
+  ],
+  "editorial": "### Intuition\nTwo core modular tools: **fast power** to get `a^n` for huge `n`, and the **modular inverse** to perform the division in the geometric-series formula.\n\n### Binary exponentiation\nWrite `n` in binary. `a^n` is the product of `a^(2^k)` over the set bits `k` of `n`:\n```\ndef power(b, e, m):\n    r = 1; b %= m\n    while e:\n        if e & 1: r = r * b % m\n        b = b * b % m\n        e >>= 1\n    return r\n```\nO(log e) multiplications — about 60 for `e ≤ 10^18`. (Python's built-in `pow(b, e, m)` does the same.)\n\n### Modular inverse\nFor prime `p` and `d ≢ 0 (mod p)`: `d^(p−1) ≡ 1`, so `d^(p−2)` is the inverse of `d`.\n\n### Approach\nFor each query:\n- `a %= MOD`.\n- If `a == 1`: answer `n % MOD`.\n- Else: `(power(a, n) − 1) · power(a − 1, MOD − 2) mod MOD`. (`a = 0` also works: `(0 − 1) · (−1)^{-1} = 1`.)\n\nSince `0 ≤ a ≤ 10^9 < MOD`, `a − 1 ≡ 0` happens only for `a = 1`.\n\n### Complexity\n**O(T · log n)** ≈ `10^4 × 2 × 60` multiplications.\n\n### Alternative without inverses\nDivide and conquer: `S(a, 2m) = S(a, m) · (1 + a^m)`, `S(a, m+1) = 1 + a · S(a, m)` — works for any modulus, also O(log n).\n\n### Common mistakes\n- Computing `a ** n` exactly and reducing at the end — `n = 10^18` makes the number astronomically large.\n- Writing `(power(a, n) - 1) // (a - 1) % MOD` — integer division doesn't commute with `mod`.\n- Forgetting to normalise `(x − 1) % MOD` to be non-negative (Python's `%` already does; C++/Java's doesn't).\n- Missing the `a = 1` case (inverse of 0 does not exist).",
+  "youtube": [
+    {
+      "title": "POW(x,n) | Binary Exponentiation (take U forward)",
+      "url": "https://www.youtube.com/watch?v=l0YC3876qxg",
+      "kind": "video"
+    },
+    {
+      "title": "Fermat’s Little Theorem | Full Intuition, Proof & Modular Inverse (Must Know for CP) — Yash Poonia",
+      "url": "https://www.youtube.com/watch?v=4dnbvcoF4oo",
+      "kind": "video"
+    },
+    {
+      "title": "Modular nCr using Fermat’s Little Theorem | Beginner Friendly Explanation | Code | codestorywithMIK — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=FMBW7m1Wap0",
+      "kind": "video"
+    },
+    {
+      "title": "Binary Exponentiation Explained | Modular Fast Exponentiation for CP — Yash Poonia",
+      "url": "https://www.youtube.com/watch?v=w71AIsIR220",
+      "kind": "video"
+    },
+    {
+      "title": "Binary Exponentiation | Fast Exponentiation | Detailed For Beginners | codestorywithMIK — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=D320QeHS0XQ",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: modular multiplicative inverse fermat little theorem",
+      "url": "https://www.youtube.com/results?search_query=modular+multiplicative+inverse+fermat+little+theorem",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\nMOD = 10**9 + 7\n\n\ndef geometric_sum(a, n):\n    # Return (a^0 + a^1 + ... + a^(n-1)) mod MOD, with a^0 = 1. n can be up to 10^18.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    t = int(data[0])\n    out = []\n    for i in range(t):\n        a, n = int(data[1 + 2 * i]), int(data[2 + 2 * i])\n        out.append(geometric_sum(a, n))\n    sys.stdout.write(\"\\n\".join(map(str, out)) + \"\\n\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

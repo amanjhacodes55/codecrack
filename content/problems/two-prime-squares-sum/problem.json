@@ -1,0 +1,61 @@
+{
+  "slug": "two-prime-squares-sum",
+  "title": "Sum of Two Prime Squares",
+  "difficulty": "Medium",
+  "tags": [
+    "Math",
+    "Number Theory",
+    "Sieve of Eratosthenes"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "hackwithinfy",
+    "infosys-sp-dse"
+  ],
+  "source": "Reported from HackWithInfy 2022 — reconstructed from the Codeforces blog post 'Questions from Infosys HackWithInfy 2022' (entry 100661, question 1). Statement, constraints and samples rewritten.",
+  "statement": "Given a positive integer `N`, find two **prime** numbers `X` and `Y` (they may be equal) such that\n\n`X² + Y² = N`.\n\nAmong all such pairs, print the **minimum possible value of `X + Y`**. If no such pair exists, print `-1`.\n\nAnswer `T` independent queries.",
+  "inputFormat": "The first line contains an integer `T`.\nEach of the next `T` lines contains one integer `N`.",
+  "outputFormat": "For each query print the minimum `X + Y`, or `-1`.",
+  "constraints": "- `1 ≤ T ≤ 1000`\n- `1 ≤ N ≤ 10^10`",
+  "samples": [
+    {
+      "input": "4\n34\n338\n7\n8\n",
+      "output": "8\n24\n-1\n4\n",
+      "explanation": "- `34 = 3² + 5²` → `8`.\n- `338 = 7² + 17² = 13² + 13²`. The sums are `24` and `26`, so the answer is `24`.\n- `7` cannot be written as a sum of two prime squares.\n- `8 = 2² + 2²` (the primes may be equal) → `4`."
+    }
+  ],
+  "hints": [
+    "Both numbers are at most `√N ≤ 10^5`, so a sieve up to `10^5` gives you every candidate prime.",
+    "Fix the smaller prime `X` (so `X² ≤ N/2`) and check whether `N − X²` is the square of a prime — use `math.isqrt`.",
+    "With `X² + Y²` fixed, `(X + Y)² = N + 2XY` is smallest when `X·Y` is smallest, i.e. when the smaller prime is as small as possible. So the **first** hit while scanning `X` upward is already the answer."
+  ],
+  "editorial": "### Intuition\nOnly one of the two primes needs to be enumerated: once `X` is fixed, `Y = √(N − X²)` is forced.\n\n### Approach\n1. Sieve primes up to `10^5` once (bytearray sieve).\n2. For each query, iterate primes `p` in increasing order while `2p² ≤ N`:\n   - `rest = N − p²`, `y = isqrt(rest)`;\n   - if `y*y == rest` and `y` is prime → answer `p + y`, stop.\n3. If the loop ends, answer `-1`.\n\n**Why stop at the first hit?** For a fixed `N = X² + Y²` we have `(X+Y)² = N + 2XY`. With `X ≤ Y`, `XY = X·√(N−X²)` increases as `X` grows (for `X² ≤ N/2`), so the smallest valid `X` gives the smallest sum.\n\n**Useful observations** (not needed for the time limit, but nice): if `N` is odd one prime must be `2`; if both primes are odd then `N ≡ 2 (mod 8)`.\n\n### Complexity\nSieve `O(M log log M)` with `M = 10^5`; each query scans at most ~7,000 primes (`p ≤ √(N/2) ≈ 70,711`). Total ≈ `7·10^6` simple steps in the worst case.\n\n### Common mistakes\n- Using `int(math.sqrt(x))` — floating-point errors for large `x`; use `math.isqrt`.\n- Forgetting that `X = Y` is allowed (`8 = 2² + 2²`).\n- Taking the **first** representation found while scanning from the large side — that gives the *largest* sum.\n- Trial-division primality per candidate inside the loop — far too slow; precompute the sieve.",
+  "youtube": [
+    {
+      "title": "L6. Sieve of Eratosthenes | take U forward",
+      "url": "https://www.youtube.com/watch?v=g5Fuxn_AvSk",
+      "kind": "video"
+    },
+    {
+      "title": "Maths for DSA - One Shot | Euclid's Algorithm | Sieve of Eratosthenes | Modular Arithmetics — Apna College",
+      "url": "https://www.youtube.com/watch?v=Y4KdgqV1IqA",
+      "kind": "video"
+    },
+    {
+      "title": "15.1 Sieve of Eratosthenes | Challenge | C++ Placement Course — Apna College",
+      "url": "https://www.youtube.com/watch?v=nDPo9hsDNvU",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: HackWithInfy 2022 sum of squares of two primes",
+      "url": "https://www.youtube.com/results?search_query=HackWithInfy+2022+sum+of+squares+of+two+primes",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_prime_square_pair(n):\n    # Find primes X, Y with X*X + Y*Y == n.\n    # Return the minimum possible X + Y, or -1 if no such pair exists.\n    # Write your code here\n    return -1\n\n\ndef main():\n    data = sys.stdin.read().split()\n    t = int(data[0])\n    answers = [min_prime_square_pair(int(x)) for x in data[1:1 + t]]\n    print(\"\\n\".join(map(str, answers)))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

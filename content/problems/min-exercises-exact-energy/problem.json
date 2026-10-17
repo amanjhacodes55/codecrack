@@ -1,0 +1,75 @@
+{
+  "slug": "min-exercises-exact-energy",
+  "title": "Minimum Exercises for Exact Energy",
+  "difficulty": "Medium",
+  "tags": [
+    "Dynamic Programming",
+    "Knapsack",
+    "Bounded Knapsack"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Variant of the 'minimum exercises to get tired (each exercise at most twice)' question listed on PrepInsta's Infosys SP/DSE page. The reported version (energy ≥ E) is greedy; this version requires draining EXACTLY E, which turns it into a bounded-knapsack DP",
+  "statement": "You have exactly `E` units of energy. There are `N` different exercises; doing exercise `i` once drains exactly `A[i]` units.\n\nEach exercise may be performed **at most twice** (two different exercises are different even if their `A` values are equal).\n\nYou want to end with **exactly 0** energy. Print the minimum total number of exercise performances needed, or `-1` if it is impossible to drain exactly `E`.",
+  "inputFormat": "The first line contains two integers `N` and `E`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the minimum number of performances, or `-1`.",
+  "constraints": "- `1 ≤ N ≤ 100`\n- `1 ≤ E ≤ 10^4`\n- `1 ≤ A[i] ≤ 10^4`",
+  "samples": [
+    {
+      "input": "3 10\n1 3 4\n",
+      "output": "3\n",
+      "explanation": "`4 + 3 + 3 = 10` uses 3 performances (exercise 2 twice). `4 + 4 + 1 + 1` needs 4."
+    },
+    {
+      "input": "2 10\n1 2\n",
+      "output": "-1\n",
+      "explanation": "Even doing both exercises twice drains only `6`."
+    },
+    {
+      "input": "4 9\n5 2 7 1\n",
+      "output": "2\n",
+      "explanation": "`7 + 2 = 9`."
+    }
+  ],
+  "hints": [
+    "Greedy (always take the largest exercise) fails: in sample 1 it would take `4, 4` and then needs `1, 1`.",
+    "Think of each exercise as **two identical items** in a 0/1 knapsack where you minimise the number of items and the total weight must be exactly `E`.",
+    "`dp[c]` = fewest performances that drain exactly `c` (`dp[0] = 0`, others `∞`). For each of the `2N` items, update `c` from high to low: `dp[c] = min(dp[c], dp[c − A[i]] + 1)`. Answer `dp[E]` or `-1`."
+  ],
+  "editorial": "### Modelling\n\"At most twice\" = bounded knapsack with bound 2. The simplest correct reduction: replace each exercise by **two copies** and solve a 0/1 knapsack (each copy used at most once).\n\n### State\n`dp[c]` = minimum number of performances whose drains sum to **exactly** `c`.\n\n### Base case\n`dp[0] = 0`, `dp[c] = ∞` for `c > 0` (\"exactly\" means unreachable sums must stay infinite).\n\n### Transition\nFor each copy with value `a`: `dp[c] = min(dp[c], dp[c − a] + 1)` for `c` from `E` down to `a` (downward → each copy at most once). Equivalently, per exercise: `new[c] = min(dp[c], dp[c−a] + 1, dp[c−2a] + 2)`.\n\n### Complexity\n`O(2N · E)` = `2·10^6`. In Python, build the shifted row with a list comprehension and take the element-wise `min` - much faster than an explicit inner loop.\n\n### Common mistakes\n- Upward loop on the 1D array → unbounded usage.\n- Initialising with `0` instead of `∞` (computes \"at most E\" instead of \"exactly E\").\n- Printing `∞`/a huge number instead of `-1`.",
+  "youtube": [
+    {
+      "title": "DP 20. Minimum Coins | DP on Subsequences (take U forward)",
+      "url": "https://www.youtube.com/watch?v=myPeWb3Y68A",
+      "kind": "video"
+    },
+    {
+      "title": "DP 14. Subset Sum Equals to Target (take U forward)",
+      "url": "https://www.youtube.com/watch?v=fWX9xDmIzRI",
+      "kind": "video"
+    },
+    {
+      "title": "4.5 0/1 Knapsack - Two Methods - Dynamic Programming — Abdul Bari",
+      "url": "https://www.youtube.com/watch?v=nLmhmB6NzcM",
+      "kind": "video"
+    },
+    {
+      "title": "Lecture 104: Minimum Number of Coins || DP Series — CodeHelp - by Babbar",
+      "url": "https://www.youtube.com/watch?v=A3FHNCAkhxE",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: bounded knapsack minimum items exact sum each item at most twice",
+      "url": "https://www.youtube.com/results?search_query=bounded+knapsack+minimum+items+exact+sum",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_exercises(energy, drains):\n    # Return the minimum number of performances (each exercise at most twice) draining exactly energy, or -1\n    # Write your code here\n    return -1\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, energy = int(data[0]), int(data[1])\n    drains = list(map(int, data[2:2 + n]))\n    print(min_exercises(energy, drains))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

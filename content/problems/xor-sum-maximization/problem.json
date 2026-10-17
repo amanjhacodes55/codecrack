@@ -1,0 +1,81 @@
+{
+  "slug": "xor-sum-maximization",
+  "title": "Bounded XOR-Sum Maximisation",
+  "difficulty": "Hard",
+  "tags": [
+    "Bit Manipulation",
+    "Greedy",
+    "Math"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "hackwithinfy",
+    "infosys-sp-dse"
+  ],
+  "source": "Reported in Infosys SP / HackWithInfy previous-question compilations — reconstructed from the 'Xor-Sum Maximization' entry (x in [0, K] maximising Σ x XOR A[i], N ≤ 1e5, K, A[i] ≤ 1e9) listed on campusmonk.in's Infosys SP/HackWithInfy PYQ page and seen in search-result excerpts of a Studocu 'Infosys Specialist Programmer previous questions' document. Statement, tie-breaking and output format defined here.",
+  "statement": "You are given an array `A` of `N` non-negative integers and a non-negative integer `K`. Define\n\n`XorSum(x) = (x XOR A[1]) + (x XOR A[2]) + … + (x XOR A[N])`.\n\nFind the integer `x` with `0 ≤ x ≤ K` that **maximises** `XorSum(x)`. If several values of `x` give the same maximum, choose the **smallest** such `x`.\n\nPrint that `x` and the maximum value `XorSum(x)`.",
+  "inputFormat": "The first line contains two integers `N` and `K`.\nThe second line contains `N` integers `A[1..N]`.",
+  "outputFormat": "Print two integers separated by a space: the chosen `x` and `XorSum(x)`.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `0 ≤ K ≤ 10^9`\n- `0 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "3 6\n1 2 4\n",
+      "output": "6 13\n",
+      "explanation": "`x = 7` would give `6 + 5 + 3 = 14`, but `7 > K`. Among `0..6`, `x = 6` gives `7 + 4 + 2 = 13`, the maximum."
+    },
+    {
+      "input": "4 7\n1 2 4 7\n",
+      "output": "0 14\n",
+      "explanation": "Every bit position is set in exactly half of the numbers, so every `x` in `0..7` gives `14`. The smallest is `0`."
+    },
+    {
+      "input": "2 5\n3 3\n",
+      "output": "4 14\n",
+      "explanation": "Both numbers are `011₂`. Bits 0 and 1 are set in both, so `x` should leave them 0; bit 2 is set in neither, so `x` wants it. `x = 100₂ = 4 ≤ 5` gives `7 + 7 = 14`."
+    }
+  ],
+  "hints": [
+    "Bits are independent in a sum of XORs: if `c_b` numbers have bit `b` set, then setting bit `b` in `x` contributes `(N − c_b)·2^b`, leaving it unset contributes `c_b·2^b`.",
+    "Without the bound, set bit `b` exactly when `N − c_b > c_b` (strictly — ties stay 0 for the smallest `x`). The bound `x ≤ K` is what makes it interesting.",
+    "Any `x ≤ K` is either `K` itself or agrees with `K` above some bit `b` where `K` has a 1 and `x` has a 0 — below `b` it is completely free. Try `K` plus these ≤ 31 'prefix' candidates, fill the free bits greedily, and keep the best (smallest `x` on ties)."
+  ],
+  "editorial": "### Intuition\n`XorSum(x) = Σ_b 2^b · (number of i where bit b of x differs from bit b of A[i])`. With `c_b` = count of numbers having bit `b`, bit `b` of `x` contributes `c_b·2^b` if it is 0 and `(N − c_b)·2^b` if it is 1. So `XorSum(x) = Σ A[i] + Σ_{b ∈ x} gain_b` with `gain_b = (N − 2c_b)·2^b`.\n\n### Handling `x ≤ K` (digit-DP style)\nCompare `x` with `K` from the most significant bit. Either `x = K`, or there is a highest bit `b` where they differ — then `K` has `1` there, `x` has `0`, the bits above `b` equal `K`'s, and the bits below `b` are **free** (any value keeps `x < K`).\n\nSo the candidates are:\n- `x = K`;\n- for every set bit `b` of `K`: `x = (K with bits ≤ b cleared)` plus every lower bit `t < b` with `gain_t > 0`.\n\nEvaluate each with the gain table and pick the maximum value, breaking ties by the smaller `x`. Inside each candidate class, setting only bits with **strictly** positive gain gives the smallest optimal `x` of that class, so the overall tie-break is correct.\n\n### Complexity\n`O(N · 31)` to count bits, `O(31²)` for the candidates.\n\n### Common mistakes\n- Greedy from the top bit that 'sets a bit if it helps and still fits under K' — it can lock in a worse prefix. The prefix-candidate enumeration is the safe method.\n- Brute force over `x ∈ [0, K]` — `10^9 · 10^5` operations.\n- Setting bits with zero gain (breaks the smallest-`x` tie rule).\n- Considering only 30 bits when `K` or `A[i]` can be close to `2^30` — use 31.",
+  "youtube": [
+    {
+      "title": "Sum of XOR of all pairs — per-bit counting technique (GFG POTD)",
+      "url": "https://www.youtube.com/watch?v=Xbmj0GDbWx4",
+      "kind": "video"
+    },
+    {
+      "title": "Master Bit Manipulation in One Video | XOR Tricks",
+      "url": "https://www.youtube.com/watch?v=T56nhL8Y1po",
+      "kind": "video"
+    },
+    {
+      "title": "Sum of XOR of all Pairs | 🧑‍💻 C++, Java, Python | Bit Manipulation | T.C ➡️ O(n) | POTD | GFG — Kattamuri Kowshiq",
+      "url": "https://www.youtube.com/watch?v=xBukhDU3dvU",
+      "kind": "video"
+    },
+    {
+      "title": "XOR of Sum of All Pairs in an Array | Bit Manipulation Interview Questions | Code and Implementation — Pepcoding",
+      "url": "https://www.youtube.com/watch?v=10sMnEraOBs",
+      "kind": "video"
+    },
+    {
+      "title": "L1. Introduction to Bit Manipulation | 1's 2's Compliment | Bit Operators — take U forward",
+      "url": "https://www.youtube.com/watch?v=qQd-ViW7bfk",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: find x in range 0 to K maximize sum of x xor a[i]",
+      "url": "https://www.youtube.com/results?search_query=find+x+in+range+0+to+K+maximize+sum+of+x+xor+a%5Bi%5D",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef best_xor_sum(a, k):\n    # XorSum(x) = sum(x ^ v for v in a).\n    # Return (x, XorSum(x)) for the x in [0, k] with maximum XorSum;\n    # among ties return the smallest x.\n    # Write your code here\n    return (0, 0)\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, k = int(data[0]), int(data[1])\n    a = list(map(int, data[2:2 + n]))\n    x, value = best_xor_sum(a, k)\n    print(x, value)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

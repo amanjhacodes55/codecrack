@@ -1,0 +1,72 @@
+{
+  "slug": "smoothest-trail",
+  "title": "Smoothest Trail",
+  "difficulty": "Medium",
+  "tags": [
+    "Graphs",
+    "Binary Search on Answer",
+    "Breadth-First Search",
+    "Disjoint Set Union",
+    "Grid"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates in Infosys SP/DSE: binary search on the answer ('minimize the maximum') combined with grid BFS (reconstructed from a Dec 2025 Infosys on-campus experience on Naukri Code360 and graph/BFS reports on GeeksforGeeks, both seen via search summaries)",
+  "statement": "A hiker stands on the top-left cell of an `R × C` terrain map and wants to reach the bottom-right cell. Cell `(i, j)` has height `H[i][j]`. From a cell the hiker may step to any of the 4 side-adjacent cells.\n\nThe **roughness** of a route is the **maximum** absolute height difference over all consecutive pairs of cells on it. (A route consisting of a single cell has roughness `0`.)\n\nPrint the minimum possible roughness of a route from `(1, 1)` to `(R, C)`.",
+  "inputFormat": "The first line contains `R` and `C`.\nEach of the next `R` lines contains `C` integers — the heights of that row.",
+  "outputFormat": "Print a single integer: the minimum roughness.",
+  "constraints": "- `1 ≤ R, C ≤ 200`\n- `0 ≤ H[i][j] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "3 3\n1 2 2\n3 8 2\n5 3 5\n",
+      "output": "2\n",
+      "explanation": "Route 1 → 3 → 5 → 3 → 5 (down the left column, then along the bottom) has differences 2, 2, 2, 2, so roughness 2. No route avoids every difference larger than 1."
+    },
+    {
+      "input": "1 4\n4 9 2 2\n",
+      "output": "7\n",
+      "explanation": "There is only one route; its differences are 5, 7, 0."
+    }
+  ],
+  "hints": [
+    "Fix a limit `T`. Can you check in O(R·C) whether a route exists using only steps with difference `≤ T`?",
+    "That check is monotone: if it works for `T` it works for every larger `T`. Binary search the smallest feasible `T` (searching over the sorted list of distinct edge differences keeps it to ~17 BFS runs).",
+    "Alternative without binary search: sort all ~2·R·C edges by difference and add them to a DSU one by one; the answer is the weight of the edge that first connects the start and the end cell. (A minimax Dijkstra also works.)"
+  ],
+  "editorial": "### Intuition\n\"Minimise the maximum\" is the trademark of **binary search on the answer**: the predicate *\"a route exists using only steps of difference ≤ T\"* is false for small `T` and true from some point on.\n\n### Approach 1 — Binary search + BFS\nCollect all differences between adjacent cells (plus `0`), sort and deduplicate them, then binary search over that list. For each candidate `T`, run a BFS from `(0,0)` that only traverses edges with difference `≤ T`; check whether `(R-1, C-1)` is reached.\nCost: `O(R·C·log(R·C))`.\n\n### Approach 2 — Kruskal / DSU (used by the reference)\nTreat cells as nodes and adjacent pairs as edges weighted by their height difference. Process edges in increasing weight, union their endpoints, and stop as soon as start and end share a root — that weight is the answer (it is the bottleneck edge of the minimum spanning tree path). Cost: sorting `O(R·C log(R·C))`.\n\n### Approach 3 — Minimax Dijkstra\nDijkstra where the path cost is `max(cost[u], |H[u]-H[v]|)` instead of a sum.\n\n### Common mistakes\n- Forgetting the 1×1 grid (answer 0).\n- Binary searching over `[0, 10^9]` with a slow BFS (30 BFS × 40 000 cells in Python is borderline — search over the distinct edge weights instead).\n- Only allowing right/down moves — the best route may go up or left.",
+  "youtube": [
+    {
+      "title": "1631. Path With Minimum Effort | Binary Search approach (code Explainer)",
+      "url": "https://www.youtube.com/watch?v=xrozg2SQpVA",
+      "kind": "video"
+    },
+    {
+      "title": "Path With Minimum Effort | Leetcode 1631 | Dijkstra (Coding Decoded)",
+      "url": "https://www.youtube.com/watch?v=gatxvipc5b8",
+      "kind": "video"
+    },
+    {
+      "title": "G-37. Path With Minimum Effort — take U forward",
+      "url": "https://www.youtube.com/watch?v=0ytpZyiZFhA",
+      "kind": "video"
+    },
+    {
+      "title": "Path With Minimum Effort | Leetcode-1631 | Dijkstra in 2-D Matrix |GOOGLE |Graph Concepts & Qns - 30 — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=QIu9HeyEjPc",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: binary search on answer patterns minimize maximum",
+      "url": "https://www.youtube.com/results?search_query=binary+search+on+answer+minimize+maximum",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 4000,
+  "starter": {
+    "python": "import sys\nfrom collections import deque\n\n\ndef min_roughness(grid, r, c):\n    # grid: list of r lists, each with c integer heights\n    # Return the minimum possible roughness of a route from (0,0) to (r-1,c-1)\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    r, c = int(data[0]), int(data[1])\n    vals = list(map(int, data[2:2 + r * c]))\n    grid = [vals[i * c:(i + 1) * c] for i in range(r)]\n    print(min_roughness(grid, r, c))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

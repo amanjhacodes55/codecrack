@@ -1,0 +1,71 @@
+{
+  "slug": "quest-power-maximizer",
+  "title": "Quest Power Maximizer",
+  "difficulty": "Hard",
+  "tags": [
+    "Greedy",
+    "Heap",
+    "Priority Queue",
+    "Sorting"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported for Infosys SP/DSE: greedy 'defeat monsters with a minimum experience requirement that grant bonuses' ('Monster Quest' on PrepInsta's Infosys SP/DSE coding question list; 'Monster Defeat Problem' on the bhasidhshaik GitHub SP/DSE sheet) — reconstructed as an original variant with a quest limit, solved with a heap",
+  "statement": "A hero starts with power `P`. There are `N` quests; quest `i` can be started only if the hero's **current** power is at least `R[i]`, and completing it permanently increases the power by `G[i]` (`G[i] ≥ 0`). Power is never spent.\n\nThe hero has time for **at most `K` quests**, each quest can be completed at most once, and quests may be done in any order.\n\nPrint the maximum power the hero can end with.",
+  "inputFormat": "The first line contains `N`, `K` and `P`.\nThe second line contains `N` integers `R[1..N]`.\nThe third line contains `N` integers `G[1..N]`.",
+  "outputFormat": "Print the maximum final power.",
+  "constraints": "- `1 ≤ N ≤ 2 × 10^5`\n- `0 ≤ K ≤ N`\n- `0 ≤ P ≤ 10^9`\n- `0 ≤ R[i], G[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "5 2 3\n0 3 4 6 9\n2 5 1 10 50\n",
+      "output": "18\n",
+      "explanation": "With power 3 the hero can start quests 1 (+2) or 2 (+5). Take +5 → power 8. Now quests 1, 3, 4 are available; take quest 4 (+10) → 18. The +50 quest needs power 9 but only 2 quests are allowed, and no plan reaches it with a bigger total."
+    },
+    {
+      "input": "3 3 0\n1 2 3\n4 4 4\n",
+      "output": "0\n",
+      "explanation": "No quest can be started with power 0."
+    }
+  ],
+  "hints": [
+    "Since power only grows, a quest that is available now stays available forever. At each step, which available quest should you pick?",
+    "Exchange argument: picking the available quest with the largest gain never makes the future worse — it maximises power, which only unlocks more quests.",
+    "Sort quests by requirement. Keep a pointer; whenever power grows, push all newly unlocked gains into a max-heap (`heapq` with negated values). Pop the best gain up to K times; stop early if the heap is empty."
+  ],
+  "editorial": "### Intuition\nPower is monotonically non-decreasing, so the set of startable quests only grows. Among the currently startable quests, taking the one with the largest gain is optimal: any plan that takes some other quest first can be modified to take the largest-gain one instead without decreasing power at any later step (an exchange argument).\n\n### Approach\n1. Sort quests by requirement `R`.\n2. Repeat up to `K` times:\n   - advance a pointer over the sorted list, pushing `−G` of every quest with `R ≤ power` into a heap;\n   - if the heap is empty, stop (nothing is startable and nothing will ever become startable);\n   - pop the largest gain and add it to `power`.\n3. Print `power`.\n\n### Complexity\n**O(N log N)** — each quest is pushed and popped at most once.\n\n### Common mistakes\n- Greedy by smallest requirement (\"do the easiest quest\") — wastes the limited K slots on small gains.\n- Re-scanning all quests every step: O(N·K) = 4·10^10.\n- Forgetting `K = 0`, or not stopping when the heap becomes empty.\n- Python's `heapq` is a min-heap: push negative gains.",
+  "youtube": [
+    {
+      "title": "IPO | Leetcode 502 | Heaps (Ayushi Sharma) — same greedy + two-structure idea",
+      "url": "https://www.youtube.com/watch?v=61g5O0Jc-4I",
+      "kind": "video"
+    },
+    {
+      "title": "IPO | Easy Beginner Friendly | Story To Code | Leetcode 502 | codestorywithMIK — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=b12SZXrZF9I",
+      "kind": "video"
+    },
+    {
+      "title": "502. IPO | Greedy | Priority Queue | Sorting — Aryan Mittal",
+      "url": "https://www.youtube.com/watch?v=u07eLf-s6TU",
+      "kind": "video"
+    },
+    {
+      "title": "LC 502. IPO | Priority Queue + Greedy HARD | Explained — The Optimal Approach",
+      "url": "https://www.youtube.com/watch?v=uC9b2KY7jao",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: IPO leetcode 502 greedy heap neetcode",
+      "url": "https://www.youtube.com/results?search_query=ipo+leetcode+502+greedy+heap+neetcode",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\nimport heapq\n\n\ndef max_final_power(k, power, req, gain):\n    # req[i], gain[i] describe quest i (0-indexed); at most k quests may be done\n    # Return the maximum final power\n    # Write your code here\n    return power\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, k, power = int(data[0]), int(data[1]), int(data[2])\n    req = list(map(int, data[3:3 + n]))\n    gain = list(map(int, data[3 + n:3 + 2 * n]))\n    print(max_final_power(k, power, req, gain))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

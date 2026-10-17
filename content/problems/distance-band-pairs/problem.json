@@ -1,0 +1,72 @@
+{
+  "slug": "distance-band-pairs",
+  "title": "Distance Band Pairs",
+  "difficulty": "Medium",
+  "tags": [
+    "Graphs",
+    "Dijkstra",
+    "Shortest Path",
+    "Binary Search",
+    "Sorting"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern listed as a HackWithInfy/Infosys SP round-1 hard problem ('Graph Beauty Ranges': count node pairs whose shortest distance lies in [L, R]) on placementpreps.in (uncited compilation); reconstructed with original wording and multi-query twist",
+  "statement": "A country has `N` towns (numbered `1 … N`) and `M` two-way roads. Road `i` connects towns `u_i` and `v_i` and has length `w_i`. Roads may repeat, and a road may even start and end in the same town.\n\nFor two different towns `a < b`, let `dist(a, b)` be the length of the shortest route between them (if no route exists, the pair is ignored).\n\nYou are given `Q` queries `L R`. For each query print how many **unordered pairs** of distinct towns `{a, b}` are connected and satisfy `L ≤ dist(a, b) ≤ R`.",
+  "inputFormat": "The first line contains `N` and `M`.\nEach of the next `M` lines contains `u v w`.\nThe next line contains `Q`.\nEach of the next `Q` lines contains `L R`.",
+  "outputFormat": "Print `Q` lines — the answer for each query.",
+  "constraints": "- `1 ≤ N ≤ 200`\n- `0 ≤ M ≤ 2000`\n- `1 ≤ u, v ≤ N`, `1 ≤ w ≤ 10^6`\n- `1 ≤ Q ≤ 5 × 10^4`\n- `0 ≤ L ≤ R ≤ 10^{9}`",
+  "samples": [
+    {
+      "input": "4 4\n1 2 4\n2 3 1\n1 3 7\n3 4 2\n3\n1 3\n4 6\n7 100\n",
+      "output": "3\n2\n1\n",
+      "explanation": "Shortest distances: d(1,2)=4, d(1,3)=5 (via 2), d(1,4)=7, d(2,3)=1, d(2,4)=3, d(3,4)=2.\n- `[1,3]` → d = 1, 2, 3 → **3** pairs.\n- `[4,6]` → d = 4, 5 → **2** pairs.\n- `[7,100]` → d = 7 → **1** pair."
+    }
+  ],
+  "hints": [
+    "With N ≤ 200 you can afford to know the shortest distance of **every** pair. How? Run a shortest-path algorithm from each town.",
+    "Floyd–Warshall is O(N³) = 8·10^6 relaxations — fine in C++ but slow in Python. Running Dijkstra from each source (M is small) is much faster.",
+    "There are at most N(N-1)/2 ≈ 20 000 pair distances. Sort them once; each query is then two binary searches (`bisect_left(L)` and `bisect_right(R)`)."
+  ],
+  "editorial": "### Intuition\nTwo independent parts: (1) compute all-pairs shortest paths, (2) answer many range-count queries over a fixed multiset of numbers.\n\n### Step 1 — all pairs\nRun Dijkstra (binary heap, lazy deletion) from every town: `O(N · M log M)` ≈ 200 × 4000 × 12 operations. For each source `s`, record `dist[t]` for every `t > s` that is reachable. Floyd–Warshall is also correct but does `N³` Python-level operations.\n\n### Step 2 — queries\nSort the list `D` of pair distances. The number of values in `[L, R]` is `bisect_right(D, R) - bisect_left(D, L)` — `O(log N)` per query.\n\n### Complexity\n`O(N · M log M + P log P + Q log P)` with `P ≤ N(N-1)/2`.\n\n### Common mistakes\n- Counting each pair twice (take only `t > s`).\n- Counting unreachable pairs (distance = ∞).\n- Scanning all pairs for each query: 20 000 × 50 000 = 10^9 — too slow.\n- Keeping only one of several parallel roads arbitrarily instead of the shortest one (Dijkstra handles parallel roads naturally).",
+  "youtube": [
+    {
+      "title": "Dijkstra's Shortest Path Algorithm | Graph Theory (WilliamFiset)",
+      "url": "https://www.youtube.com/watch?v=pSqmAO-m7Lk",
+      "kind": "video"
+    },
+    {
+      "title": "G-32. Dijkstra's Algorithm - Using Priority Queue - C++ and Java - Part 1 — take U forward",
+      "url": "https://www.youtube.com/watch?v=V6H1qAeB-l4",
+      "kind": "video"
+    },
+    {
+      "title": "G-35. Print Shortest Path - Dijkstra's Algorithm — take U forward",
+      "url": "https://www.youtube.com/watch?v=rp1SMw7HSO8",
+      "kind": "video"
+    },
+    {
+      "title": "4.2 All Pairs Shortest Path (Floyd-Warshall) - Dynamic Programming — Abdul Bari",
+      "url": "https://www.youtube.com/watch?v=oNI0rf2P9gE",
+      "kind": "video"
+    },
+    {
+      "title": "L-5.7: Introduction to All Pair Shortest Path (Floyd Warshall Algorithm) — Gate Smashers",
+      "url": "https://www.youtube.com/watch?v=c5vQS40VBcU",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: all pairs shortest path dijkstra from every node vs floyd warshall",
+      "url": "https://www.youtube.com/results?search_query=all+pairs+shortest+path+dijkstra+every+node+floyd+warshall",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\nimport heapq\nfrom bisect import bisect_left, bisect_right\n\n\ndef answer_queries(n, adj, queries):\n    # adj[u]  : list of (v, w) pairs (1-indexed towns; roads are already added in both directions)\n    # queries : list of (L, R)\n    # Return a list with the answer for each query\n    # Write your code here\n    return [0] * len(queries)\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, m = int(data[0]), int(data[1])\n    adj = [[] for _ in range(n + 1)]\n    p = 2\n    for _ in range(m):\n        u, v, w = int(data[p]), int(data[p + 1]), int(data[p + 2])\n        p += 3\n        adj[u].append((v, w))\n        adj[v].append((u, w))\n    q = int(data[p])\n    p += 1\n    queries = []\n    for _ in range(q):\n        queries.append((int(data[p]), int(data[p + 1])))\n        p += 2\n    print(\"\\n\".join(map(str, answer_queries(n, adj, queries))))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

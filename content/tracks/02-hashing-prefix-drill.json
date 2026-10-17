@@ -1,0 +1,49 @@
+{
+  "slug": "hashing-prefix-drill",
+  "title": "Hashing & Prefix-Sum Drill",
+  "subtitle": "Your practice list — 9 problems, one technique, rising difficulty",
+  "company": "",
+  "order": 2,
+  "description": "A focused drill on the most reused tool in Infosys Q1/Q2: **hash maps**, and their combination with **prefix sums**. Solve in order; each problem adds one idea to the previous one.",
+  "steps": [
+    {
+      "title": "Counting with a hash map",
+      "goal": "Frequency counting and its common output formats.",
+      "tips": [
+        "Counter(s) then iterate in the order the problem demands"
+      ],
+      "resources": [],
+      "problems": [
+        "majority-element",
+        "check-string-permutation",
+        "most-common-word",
+        "first-non-repeating-character"
+      ]
+    },
+    {
+      "title": "Sorting by frequency & grouping",
+      "goal": "Use counts as sort keys and canonical keys for grouping.",
+      "tips": [
+        "sorted(cnt.items(), key=lambda kv: (-kv[1], kv[0]))"
+      ],
+      "resources": [],
+      "problems": [
+        "sort-characters-by-frequency",
+        "count-anagram-groups",
+        "count-pairs-with-sum-k"
+      ]
+    },
+    {
+      "title": "Prefix sum + hashing (combines both topics)",
+      "goal": "Remember earlier prefix sums to answer subarray questions in O(N).",
+      "tips": [
+        "Replace 0 with −1 → equal 0s and 1s means subarray sum 0"
+      ],
+      "resources": [],
+      "problems": [
+        "longest-equal-zeros-ones-subarray",
+        "count-subarrays-with-sum-k"
+      ]
+    }
+  ]
+}

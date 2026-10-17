@@ -1,0 +1,76 @@
+{
+  "slug": "toll-pass-route",
+  "title": "Toll Pass Route",
+  "difficulty": "Hard",
+  "tags": [
+    "Graphs",
+    "Dijkstra",
+    "Shortest Path",
+    "State-Space Search"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates in Infosys SP/DSE: hard graph question on 'shortest path with specific constraints' (GeeksforGeeks Infosys SP/DSE 2026 interview experience; 'shortest path with constraints' listed as a hard pattern on placementpreps.in) — reconstructed with original story",
+  "statement": "There are `N` cities (numbered `1 … N`) and `M` two-way roads. Road `i` joins cities `u_i` and `v_i` and costs `w_i` coins to drive along (in either direction).\n\nYou start in city `1` holding `K` **toll passes**. When you drive along a road you may hand over one pass for it; that drive then costs only `⌊w / 2⌋` coins. At most one pass can be used per drive, and every pass can be used only once.\n\nPrint the minimum total number of coins needed to reach city `N`, or `-1` if city `N` is unreachable. You do not have to use all passes.",
+  "inputFormat": "The first line contains `N`, `M` and `K`.\nEach of the next `M` lines contains `u v w` describing a road.",
+  "outputFormat": "Print the minimum cost, or `-1`.",
+  "constraints": "- `1 ≤ N ≤ 10^4`\n- `0 ≤ M ≤ 2 × 10^4`\n- `0 ≤ K ≤ 5`\n- `1 ≤ u, v ≤ N` (self-loops and parallel roads may appear)\n- `1 ≤ w ≤ 10^9`",
+  "samples": [
+    {
+      "input": "4 4 1\n1 2 10\n2 4 10\n1 3 3\n3 4 30\n",
+      "output": "15\n",
+      "explanation": "Route 1 → 2 → 4 using the pass on either road: 10/2 + 10 = 15. Route 1 → 3 → 4 with the pass on the 30-road costs 3 + 15 = 18."
+    },
+    {
+      "input": "3 1 2\n1 2 5\n",
+      "output": "-1\n",
+      "explanation": "City 3 has no roads."
+    }
+  ],
+  "hints": [
+    "Plain Dijkstra on cities fails: the cheapest way to *reach* a city may have used up passes that would be more valuable later.",
+    "Make the state `(city, passes used)`. From `(u, j)` along a road of cost `w` you can go to `(v, j)` paying `w`, or to `(v, j+1)` paying `w // 2` if `j < K`.",
+    "Run Dijkstra on this layered graph with `N·(K+1)` states. The answer is the minimum over `j` of `dist[N][j]` (or simply the first time a state of city `N` is popped)."
+  ],
+  "editorial": "### Intuition\nThe extra resource (passes) changes what is optimal, so it must become part of the node. This **state-space / layered-graph Dijkstra** is the standard tool for \"shortest path with at most K special moves\" questions.\n\n### Approach\n- States: `(u, j)` = standing in city `u` having used `j` passes, `0 ≤ j ≤ K`. Flatten as `u*(K+1)+j`.\n- Transitions for each road `(u, v, w)`: `(u,j) → (v,j)` with cost `w`; `(u,j) → (v,j+1)` with cost `⌊w/2⌋` when `j < K`.\n- All costs are non-negative, so Dijkstra applies. Because the heap pops states in increasing distance, the first popped state with city `N` gives the answer.\n\n### Complexity\n`O((N + M)·K · log(M·K))` — about `6 × 4·10^4 × 2` relaxations at the limits.\n\n### Common mistakes\n- Greedy \"take the ordinary shortest route and use the passes on its most expensive roads\" — wrong. Example: roads 1–2 (10), 2–4 (10), 1–4 (28), K = 1. The plain shortest route 1→2→4 costs 20 and becomes 15 with the pass, but the direct road with the pass costs 14.\n- Forgetting `N = 1` (answer 0).\n- Using `w / 2` (float) instead of `w // 2`.\n- Not skipping stale heap entries (`if d > dist[state]: continue`), which makes Python Dijkstra much slower.",
+  "youtube": [
+    {
+      "title": "G-38. Cheapest Flights Within K Stops (take U forward) — Dijkstra with an extra state dimension",
+      "url": "https://www.youtube.com/watch?v=9XybHVqTHcQ",
+      "kind": "video"
+    },
+    {
+      "title": "Dijkstra's Shortest Path Algorithm | Graph Theory (WilliamFiset)",
+      "url": "https://www.youtube.com/watch?v=pSqmAO-m7Lk",
+      "kind": "video"
+    },
+    {
+      "title": "L-4.10: Dijkstra's Algorithm - Single Source Shortest Path - Greedy Method — Gate Smashers",
+      "url": "https://www.youtube.com/watch?v=Gd92jSu_cZk",
+      "kind": "video"
+    },
+    {
+      "title": "G-28. Shortest Path in Undirected Graph with Unit Weights — take U forward",
+      "url": "https://www.youtube.com/watch?v=C4gxoTaI71U",
+      "kind": "video"
+    },
+    {
+      "title": "Cheapest Flights Within K Stops | GOOGLE | BFS | Explanation ➕ Live Coding — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=VmUpydhNmuw",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: dijkstra with k discounts layered graph state",
+      "url": "https://www.youtube.com/results?search_query=dijkstra+with+k+discounts+layered+graph+state",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\nimport heapq\n\n\ndef min_cost(n, k, adj):\n    # adj[u] : list of (v, w) for every road touching u (1-indexed; both directions already added)\n    # Return the minimum coins to go from city 1 to city n using at most k passes, or -1\n    # Write your code here\n    return -1\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, m, k = int(data[0]), int(data[1]), int(data[2])\n    adj = [[] for _ in range(n + 1)]\n    p = 3\n    for _ in range(m):\n        u, v, w = int(data[p]), int(data[p + 1]), int(data[p + 2])\n        p += 3\n        adj[u].append((v, w))\n        adj[v].append((u, w))\n    print(min_cost(n, k, adj))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

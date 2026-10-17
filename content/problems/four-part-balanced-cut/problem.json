@@ -1,0 +1,62 @@
+{
+  "slug": "four-part-balanced-cut",
+  "title": "Four-Way Balanced Cut",
+  "difficulty": "Hard",
+  "tags": [
+    "Prefix Sums",
+    "Two Pointers",
+    "Greedy",
+    "Arrays"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "hackwithinfy",
+    "infosys-sp-dse"
+  ],
+  "source": "Reported from HackWithInfy (2021 cycle) — reconstructed from the Codeforces blog post 'Infosys Contest Questions' (entry 90569: make three cuts to split an array into four parts and minimise the difference between the largest and smallest part sums). The same task is known as AtCoder ABC102 D 'Equal Cut'. Statement and samples are original.",
+  "statement": "A delivery route is a row of `N` stops; stop `i` has a load of `A[i]` parcels (`A[i] ≥ 1`).\n\nYou must make **exactly three cuts** to split the row into **four non-empty contiguous parts** and give one part to each of four drivers. Let `P, Q, R, S` be the total loads of the four parts.\n\nMinimise `max(P, Q, R, S) − min(P, Q, R, S)` and print this minimum.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` integers `A[1..N]`.",
+  "outputFormat": "Print a single integer — the smallest possible difference between the heaviest and the lightest part.",
+  "constraints": "- `4 ≤ N ≤ 2·10^5`\n- `1 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "5\n3 2 4 1 2\n",
+      "output": "2\n",
+      "explanation": "Cut as `[3] [2] [4] [1 2]`: loads `3, 2, 4, 3` → difference `4 − 2 = 2`. No cut does better."
+    },
+    {
+      "input": "7\n1 2 3 4 5 6 7\n",
+      "output": "3\n",
+      "explanation": "`[1 2 3 4] [5] [6] [7]` gives loads `10, 5, 6, 7` (difference 5) — but `[1 2 3] [4 5] [6] [7]` gives `6, 9, 6, 7` (difference 3), which is optimal."
+    }
+  ],
+  "hints": [
+    "Fix the **middle** cut. Then the left half and the right half are independent: each should be split into two parts whose sums are as close as possible.",
+    "With prefix sums, the best split point of the left half `A[0..m)` is where the prefix sum gets closest to `pre[m] / 2`. Because all values are positive, this point only moves **right** as `m` moves right.",
+    "So use two pointers (one for the left half, one for the right half) that only advance, giving `O(N)` overall. Evaluate `max − min` of the four sums for each middle cut."
+  ],
+  "editorial": "### Intuition\nThree cuts give `O(N³)` choices. Fix the middle cut at position `m` (left half `A[0..m)`, right half `A[m..N)`). Claim: it is optimal to split each half as evenly as possible.\n\nWhy? For the left half with total `X`, splitting into `(p, X − p)` with `p` closest to `X/2` simultaneously **minimises the larger** and **maximises the smaller** of the two parts. The same holds on the right. Since `max(P,Q,R,S) − min(P,Q,R,S)` only depends on the overall max and min, making each half as balanced as possible can never hurt.\n\n### Approach\n1. Prefix sums `pre`.\n2. Pointer `i` (first cut, `1 ≤ i < m`): advance while `|pre[m] − 2·pre[i+1]| ≤ |pre[m] − 2·pre[i]|`.\n3. Pointer `j` (third cut, `m < j < N`): advance while `|total + pre[m] − 2·pre[j+1]| ≤ |total + pre[m] − 2·pre[j]|` (the right half's midpoint is at prefix value `(pre[m] + total)/2`).\n4. Since `A[i] ≥ 1`, prefix sums are strictly increasing, so both optimal positions are monotone in `m` — the pointers never move back.\n5. Answer = min over `m` of `max − min` of `pre[i], pre[m]−pre[i], pre[j]−pre[m], total−pre[j]`.\n\n### Complexity\n`O(N)` time after the prefix sums, `O(N)` memory. (Binary search per middle cut, `O(N log N)`, is also fine.)\n\n### Common mistakes\n- Letting a part become empty — keep `i < m < j < N` and `i ≥ 1`.\n- Choosing the first cut greedily without considering the closest point on **both** sides of the midpoint (use the `≤` comparison so the pointer moves to the closer position).\n- Overflow is not an issue in Python, but sums reach `2·10^14`, so don't use floats.",
+  "youtube": [
+    {
+      "title": "Prefix Sum in 4 minutes | LeetCode Pattern | AlgoMasterIO",
+      "url": "https://www.youtube.com/watch?v=yuws7YK0Yng",
+      "kind": "video"
+    },
+    {
+      "title": "Pre-Computation using Prefix Sum in 1D/2D Arrays | Competitive Programming Course | EP 13 — Luv",
+      "url": "https://www.youtube.com/watch?v=nZe7P674xZo",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: AtCoder ABC102 D Equal Cut",
+      "url": "https://www.youtube.com/results?search_query=AtCoder+ABC102+D+Equal+Cut",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_cut_difference(a):\n    # Cut a into exactly 4 non-empty contiguous parts.\n    # Return the minimum possible (largest part sum - smallest part sum).\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    a = list(map(int, data[1:1 + n]))\n    print(min_cut_difference(a))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

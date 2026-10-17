@@ -1,0 +1,77 @@
+{
+  "slug": "sort-characters-by-frequency",
+  "title": "Sort Characters by Frequency",
+  "difficulty": "Medium",
+  "tags": [
+    "Hashing",
+    "Strings",
+    "Sorting",
+    "Counting"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon"
+  ],
+  "collections": [
+    "hashing-drill"
+  ],
+  "source": "Classic hashing/frequency-count problem (LeetCode 451 family); deterministic tie-break added for exact judging",
+  "statement": "You are given a string `S`.\n\nRearrange the characters of `S` so that:\n\n1. Characters that occur **more often** come **first**.\n2. All copies of the same character are placed **next to each other**.\n3. If two different characters occur the **same number of times**, the one with the **smaller ASCII code** comes first.\n\nPrint the rearranged string.\n\n> ASCII order for the allowed characters is: `'0' < … < '9' < 'A' < … < 'Z' < 'a' < … < 'z'`. So uppercase letters come before lowercase letters, and digits come before both.",
+  "inputFormat": "A single line containing the string `S` (no spaces).",
+  "outputFormat": "Print one line: the rearranged string (it has the same length as `S`).",
+  "constraints": "- `1 ≤ |S| ≤ 10^5`\n- `S` consists only of digits `0-9`, uppercase letters `A-Z` and lowercase letters `a-z`\n- Characters are case-sensitive: `'A'` and `'a'` are different characters",
+  "samples": [
+    {
+      "input": "tree\n",
+      "output": "eert\n",
+      "explanation": "`e` occurs 2 times, `r` and `t` once each. `r` (114) has a smaller ASCII code than `t` (116), so `r` comes before `t`."
+    },
+    {
+      "input": "Aabb\n",
+      "output": "bbAa\n",
+      "explanation": "`b` occurs twice and goes first. `A` and `a` occur once each; `A` (65) < `a` (97)."
+    },
+    {
+      "input": "cccaaa\n",
+      "output": "aaaccc\n",
+      "explanation": "Both occur 3 times, so the tie-break puts `a` first."
+    }
+  ],
+  "hints": [
+    "First count how many times each character occurs. A dictionary (or `collections.Counter`) does this in one pass.",
+    "Now you only need to order the *distinct* characters (at most 62 of them), not all `|S|` characters. What sort key gives 'higher count first, then smaller character'?",
+    "Sort the distinct characters with the key `(-count[c], c)` and then output each character repeated `count[c]` times."
+  ],
+  "editorial": "### Intuition\nThe output is fully determined by two pieces of information per distinct character: **how often it occurs** and **the character itself**. So count first, then sort the (few) distinct characters.\n\n### Approach\n1. Build a frequency map `freq` with one pass over `S`.\n2. Sort the distinct characters by the key `(-freq[c], c)` — negative count gives *descending* frequency, and comparing `c` directly gives ascending ASCII order for ties.\n3. Build the answer as `\"\".join(c * freq[c] for c in order)`.\n\n```python\norder = sorted(freq, key=lambda c: (-freq[c], c))\n```\n\n### Complexity\n- Counting: **O(N)**.\n- Sorting at most `K = 62` distinct characters: **O(K log K)**.\n- Building the output: **O(N)**.\n- Total **O(N)** time, **O(K)** extra space (plus the output string).\n\nA bucket-sort variant (bucket index = frequency) is also O(N), but with only 62 possible characters, sorting is simpler and just as fast.\n\n### Common mistakes\n- Sorting all `N` characters with a key that calls `s.count(c)` each time — that is **O(N²)** and times out.\n- Forgetting the tie-break, or using `reverse=True` on the whole key, which also reverses the character order for ties.\n- Treating `'A'` and `'a'` as the same character.\n- Building the output with repeated `+=` on strings inside a loop over characters is fine here, but `join` is the idiomatic, guaranteed-linear way.",
+  "youtube": [
+    {
+      "title": "Top K Frequent Elements - Bucket Sort - Leetcode 347 (NeetCode) — same frequency-count idea",
+      "url": "https://www.youtube.com/watch?v=YPTqKIgVk-k",
+      "kind": "video"
+    },
+    {
+      "title": "Sort Characters By Frequency | Sorting | Lambda | Leetcode 451 — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=pnxShVARLLw",
+      "kind": "video"
+    },
+    {
+      "title": "451. Sort Characters By Frequency | 3 Ways | Sorting | Hash Table | Bucket Sort — Aryan Mittal",
+      "url": "https://www.youtube.com/watch?v=WYjTKQEWbVQ",
+      "kind": "video"
+    },
+    {
+      "title": "Sort Characters By Frequency | Hash Map + Sort/Heap (O(n + k log k)) | Part 224 [Hindi] — Code and Debug",
+      "url": "https://www.youtube.com/watch?v=pyOb7lwnA7M",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: sort characters by frequency leetcode 451",
+      "url": "https://www.youtube.com/results?search_query=sort+characters+by+frequency+leetcode+451",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef frequency_sort(s):\n    # Return s rearranged: higher frequency first, ties -> smaller ASCII character first\n    # Write your code here\n    return \"\"\n\n\ndef main():\n    s = sys.stdin.readline().strip()\n    print(frequency_sort(s))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

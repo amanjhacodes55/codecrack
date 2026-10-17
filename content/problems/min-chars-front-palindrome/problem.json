@@ -1,0 +1,82 @@
+{
+  "slug": "min-chars-front-palindrome",
+  "title": "Minimum Characters to Prepend for a Palindrome",
+  "difficulty": "Medium",
+  "tags": [
+    "Strings",
+    "KMP",
+    "Prefix Function",
+    "Palindrome"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by a candidate: 'Minimum Characters For Palindrome' was listed in a 2022 Infosys SP/Power Programmer interview experience on Naukri Code360. Classic problem (LeetCode 214 asks for the string instead of the count), original wording.",
+  "statement": "You are given a string `S` of lowercase English letters.\n\nYou may only **insert characters at the front** of `S` (before the first character). Find the **minimum number** of characters you must insert so that the resulting string is a **palindrome** (reads the same forwards and backwards).",
+  "inputFormat": "A single line containing the string `S`.",
+  "outputFormat": "Print one integer: the minimum number of characters to insert at the front.",
+  "constraints": "- `1 ≤ |S| ≤ 2 × 10^5`\n- `S` contains only `'a'`–`'z'`",
+  "samples": [
+    {
+      "input": "abcd\n",
+      "output": "3\n",
+      "explanation": "Insert `dcb` in front: `dcbabcd` is a palindrome. Fewer insertions can't work."
+    },
+    {
+      "input": "aacecaaa\n",
+      "output": "1\n",
+      "explanation": "The prefix `aacecaa` is already a palindrome. Only the last `a` needs a partner: `a` + `aacecaaa` = `aaacecaaa`."
+    },
+    {
+      "input": "racecar\n",
+      "output": "0\n",
+      "explanation": "The string is already a palindrome."
+    }
+  ],
+  "hints": [
+    "Characters added at the front must mirror some suffix of `S`. What part of `S` stays in the 'middle' untouched?",
+    "If the longest **palindromic prefix** of `S` has length `L`, the answer is `|S| − L`.",
+    "Find `L` in O(N) with the KMP prefix function of `S + '#' + reverse(S)`. Its last value is exactly `L`. (Checking every prefix directly is O(N²), too slow.)"
+  ],
+  "editorial": "### Reduction\nAfter prepending `T`, the string `T + S` is a palindrome. The characters of `T` mirror the tail of `S`, so what remains in the middle is a prefix of `S` that must itself be a palindrome. To minimise `|T|`, maximise that prefix: answer = `|S| − L`, where `L` = length of the **longest palindromic prefix**.\n\n### Longest palindromic prefix via KMP\nA prefix `P` of `S` is a palindrome iff `P` equals a suffix of `reverse(S)` of the same length. Build `X = S + '#' + reverse(S)` and compute the prefix function `π`. Then `π[last]` = length of the longest prefix of `S` that is also a suffix of `reverse(S)`, which is `L`. The separator `#` stops matches from running past `S`.\n\n```\npi[0] = 0\nfor i in 1..len(X)-1:\n    j = pi[i-1]\n    while j and X[i] != X[j]: j = pi[j-1]\n    if X[i] == X[j]: j += 1\n    pi[i] = j\n```\n\n### Complexity\n**O(N)** time and memory.\n\n### Common mistakes\n- Using the longest palindromic **substring** instead of prefix.\n- Omitting the separator, which can produce `L > |S|` on inputs like `aaaa`.\n- The O(N²) check-every-prefix approach. It passes small tests but times out for `|S| = 2 × 10^5` on strings like `aaaa…ab`.",
+  "youtube": [
+    {
+      "title": "Shortest Palindrome | Leetcode 214 - Techdose",
+      "url": "https://www.youtube.com/watch?v=BDNehaLxvOY",
+      "kind": "video"
+    },
+    {
+      "title": "Shortest Palindrome O(N) - IDeserve",
+      "url": "https://www.youtube.com/watch?v=c4akpqTwE5g",
+      "kind": "video"
+    },
+    {
+      "title": "Minimum characters to be added at front to make string palindrome || GeeksforGeeks || POTD — TechWithSaumya",
+      "url": "https://www.youtube.com/watch?v=zL0O6Q6kEAQ",
+      "kind": "video"
+    },
+    {
+      "title": "DP 29. Minimum Insertions to Make String Palindrome — take U forward",
+      "url": "https://www.youtube.com/watch?v=xPBLEj41rFU",
+      "kind": "video"
+    },
+    {
+      "title": "Shortest Palindrome | Multiple Ways | KMP Zindabaad | Leetcode 214 | codestorywithMIK — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=5DACQK9kud0",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: KMP prefix function longest palindromic prefix",
+      "url": "https://www.youtube.com/results?search_query=KMP+prefix+function+longest+palindromic+prefix",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_chars_to_prepend(s):\n    # Return the minimum number of characters that must be added\n    # at the FRONT of s to make it a palindrome.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    s = data[0]\n    print(min_chars_to_prepend(s))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

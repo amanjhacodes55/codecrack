@@ -1,0 +1,61 @@
+{
+  "slug": "wine-trading-balance",
+  "title": "Wine Trading Street",
+  "difficulty": "Medium",
+  "tags": [
+    "Greedy",
+    "Prefix Sum",
+    "Arrays"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Reconstructed from candidate reports: 'Wine Bottle Transport' appears in community-compiled Infosys SP/DSE question lists (GitHub prep sheets). It is the classic SPOJ GERGOVIA pattern.",
+  "statement": "There are `N` houses standing in a row, numbered `1` to `N`. Adjacent houses are exactly 1 unit apart.\n\nEvery house is either a **seller** or a **buyer** of wine. You are given an integer `D[i]` for every house:\n\n- `D[i] > 0`: house `i` has `D[i]` bottles to sell.\n- `D[i] < 0`: house `i` wants to buy `-D[i]` bottles.\n- `D[i] = 0`: house `i` neither buys nor sells.\n\nIt is guaranteed that total supply equals total demand, i.e. `D[1] + D[2] + … + D[N] = 0`.\n\nCarrying **one bottle** between **two adjacent houses** costs **1 unit of work**. So carrying one bottle from house `i` to house `j` costs `|i − j|` units.\n\nFind the **minimum total work** needed so that every buyer receives exactly what it wants.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `D[1..N]`.",
+  "outputFormat": "Print one integer: the minimum total units of work.",
+  "constraints": "- `1 ≤ N ≤ 2 × 10^5`\n- `-10^9 ≤ D[i] ≤ 10^9`\n- `D[1] + … + D[N] = 0`\n- The answer may exceed 32-bit range (Python integers handle it).",
+  "samples": [
+    {
+      "input": "5\n5 -4 1 -3 1\n",
+      "output": "9\n",
+      "explanation": "Carry 4 bottles from house 1 to house 2 (4 work). House 1 still has 1 bottle. Carry it to house 4 (3 work). Carry 1 bottle from house 3 to house 4 (1 work) and 1 bottle from house 5 to house 4 (1 work). Total = 4 + 3 + 1 + 1 = 9."
+    },
+    {
+      "input": "6\n-1000 -1000 -1000 1000 1000 1000\n",
+      "output": "9000\n",
+      "explanation": "Every bottle has to cross the gap between houses 3 and 4. 3000 bottles cross it, 2000 also cross the gap 2–3 or 4–5, and so on: 1000 + 2000 + 3000 + 2000 + 1000 = 9000."
+    }
+  ],
+  "hints": [
+    "Look at the boundary between house `i` and house `i+1`. How many bottles **must** cross it, whatever plan you choose?",
+    "Everything left of the boundary has net surplus `P = D[1] + … + D[i]`. Exactly `|P|` bottles must cross that boundary (rightwards if `P > 0`, leftwards if `P < 0`).",
+    "Each crossing costs 1, and a greedy plan never moves bottles both ways across a boundary. The answer is the sum of `|prefix sum|` over all boundaries. Equivalently, carry the running surplus from house to house."
+  ],
+  "editorial": "### Intuition\nWalk from left to right carrying a 'cart'. At house `i` you load its surplus, or deliver its demand, which gives a negative load meaning bottles still owed from the right. Whatever is in the cart, `carry`, must travel to the next house, which costs `|carry|` work.\n\n### Why it is optimal\nCut the street between houses `i` and `i+1`. The left part has net surplus `P_i = D[1] + … + D[i]`. Any valid plan must move at least `|P_i|` bottles across this cut. So `Σ |P_i|` is a **lower bound**. The cart strategy moves exactly `|P_i|` bottles across each cut, so it meets the bound.\n\n### Algorithm\n```\ncarry = 0; work = 0\nfor d in D:\n    carry += d\n    work += abs(carry)\n```\n(The last `carry` is `0`, so including it changes nothing.)\n\n### Complexity\n**O(N)** time, **O(1)** extra space.\n\n### Common mistakes\n- Simulating bottle by bottle. Values reach `10^9`, so that is far too slow.\n- Matching each buyer with the *nearest* seller greedily. That can be suboptimal and is hard to get right. The prefix-sum view avoids all of that.\n- Overflow in C++/Java (use 64-bit). Python is fine.",
+  "youtube": [
+    {
+      "title": "GERGOVIA - Wine trading in Gergovia (Greedy) - Yogesh and Shailesh",
+      "url": "https://www.youtube.com/watch?v=PJdOUDWYstY",
+      "kind": "video"
+    },
+    {
+      "title": "SPOJ problems | DIE HARD | Wine trading in Gergovia | Love Babbar DSA sheet — Aditya Rajiv",
+      "url": "https://www.youtube.com/watch?v=xOFobtsVIs0",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: Infosys wine bottle transport greedy prefix sum",
+      "url": "https://www.youtube.com/results?search_query=Infosys+wine+bottle+transport+greedy+prefix+sum",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef minimum_work(demand):\n    # demand[i] > 0: house i has demand[i] bottles to give away\n    # demand[i] < 0: house i needs -demand[i] bottles\n    # Return the minimum total units of work.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    demand = list(map(int, data[1:1 + n]))\n    print(minimum_work(demand))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

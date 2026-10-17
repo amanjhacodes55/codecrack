@@ -1,0 +1,82 @@
+{
+  "slug": "longest-equal-zeros-ones-subarray",
+  "title": "Longest Subarray with Equal 0s and 1s",
+  "difficulty": "Medium",
+  "tags": [
+    "Hashing",
+    "Prefix Sum",
+    "Arrays"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon",
+    "Microsoft"
+  ],
+  "collections": [
+    "hashing-drill"
+  ],
+  "source": "Classic prefix-sum + hashing problem (LeetCode 525 'Contiguous Array' family)",
+  "statement": "You are given a binary array `A` of length `N` (every element is `0` or `1`).\n\nA **subarray** is a contiguous, non-empty part of the array `A[l..r]`.\n\nFind the **maximum length** of a subarray that contains **the same number of `0`s and `1`s**.\n\nIf no such subarray exists, print `0`.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`, each `0` or `1`.",
+  "outputFormat": "Print a single integer: the maximum length of a subarray with equally many `0`s and `1`s, or `0` if there is none.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `A[i] ∈ {0, 1}`",
+  "samples": [
+    {
+      "input": "7\n0 1 0 0 1 1 0\n",
+      "output": "6\n",
+      "explanation": "The first six elements `0 1 0 0 1 1` contain three `0`s and three `1`s. No subarray of length 7 can be balanced because 7 is odd."
+    },
+    {
+      "input": "10\n1 1 0 1 1 1 0 0 0 1\n",
+      "output": "8\n",
+      "explanation": "Positions 3..10 (1-indexed) are `0 1 1 1 0 0 0 1`: four `0`s and four `1`s."
+    },
+    {
+      "input": "3\n1 1 1\n",
+      "output": "0\n",
+      "explanation": "There is no `0` at all, so no balanced subarray exists."
+    }
+  ],
+  "hints": [
+    "Replace every `0` by `-1`. Then a subarray has equal 0s and 1s exactly when its **sum is 0**.",
+    "Let `P[i]` be the prefix sum of the first `i` elements (with `P[0] = 0`). The subarray `A[l+1..r]` has sum 0 exactly when `P[l] == P[r]`.",
+    "To maximise `r - l` for equal prefix values, store only the **first** index at which each prefix value appears in a dictionary. Remember to seed it with `{0: -1}` (or `{0: 0}` if you count prefix lengths)."
+  ],
+  "editorial": "### Intuition\nCounting zeros and ones separately for every subarray is O(N²). Turn the condition into a **sum**: map `0 → -1`, `1 → +1`. A subarray is balanced ⇔ its sum is `0`.\n\nWith prefix sums `P` (`P[0] = 0`, `P[i] = P[i-1] + value[i]`), sum of `A[l+1..r]` = `P[r] - P[l]`. So we need two indices with **equal prefix value**, as far apart as possible.\n\n### Approach\n- Walk left to right maintaining the running prefix `pref`.\n- Keep a dictionary `first[pref_value] = earliest index where this value occurred`, initialised with `first[0] = -1` (the empty prefix before index 0).\n- At index `i`: if `pref` was seen before, candidate length = `i - first[pref]`; otherwise record `first[pref] = i`.\n- **Never overwrite** an existing entry — the earliest index gives the longest subarray.\n\n### Complexity\n**O(N)** time and **O(N)** extra space (the prefix value is in `[-N, N]`, so an array of size `2N+1` also works).\n\n### Common mistakes\n- Forgetting the `{0: -1}` seed — then balanced subarrays that start at index 0 are missed (sample 1).\n- Updating `first[pref]` every time (stores the *latest* index → gives shorter answers).\n- Using 0/1 directly instead of -1/+1: a prefix-sum difference of 0 would then mean \"no ones\", not \"balanced\".",
+  "youtube": [
+    {
+      "title": "Longest Subarray with sum K | Brute - Better - Optimal (take U forward) — same prefix-sum + first-index map idea",
+      "url": "https://www.youtube.com/watch?v=frf7qxiN2qU",
+      "kind": "video"
+    },
+    {
+      "title": "Contiguous Array (LeetCode 525) Solution | Longest Subarray with Equal 0s and 1s — Pepcoding",
+      "url": "https://www.youtube.com/watch?v=1WugaISSWx8",
+      "kind": "video"
+    },
+    {
+      "title": "Largest subarray of 0's and 1's | Java DSA Placement | FAANG | GFG — ShashCode",
+      "url": "https://www.youtube.com/watch?v=qOCuB-IC9KA",
+      "kind": "video"
+    },
+    {
+      "title": "Contiguous Array (LeetCode 525) | Mathematical approach with diagrams and visuals | Intuition — Nikhil Lohia",
+      "url": "https://www.youtube.com/watch?v=NUQ5Ob_xUvg",
+      "kind": "video"
+    },
+    {
+      "title": "Contiguous array | Leetcode #525 — Techdose",
+      "url": "https://www.youtube.com/watch?v=9ZyLjjk536U",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: contiguous array leetcode 525 prefix sum hashmap",
+      "url": "https://www.youtube.com/results?search_query=contiguous+array+leetcode+525+prefix+sum+hashmap",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef longest_balanced_subarray(arr):\n    # arr contains only 0s and 1s\n    # Return the max length of a subarray with equal number of 0s and 1s (0 if none)\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    print(longest_balanced_subarray(arr))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

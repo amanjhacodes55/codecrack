@@ -1,0 +1,72 @@
+{
+  "slug": "dp-edit-distance",
+  "title": "Edit Distance",
+  "difficulty": "Medium",
+  "tags": [
+    "Dynamic Programming",
+    "Strings",
+    "DP on Strings"
+  ],
+  "companies": [
+    "Infosys",
+    "Google",
+    "Amazon"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Classic DP-on-strings warm-up (Levenshtein distance); prerequisite for the two-mode edit-distance problem reported by Infosys SP/DSE candidates (r/infosys, 2026)",
+  "statement": "You are given two strings `S` and `T` of lowercase English letters.\n\nIn one operation you may do one of the following to `S`:\n- **insert** any character at any position,\n- **delete** any character,\n- **replace** any character with a different character.\n\nPrint the minimum number of operations needed to turn `S` into `T`.",
+  "inputFormat": "The first line contains the string `S`.\nThe second line contains the string `T`.",
+  "outputFormat": "Print a single integer: the minimum number of operations.",
+  "constraints": "- `1 ≤ |S|, |T| ≤ 1000`\n- Both strings contain only lowercase letters `a`-`z`.",
+  "samples": [
+    {
+      "input": "horse\nros\n",
+      "output": "3\n",
+      "explanation": "`horse → rorse` (replace h) `→ rose` (delete r) `→ ros` (delete e)."
+    },
+    {
+      "input": "intention\nexecution\n",
+      "output": "5\n",
+      "explanation": "One optimal sequence: delete `t`, replace `i→e`, replace `n→x`, replace `n→c`, insert `u`."
+    }
+  ],
+  "hints": [
+    "Compare the **last** characters of the two prefixes. If they are equal, nothing needs to happen to them.",
+    "Otherwise the last operation on these prefixes was an insert, a delete or a replace - each one shrinks one or both prefixes by a character.",
+    "`dp[i][j]` = edit distance between `S[:i]` and `T[:j]`. `dp[i][0] = i`, `dp[0][j] = j`; if `S[i-1] == T[j-1]` then `dp[i][j] = dp[i-1][j-1]`, else `1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])`."
+  ],
+  "editorial": "### State\n`dp[i][j]` = minimum operations to convert the prefix `S[:i]` into the prefix `T[:j]`.\n\n### Transitions\n- `S[i-1] == T[j-1]`: `dp[i][j] = dp[i-1][j-1]`\n- otherwise `dp[i][j] = 1 + min(`\n  - `dp[i-1][j]` (delete `S[i-1]`),\n  - `dp[i][j-1]` (insert `T[j-1]`),\n  - `dp[i-1][j-1]` (replace)`)`\n\n### Base cases\n`dp[0][j] = j` (insert everything), `dp[i][0] = i` (delete everything).\n\n### Order\nRow by row, left to right. Only the previous row is needed → `O(|T|)` memory.\n\n**Time** `O(|S|·|T|)` ≈ `10^6`.\n\n### Python tip\nInside the double loop avoid calling `min()` with three arguments and avoid 2D indexing; local variables and plain comparisons are ~2× faster.\n\n### Common mistakes\n- Off-by-one between string index `i-1` and table index `i`.\n- Forgetting the base row/column (they are not zero).\n- Adding `1` even when characters match.",
+  "youtube": [
+    {
+      "title": "DP 33. Edit Distance | Recursive to 1D Array Optimised Solution (take U forward)",
+      "url": "https://www.youtube.com/watch?v=fJaKO8FbDdo",
+      "kind": "video"
+    },
+    {
+      "title": "Edit Distance - Dynamic Programming - Leetcode 72 - Python (NeetCode)",
+      "url": "https://www.youtube.com/watch?v=XYi2-LPrwm4",
+      "kind": "video"
+    },
+    {
+      "title": "Dp 25. Longest Common Subsequence | DP on Strings (take U forward)",
+      "url": "https://www.youtube.com/watch?v=NPZn9jBrX8U",
+      "kind": "video"
+    },
+    {
+      "title": "Edit Distance | Recursion | Memo | Bottom Up | DP On Strings | Leetcode 72 | DP Concepts & Qns-22 — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=oqfqPEqrKo8",
+      "kind": "video"
+    },
+    {
+      "title": "Minimum Edit Distance Problem | DP | Dynamic Programming | DSA-One Course #91 — Anuj Kumar Sharma",
+      "url": "https://www.youtube.com/watch?v=eMnyEDYGobA",
+      "kind": "video"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef edit_distance(s, t):\n    # Return the minimum number of insert/delete/replace operations to turn s into t\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    s, t = data[0], data[1]\n    print(edit_distance(s, t))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

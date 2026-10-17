@@ -1,0 +1,81 @@
+{
+  "slug": "max-non-overlapping-meetings",
+  "title": "Maximum Non-Overlapping Meetings",
+  "difficulty": "Medium",
+  "tags": [
+    "Greedy",
+    "Sorting",
+    "Intervals"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Fundamental technique drill (sorting + greedy; classic activity-selection / 'N meetings in one room')",
+  "statement": "There is a single meeting room and `N` meeting requests. Meeting `i` starts at time `s_i` and ends at time `e_i` (`s_i < e_i`).\n\nThe room can host only one meeting at a time. A meeting occupies the half-open interval `[s_i, e_i)`, so a meeting may **start exactly when another one ends** (e.g. `[1, 3)` and `[3, 5)` are compatible), but any real overlap is forbidden.\n\nChoose the **maximum number** of meetings that can all be held in the room, and print that number. Meetings cannot be shortened or moved.",
+  "inputFormat": "The first line contains an integer `N`.\nEach of the next `N` lines contains two integers `s_i` and `e_i`.",
+  "outputFormat": "Print a single integer: the maximum number of meetings that can be scheduled.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `0 ≤ s_i < e_i ≤ 10^9`",
+  "samples": [
+    {
+      "input": "5\n1 10\n2 3\n4 5\n6 7\n8 9\n",
+      "output": "4\n",
+      "explanation": "Pick `[2,3), [4,5), [6,7), [8,9)`. The long meeting `[1,10)` would block all of them."
+    },
+    {
+      "input": "3\n1 3\n3 5\n2 4\n",
+      "output": "2\n",
+      "explanation": "`[1,3)` and `[3,5)` touch but do not overlap, so both can be held. `[2,4)` overlaps both."
+    },
+    {
+      "input": "4\n5 6\n5 6\n5 6\n5 6\n",
+      "output": "1\n",
+      "explanation": "All four requests are for the same slot; only one fits."
+    }
+  ],
+  "hints": [
+    "Picking the meeting that **starts first** or the **shortest** meeting can both fail. Try to find a counterexample for each.",
+    "Think about which meeting should be the *first* one you hold: the one that leaves the room free as **early** as possible.",
+    "Sort meetings by end time. Scan them, and take a meeting whenever its start is `≥` the end time of the last meeting you took."
+  ],
+  "editorial": "### Intuition\nAmong all meetings, the one that **ends earliest** is always safe to take: any optimal schedule can swap its first meeting for this one without creating a conflict (it ends no later, so everything after still fits). After taking it, the same argument applies to the remaining meetings that start at or after its end. This \"exchange argument\" proves the greedy optimal.\n\n### Approach\n1. Sort meetings by end time `e` (ties in any order).\n2. `free_at = -∞`, `count = 0`.\n3. For each meeting in that order: if `s ≥ free_at`, take it (`count += 1`, `free_at = e`).\n\n### Complexity\n**O(N log N)** for sorting, O(N) for the scan.\n\n### Why other greedy choices fail\n- *Earliest start*: `[1,10), [2,3), [4,5)` → picks `[1,10)` and gets 1 instead of 2.\n- *Shortest first*: `[1,5), [4,7), [6,10)` → picks `[4,7)` (length 3) and blocks both others; the answer is 2.\n\n### Common mistakes\n- Using `s > free_at` instead of `s ≥ free_at` — touching meetings are allowed here (sample 2).\n- Sorting by start time.\n- Building `(s, e)` tuples and calling `sort()` — that sorts by **start**; sort by `e` (e.g. store `(e, s)` or use `key=lambda m: m[1]`).",
+  "youtube": [
+    {
+      "title": "N meetings In One Room | Greedy Algorithm (take U forward)",
+      "url": "https://www.youtube.com/watch?v=II6ziNnub1Q",
+      "kind": "video"
+    },
+    {
+      "title": "L7. N Meeting in One Room | Greedy Algorithms Playlist — take U forward",
+      "url": "https://www.youtube.com/watch?v=mKfhTotEguk",
+      "kind": "video"
+    },
+    {
+      "title": "DSA Python - N Meetings in One Room | Greedy Scheduling Optimal Solution | GFG - Part 102 [Hindi] — Code and Debug",
+      "url": "https://www.youtube.com/watch?v=OnQlEihg1sA",
+      "kind": "video"
+    },
+    {
+      "title": "Activity Selection Problem using Greedy Method in Hindi example | DAA | Algorithm Design & Analysis — CSE concepts with Parinita",
+      "url": "https://www.youtube.com/watch?v=bQm8rzTWdOs",
+      "kind": "video"
+    },
+    {
+      "title": "Activity Selection Problem - Greedy Algorithm | C++ Placement Course | Lecture 33.3 — Apna College",
+      "url": "https://www.youtube.com/watch?v=DHr-Mn_vzs0",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: activity selection problem greedy proof",
+      "url": "https://www.youtube.com/results?search_query=activity+selection+problem+greedy+proof",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef max_meetings(meetings):\n    # meetings: list of (start, end) pairs; a meeting occupies [start, end)\n    # Return the maximum number of pairwise non-overlapping meetings\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    meetings = [(int(data[1 + 2 * i]), int(data[2 + 2 * i])) for i in range(n)]\n    print(max_meetings(meetings))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

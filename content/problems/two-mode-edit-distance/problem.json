@@ -1,0 +1,71 @@
+{
+  "slug": "two-mode-edit-distance",
+  "title": "Two-Mode Text Editor",
+  "difficulty": "Hard",
+  "tags": [
+    "Dynamic Programming",
+    "DP on Strings",
+    "Edit Distance",
+    "3D DP"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by a candidate from an Infosys SP/DSE campus online test (r/infosys post, 2026: string transformation with Normal/Inverted modes and a one-time switch cost K, described as a 3D DP). The step-by-step editing model and constraints were made precise by us; statement rewritten",
+  "statement": "A text editor converts a source string `A` into a target string `B` (both lowercase). Let `pos(c)` be the alphabet index of `c` (`pos('a') = 0`, …, `pos('z') = 25`).\n\nThe editor reads `A` from left to right and writes `B` from left to right. At each step it performs exactly one action:\n\n- **Delete**: skip the next unread character of `A` - cost `15`.\n- **Insert**: write the next character of `B` without reading `A` - cost `15`.\n- **Replace**: read the next character `x` of `A` and write the next character `y` of `B`. Its cost depends on the current mode:\n  - **Normal mode**: `|pos(x) − pos(y)|` (so `0` when `x = y`).\n  - **Inverted mode**: `25` if `x = y`, otherwise `25 − |pos(x) − pos(y)|`.\n\nThe editor starts in Normal mode. **At most once**, between any two actions (or before the first / after the last), it may switch to Inverted mode at a cost of `K`. It can never switch back.\n\nThe process ends when all of `A` has been read and all of `B` has been written. Print the minimum possible total cost.",
+  "inputFormat": "The first line contains `A`.\nThe second line contains `B`.\nThe third line contains the integer `K`.",
+  "outputFormat": "Print a single integer: the minimum total cost.",
+  "constraints": "- `1 ≤ |A|, |B| ≤ 500`\n- `A` and `B` consist of lowercase letters\n- `0 ≤ K ≤ 1000`",
+  "samples": [
+    {
+      "input": "abc\nabd\n5\n",
+      "output": "1\n",
+      "explanation": "Stay in Normal mode: `a→a` (0), `b→b` (0), `c→d` (1)."
+    },
+    {
+      "input": "az\nza\n3\n",
+      "output": "3\n",
+      "explanation": "Switch immediately (3). In Inverted mode `a→z` costs `25 − 25 = 0` and `z→a` costs `0`. Without switching the best is `30` (delete `a`, keep `z`, insert `a`)."
+    },
+    {
+      "input": "aaz\naza\n10\n",
+      "output": "10\n",
+      "explanation": "`a→a` in Normal mode (0), switch (10), then `a→z` (0) and `z→a` (0)."
+    }
+  ],
+  "hints": [
+    "Without the mode switch this is a weighted edit distance: `dp[i][j]` = cheapest way to have read `A[:i]` and written `B[:j]`.",
+    "The only extra information you need is **which mode you are in** - the switch happens once and never reverses, so add a third dimension `mode ∈ {0, 1}`.",
+    "`f[i][j][1] = min(f[i][j][1], f[i][j][0] + K)` (switch), then from `(i, j, mode)` go to `(i+1, j)` (+15), `(i, j+1)` (+15) and `(i+1, j+1)` (+replace cost of that mode). Answer `min(f[n][m][0], f[n][m][1])`."
+  ],
+  "editorial": "### State\n`f[i][j][mode]` = minimum cost after reading `A[:i]` and writing `B[:j]`, currently in `mode` (`0` = Normal, `1` = Inverted).\n\n### Base case\n`f[0][0][0] = 0`, everything else `∞`.\n\n### Transitions (forward / push style)\nFor each `(i, j)` in row-major order:\n1. **switch**: `f[i][j][1] ← min(f[i][j][1], f[i][j][0] + K)` - done *before* pushing from `(i, j)`, so the switched state can also act.\n2. **delete** → `(i+1, j, mode)` `+15`\n3. **insert** → `(i, j+1, mode)` `+15`\n4. **replace** → `(i+1, j+1, mode)` `+ cost_mode(A[i], B[j])`\n\nMode 1 never transitions back to mode 0, which enforces \"at most once, never back\".\n\n### Answer\n`min(f[|A|][|B|][0], f[|A|][|B|][1])` (switching at the very end is never useful).\n\n### Complexity\n`2 · (|A|+1)(|B|+1)` states × 3 transitions ≈ `1.5·10^6` → well within time in Python with two 2D lists (avoid `lru_cache` recursion: it is slow and hits the recursion limit).\n\n### Common mistakes\n- Treating Inverted-mode equal letters as free (they cost `25`).\n- Allowing several switches (a 2-state DP that can go `1 → 0`).\n- Applying the switch *after* the pushes from `(i, j)`, which loses switch points.\n- Forgetting that delete+insert (`30`) can beat an expensive replace.",
+  "youtube": [
+    {
+      "title": "DP 33. Edit Distance | Recursive to 1D Array Optimised Solution (take U forward)",
+      "url": "https://www.youtube.com/watch?v=fJaKO8FbDdo",
+      "kind": "video"
+    },
+    {
+      "title": "Edit Distance - Dynamic Programming - Leetcode 72 (NeetCode)",
+      "url": "https://www.youtube.com/watch?v=XYi2-LPrwm4",
+      "kind": "video"
+    },
+    {
+      "title": "Lecture 137: EDIT Distance || DP on Strings — CodeHelp - by Babbar",
+      "url": "https://www.youtube.com/watch?v=8HEjwf28LyE",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: Infosys SP DSE string transformation normal inverted mode dp",
+      "url": "https://www.youtube.com/results?search_query=infosys+sp+dse+string+transformation+normal+inverted+mode",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_edit_cost(a, b, k):\n    # Return the minimum cost to turn a into b with the Normal/Inverted mode rules (one optional switch costing k)\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    a, b, k = data[0], data[1], int(data[2])\n    print(min_edit_cost(a, b, k))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

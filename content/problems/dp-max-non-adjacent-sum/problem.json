@@ -1,0 +1,77 @@
+{
+  "slug": "dp-max-non-adjacent-sum",
+  "title": "Maximum Non-Adjacent Sum",
+  "difficulty": "Medium",
+  "tags": [
+    "Dynamic Programming",
+    "Arrays",
+    "1D DP"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon",
+    "TCS"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Classic 1D DP warm-up (House Robber family); prerequisite for the Infosys SP/DSE DP ladder",
+  "statement": "A street has `N` stalls in a row. Stall `i` would give you a profit of `A[i]` if you rent it (the profit can be **negative** - some stalls lose money).\n\nThe market rules forbid renting **two neighbouring stalls** (stalls `i` and `i+1`). You may rent any number of stalls, including none at all.\n\nPrint the maximum total profit you can achieve.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the maximum total profit (renting nothing gives `0`).",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `-10^9 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "5\n2 7 9 3 1\n",
+      "output": "12\n",
+      "explanation": "Rent stalls 1, 3 and 5: `2 + 9 + 1 = 12`. Renting stalls 2 and 4 gives only `10`."
+    },
+    {
+      "input": "6\n4 -1 -2 10 -5 3\n",
+      "output": "17\n",
+      "explanation": "Rent stalls 1, 4 and 6: `4 + 10 + 3 = 17`."
+    },
+    {
+      "input": "3\n-4 -2 -7\n",
+      "output": "0\n",
+      "explanation": "Every stall loses money, so the best plan is to rent nothing."
+    }
+  ],
+  "hints": [
+    "Look at the last stall. Either you rent it or you don't. What does each choice say about stall `N-1`?",
+    "If you rent stall `i`, the best you can have from the first `i-1` stalls is the best answer for the first `i-2` stalls.",
+    "Let `dp[i]` = best profit using only the first `i` stalls. Then `dp[i] = max(dp[i-1], dp[i-2] + A[i])`, with `dp[0] = 0` and `dp[-1] = 0`. Negative values are handled automatically because skipping is always allowed."
+  ],
+  "editorial": "### State\n`dp[i]` = the maximum profit obtainable from the first `i` stalls (stall `i` may or may not be rented).\n\n### Transition\nFor stall `i` there are two choices:\n- **skip it** → `dp[i-1]`\n- **rent it** → stall `i-1` must be skipped → `dp[i-2] + A[i]`\n\n`dp[i] = max(dp[i-1], dp[i-2] + A[i])`\n\n### Base cases\n`dp[0] = 0` (no stalls), and treat `dp[-1] = 0`. Because the empty choice is allowed, `dp[i] ≥ 0` always.\n\n### Order & space\nCompute left to right. Only the last two values are needed, so keep two variables → **O(N)** time, **O(1)** extra space.\n\n### Common mistakes\n- Initialising with `A[0]` and forgetting that renting nothing (answer `0`) is legal when all values are negative.\n- Using `dp[i] = dp[i-2] + A[i]` only (forcing every second stall).\n- Greedy picking of the largest values - fails on `2 7 9 3 1` style inputs.",
+  "youtube": [
+    {
+      "title": "DP 5. Maximum Sum of Non-Adjacent Elements | House Robber (take U forward)",
+      "url": "https://www.youtube.com/watch?v=GrMBfJNk_NY",
+      "kind": "video"
+    },
+    {
+      "title": "House Robber - Leetcode 198 (NeetCode)",
+      "url": "https://www.youtube.com/watch?v=73r3KWiEvyk",
+      "kind": "video"
+    },
+    {
+      "title": "DP 1. Introduction to Dynamic Programming (take U forward)",
+      "url": "https://www.youtube.com/watch?v=tyB0ztf0DNY",
+      "kind": "video"
+    },
+    {
+      "title": "House Robber | LeetCode 198| Java | Hindi | #leetcode #leetcodequestionandanswers — All Rounder Coders",
+      "url": "https://www.youtube.com/watch?v=BXE9V4s-DYQ",
+      "kind": "video"
+    },
+    {
+      "title": "DP 3. House Robber | 1D Dynamic Programming — Shradha Khapra",
+      "url": "https://www.youtube.com/watch?v=BRmLlJA6ncI",
+      "kind": "video"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef max_non_adjacent_sum(profits):\n    # Return the maximum sum of a subset of profits with no two adjacent indices (empty subset = 0)\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    profits = list(map(int, data[1:1 + n]))\n    print(max_non_adjacent_sum(profits))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "slug": "dp-01-knapsack",
+  "title": "0/1 Knapsack",
+  "difficulty": "Medium",
+  "tags": [
+    "Dynamic Programming",
+    "Knapsack"
+  ],
+  "companies": [
+    "Infosys",
+    "TCS",
+    "Amazon"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Classic 0/1 knapsack warm-up; prep sheets for Infosys SP/DSE (e.g. bhasidhshaik/Infosys-SP-DSE-resources) list Knapsack among the must-know DP patterns",
+  "statement": "You are packing a bag that can carry a total weight of at most `W`.\n\nThere are `N` items. Item `i` has weight `w[i]` and value `v[i]`. Each item can be taken **at most once** and cannot be split.\n\nPrint the maximum total value of items you can pack without the total weight exceeding `W`.",
+  "inputFormat": "The first line contains two integers `N` and `W`.\nThe second line contains `N` integers `w[1..N]`.\nThe third line contains `N` integers `v[1..N]`.",
+  "outputFormat": "Print a single integer: the maximum achievable total value.",
+  "constraints": "- `1 ≤ N ≤ 100`\n- `0 ≤ W ≤ 10^4`\n- `1 ≤ w[i] ≤ 10^4`\n- `1 ≤ v[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "4 7\n1 3 4 5\n1 4 5 7\n",
+      "output": "9\n",
+      "explanation": "Take the items of weight `3` and `4` (values `4 + 5 = 9`). Taking weights `1` and `5` gives only `8`."
+    },
+    {
+      "input": "3 2\n3 4 5\n10 20 30\n",
+      "output": "0\n",
+      "explanation": "No item fits in the bag."
+    }
+  ],
+  "hints": [
+    "For every item there are only two choices: take it or leave it. A recursion `best(i, capacity)` explores both.",
+    "The pair `(i, capacity)` repeats a lot in that recursion - memoise it or fill a table. There are only `N × (W+1)` different states.",
+    "`dp[c]` = best value with weight ≤ `c` using the items processed so far. For each item, update `dp[c] = max(dp[c], dp[c-w] + v)` with `c` going **from W down to w** so that the item is used at most once."
+  ],
+  "editorial": "### State\n`dp[i][c]` = maximum value using only the first `i` items with total weight at most `c`.\n\n### Transition\n- skip item `i`: `dp[i-1][c]`\n- take item `i` (if `w[i] ≤ c`): `dp[i-1][c - w[i]] + v[i]`\n\n### Base case\n`dp[0][c] = 0` for every `c`.\n\n### Space optimisation\nRow `i` only reads row `i-1`, so a single array works **if `c` is iterated downwards** (from `W` to `w[i]`). Iterating upwards would let the same item be reused - that is the *unbounded* knapsack.\n\nIn Python a list-comprehension per item (build the shifted row, then take element-wise max) is several times faster than an explicit inner loop.\n\n**Time** `O(N·W)` = `10^6`, **space** `O(W)`.\n\n### Common mistakes\n- Upward inner loop on the 1D array (item reused).\n- Initialising `dp` with `-inf` except `dp[0]` - that computes \"weight exactly c\"; then the answer must be `max(dp)`.\n- Greedy by value/weight ratio - wrong for 0/1 knapsack (sample 1 shows it).",
+  "youtube": [
+    {
+      "title": "DP 19. 0/1 Knapsack | Recursion to Single Array Space Optimised Approach (take U forward)",
+      "url": "https://www.youtube.com/watch?v=GqOmJHQZivw",
+      "kind": "video"
+    },
+    {
+      "title": "3 01 Knapsack Recursive | Aditya Verma",
+      "url": "https://www.youtube.com/watch?v=kvyShbFVaY8",
+      "kind": "video"
+    },
+    {
+      "title": "Dynamic Programming | Introduction | Aditya Verma",
+      "url": "https://www.youtube.com/watch?v=nqowUJzG-iM",
+      "kind": "video"
+    },
+    {
+      "title": "01 Knapsack - Dynamic Programming | C++ Placement Course | Lecture 35.7 — Apna College",
+      "url": "https://www.youtube.com/watch?v=PPcpC5QbMx0",
+      "kind": "video"
+    },
+    {
+      "title": "DP 8. 0/1 Knapsack | Recursion to DP Solution | Space Optimized — Shradha Khapra",
+      "url": "https://www.youtube.com/watch?v=tEW-zDckvFw",
+      "kind": "video"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef knapsack(capacity, weights, values):\n    # Return the maximum total value of a subset of items with total weight <= capacity\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, capacity = int(data[0]), int(data[1])\n    weights = list(map(int, data[2:2 + n]))\n    values = list(map(int, data[2 + n:2 + 2 * n]))\n    print(knapsack(capacity, weights, values))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

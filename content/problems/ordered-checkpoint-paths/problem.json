@@ -1,0 +1,72 @@
+{
+  "slug": "ordered-checkpoint-paths",
+  "title": "Ordered Checkpoint Paths",
+  "difficulty": "Hard",
+  "tags": [
+    "Trees",
+    "DFS",
+    "Euler Tour",
+    "Binary Search",
+    "Counting"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates in Infosys Power Programmer / SP interviews (HackWithInfy 2020 GeeksforGeeks experience: count pairs of nodes such that two given nodes appear in a certain order on the path between them — seen via search summary; Infosys HackWithInfy sample tree question on pairs of nodes and subtree sizes) — reconstructed with original wording and multiple queries",
+  "statement": "A park has `N` junctions connected by `N − 1` two-way trails so that every pair of junctions is connected by exactly one simple route (the park is a tree). Junctions are numbered `1 … N`.\n\nA runner picks an **ordered** pair of distinct junctions `(u, v)` and runs the unique simple route from `u` to `v`.\n\nYou are given `Q` queries, each with two distinct checkpoints `A` and `B`. For each query, count the ordered pairs `(u, v)`, `u ≠ v`, whose route passes through checkpoint `A` **and later** through checkpoint `B`. The route's endpoints count as passed, so `u = A` or `v = B` are allowed.",
+  "inputFormat": "The first line contains `N`.\nEach of the next `N − 1` lines contains two integers `x y` — a trail.\nThe next line contains `Q`.\nEach of the next `Q` lines contains two integers `A B` (`A ≠ B`).",
+  "outputFormat": "For each query print the number of ordered pairs on its own line.",
+  "constraints": "- `2 ≤ N ≤ 10^5`\n- `1 ≤ Q ≤ 10^5`\n- `1 ≤ A, B ≤ N`, `A ≠ B`\n- The tree may be a path (depth up to `10^5`).",
+  "samples": [
+    {
+      "input": "6\n1 2\n1 3\n3 4\n3 5\n2 6\n3\n1 3\n2 5\n1 4\n",
+      "output": "9\n2\n3\n",
+      "explanation": "Query (1, 3): the route must start in {1, 2, 6} (the side of 1 away from 3) and end in {3, 4, 5} → 3 × 3 = 9.\nQuery (2, 5): start in {2, 6}, end in {5} → 2.\nQuery (1, 4): start in {1, 2, 6}, end in {4} → 3."
+    }
+  ],
+  "hints": [
+    "Fix A and B. A route u → v visits A then B exactly when u is on A's side of the A–B path and v is on B's side. So the answer is a product of two counts.",
+    "Remove the first edge on the path from A towards B. The component containing A is the set of valid starts. Root the tree at 1 and precompute subtree sizes: if B is **not** inside A's subtree, that component is just `size[A]`; otherwise it is `N − size[c]` where `c` is the child of A whose subtree contains B.",
+    "Ancestor test with Euler times: B is in A's subtree iff `tin[A] ≤ tin[B] < tin[A] + size[A]`. To find the child `c`, keep A's children sorted by `tin` and binary search for the last child with `tin ≤ tin[B]` (or use binary lifting to jump B up to depth[A] + 1)."
+  ],
+  "editorial": "### Intuition\nIn a tree the route between two nodes is unique. The route `u → v` visits `A` then `B` iff `u` lies in `S_A` = nodes whose path to `B` goes through `A`, and `v` lies in `S_B` = nodes whose path to `A` goes through `B`. These two sets are independent, so the answer is `|S_A| · |S_B|` (pairs with `u = v` are impossible since the sets are disjoint).\n\n### Computing |S_A| (\"side of A away from B\")\nRoot the tree at 1 and compute `tin` (preorder index) and `size` with an **iterative** DFS.\n- If `B` is not in the subtree of `A`: the first step from `A` to `B` goes to `A`'s parent, so `S_A` is the subtree of `A`: `size[A]`.\n- If `B` is in the subtree of `A`: let `c` be the child of `A` on the way to `B`; `S_A` is everything except `c`'s subtree: `N − size[c]`.\n\nFinding `c` (\"LCA-lite\"): children of `A` visited in preorder have increasing `tin`, and their subtrees are consecutive ranges. The child containing `B` is the last child with `tin[child] ≤ tin[B]` → one `bisect`. Binary lifting (jump `B` up `depth[B] − depth[A] − 1` levels) also works.\n\n`|S_B|` is computed the same way with the roles swapped.\n\n### Complexity\n**O(N + Q log N)** time, **O(N)** memory.\n\n### Common mistakes\n- Answering `size[A] · size[B]` without checking ancestry — wrong whenever one checkpoint is an ancestor of the other (sample query 1).\n- Counting unordered pairs, or adding the reverse direction.\n- Recursive DFS on a 10^5 path → RecursionError.\n- Overflow is not an issue in Python, but the answer can reach ~2.5·10^9 — use 64-bit in other languages.",
+  "youtube": [
+    {
+      "title": "Binary Lifting (Kth Ancestor of a Tree Node) — Errichto Algorithms",
+      "url": "https://www.youtube.com/watch?v=oib-XsjFa-M",
+      "kind": "video"
+    },
+    {
+      "title": "Euler Tour - Flattening a Tree (Raman Bhari)",
+      "url": "https://www.youtube.com/watch?v=FznDWAlYggk",
+      "kind": "video"
+    },
+    {
+      "title": "1. Euler Tour Technique Part 1: Tree Flattening & Subtree Queries — Yash Poonia",
+      "url": "https://www.youtube.com/watch?v=_3VlhJedJvo",
+      "kind": "video"
+    },
+    {
+      "title": "Euler Tour | CSES Problem Set | Subtree Queries | Path Queries 1 | Segment Tree — Not A Boring Developer ",
+      "url": "https://www.youtube.com/watch?v=XqkneOGIJG4",
+      "kind": "video"
+    },
+    {
+      "title": "L27. Lowest Common Ancestor in Binary Tree | LCA | C++ | Java — take U forward",
+      "url": "https://www.youtube.com/watch?v=_-QHfMDde90",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: tree subtree size rerooting count paths through node",
+      "url": "https://www.youtube.com/results?search_query=tree+subtree+size+count+paths+through+node",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\nfrom bisect import bisect_right\n\n\ndef answer_queries(n, adj, queries):\n    # adj[u]  : neighbours of junction u (1-indexed)\n    # queries : list of (A, B)\n    # Return a list: for each query, the number of ordered pairs (u, v) whose route visits A and later B\n    # Tip: the tree can be a path of length 1e5 — use an iterative DFS\n    # Write your code here\n    return [0] * len(queries)\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    adj = [[] for _ in range(n + 1)]\n    p = 1\n    for _ in range(n - 1):\n        x, y = int(data[p]), int(data[p + 1])\n        p += 2\n        adj[x].append(y)\n        adj[y].append(x)\n    q = int(data[p])\n    p += 1\n    queries = []\n    for _ in range(q):\n        queries.append((int(data[p]), int(data[p + 1])))\n        p += 2\n    print(\"\\n\".join(map(str, answer_queries(n, adj, queries))))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

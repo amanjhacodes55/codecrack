@@ -1,0 +1,313 @@
+{
+  "slug": "crack-infosys-sp-dse",
+  "title": "Crack Infosys SP / DSE",
+  "subtitle": "12 steps from warm-up to the Hard slot — in the order you should learn them",
+  "company": "Infosys",
+  "order": 1,
+  "description": "**What the test looks like (from candidate reports, not official):** in-person, proctored, ~3 hours. Traditionally **3 coding questions** (Easy / Medium / Hard, often weighted ~20/30/50); some recent drives reported **4** (easy, medium, hard, complex). Scoring is **partial — per test case passed**, so a correct brute force on the hard question still earns marks.\n\n- **Q1** – arrays, strings, hashing, greedy\n- **Q2** – greedy / sliding window / prefix sums / binary search\n- **Q3+** – DP (most frequent), graphs, trees, bit manipulation, number theory, with `N` up to `10^5`\n\n**Cutoff hints from reports:** ~1 full + 2 partial solutions often gets an interview call; solving all usually maps to SP, fewer to DSE. Python is allowed — but write efficient code (`sys.stdin`, avoid recursion depth issues, avoid O(N²) when `N = 10^5`).\n\n**How to use this track:** go step by step. Inside each step, do problems in order. Give every problem 30–40 minutes before opening hints; open the editorial only after that; re-solve 'assisted' problems from scratch 3 days later.",
+  "steps": [
+    {
+      "title": "Warm-up: I/O, strings & counting",
+      "goal": "Get fast and error-free with stdin parsing, strings and frequency counting — the Q1 skill set.",
+      "tips": [
+        "Read all input at once: `data = sys.stdin.read().split()`",
+        "Use `collections.Counter` and `dict.get(x, 0)` fluently",
+        "Always re-read the output format: YES/NO vs Yes/No, spaces vs newlines"
+      ],
+      "resources": [
+        {
+          "title": "Python collections docs (Counter, defaultdict, deque)",
+          "url": "https://docs.python.org/3/library/collections.html"
+        }
+      ],
+      "problems": [
+        "majority-element",
+        "check-string-permutation",
+        "most-common-word",
+        "first-non-repeating-character",
+        "digit-square-string-rotation",
+        "largest-even-from-unique-digits",
+        "four-in-a-row-matrix-minimum"
+      ]
+    },
+    {
+      "title": "Hashing patterns",
+      "goal": "Turn O(N²) pair/group searches into O(N) with hash maps.",
+      "tips": [
+        "Two-sum pattern: look up `target - x` before inserting `x`",
+        "A canonical key (sorted string, tuple of counts) groups equivalent items",
+        "Sort by a tuple key `(-count, value)` for deterministic tie-breaking"
+      ],
+      "resources": [
+        {
+          "title": "Search YouTube: hashing patterns for coding interviews",
+          "url": "https://www.youtube.com/results?search_query=hashing+patterns+coding+interview+python"
+        }
+      ],
+      "problems": [
+        "count-pairs-with-sum-k",
+        "sort-characters-by-frequency",
+        "count-anagram-groups",
+        "rearrange-into-equal-pieces"
+      ]
+    },
+    {
+      "title": "Prefix sums + hashing",
+      "goal": "Answer subarray questions in O(N) by remembering earlier prefix sums.",
+      "tips": [
+        "sum(l..r) = P[r+1] - P[l]",
+        "Count subarrays with property → hashmap of prefix value → count",
+        "Longest subarray → hashmap of prefix value → FIRST index",
+        "Remainders: normalise with `% k` (Python already gives non-negative)"
+      ],
+      "resources": [
+        {
+          "title": "Search YouTube: prefix sum + hashmap subarray problems",
+          "url": "https://www.youtube.com/results?search_query=prefix+sum+hashmap+subarray+sum+equals+k"
+        }
+      ],
+      "problems": [
+        "range-sum-queries",
+        "longest-equal-zeros-ones-subarray",
+        "count-subarrays-with-sum-k",
+        "count-divisible-subarrays",
+        "odd-even-balanced-removal"
+      ]
+    },
+    {
+      "title": "Two pointers, sliding window & Kadane",
+      "goal": "Handle contiguous-window and pair problems in linear time.",
+      "tips": [
+        "Sliding window works when expanding/shrinking changes the condition monotonically (e.g. positive numbers)",
+        "Kadane: best ending here = max(x, best_ending_prev + x)",
+        "Circular max = max(normal Kadane, total − min subarray) — careful when all are negative"
+      ],
+      "resources": [
+        {
+          "title": "Search YouTube: sliding window technique",
+          "url": "https://www.youtube.com/results?search_query=sliding+window+technique+take+u+forward"
+        }
+      ],
+      "problems": [
+        "count-pairs-sum-at-most-k",
+        "shortest-subarray-sum-at-least-s",
+        "andys-longest-vacation",
+        "max-circular-subarray-sum",
+        "max-product-increasing-subarray"
+      ]
+    },
+    {
+      "title": "Greedy & sorting (Infosys Q1/Q2 favourites)",
+      "goal": "Recognise when a locally best choice is globally optimal — and prove it with an exchange argument.",
+      "tips": [
+        "Interval scheduling: sort by END time",
+        "Platforms / meeting rooms: sort starts and ends separately and sweep",
+        "Custom order: `functools.cmp_to_key`",
+        "Monotonic stack for 'remove digits to make largest/smallest'"
+      ],
+      "resources": [
+        {
+          "title": "Search YouTube: greedy algorithms interval scheduling",
+          "url": "https://www.youtube.com/results?search_query=greedy+algorithm+interval+scheduling+activity+selection"
+        }
+      ],
+      "problems": [
+        "minimum-exercises-to-get-tired",
+        "max-non-overlapping-meetings",
+        "minimum-railway-platforms",
+        "two-centre-interview-cost",
+        "largest-number-from-array",
+        "wine-trading-balance",
+        "heroes-versus-villains",
+        "remove-k-digits-maximize"
+      ]
+    },
+    {
+      "title": "Math, bits & modular arithmetic",
+      "goal": "Handle huge numbers with fast power, modular inverse, sieve and bit tricks.",
+      "tips": [
+        "`pow(a, b, mod)` is built in; inverse mod prime p = `pow(a, p-2, p)`",
+        "Sieve once up to the max value, reuse for all queries",
+        "a + b = (a XOR b) + 2·(a AND b)"
+      ],
+      "resources": [
+        {
+          "title": "Binary exponentiation (cp-algorithms)",
+          "url": "https://cp-algorithms.com/algebra/binary-exp.html"
+        },
+        {
+          "title": "Sieve of Eratosthenes (cp-algorithms)",
+          "url": "https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html"
+        }
+      ],
+      "problems": [
+        "geometric-series-mod",
+        "total-set-bits-1-to-n",
+        "two-prime-squares-sum",
+        "bases-starting-with-one",
+        "xor-equals-sum-pairs"
+      ]
+    },
+    {
+      "title": "Binary search on the answer & recursion",
+      "goal": "Convert 'minimise the maximum' into a yes/no check; enumerate small search spaces cleanly.",
+      "tips": [
+        "If check(x) is monotonic, binary search x",
+        "Write `check` first, test it, then add the binary search",
+        "Backtracking: choose → recurse → un-choose; prune early"
+      ],
+      "resources": [
+        {
+          "title": "Binary search (cp-algorithms)",
+          "url": "https://cp-algorithms.com/num_methods/binary_search.html"
+        }
+      ],
+      "problems": [
+        "split-array-minimize-largest-sum",
+        "subsets-with-target-sum",
+        "smoothest-trail"
+      ]
+    },
+    {
+      "title": "Dynamic programming foundations",
+      "goal": "Master state → transition → base case → order, on the four classic DP families.",
+      "tips": [
+        "Write the recursive brute force first, then memoise, then convert to a table",
+        "In Python prefer bottom-up loops (no recursion limit, faster)",
+        "LIS in O(N log N) uses `bisect`"
+      ],
+      "resources": [
+        {
+          "title": "Search YouTube: Striver DP series",
+          "url": "https://www.youtube.com/results?search_query=striver+dynamic+programming+playlist"
+        },
+        {
+          "title": "Search YouTube: Aditya Verma DP playlist",
+          "url": "https://www.youtube.com/results?search_query=aditya+verma+dynamic+programming+playlist"
+        }
+      ],
+      "problems": [
+        "dp-max-non-adjacent-sum",
+        "dp-longest-increasing-subsequence",
+        "dp-01-knapsack",
+        "dp-edit-distance"
+      ]
+    },
+    {
+      "title": "Infosys-style DP — the Hard slot",
+      "goal": "Solve the DP problems that most often appear as Infosys Q3: counting mod 1e9+7, knapsack variants, partition/interval DP, DP on strings, digit DP.",
+      "tips": [
+        "Counting answers → everything `% (10**9 + 7)` at every step",
+        "Partition into K segments: dp[k][i] = min over j of dp[k-1][j] + cost(j, i)",
+        "Interval DP: iterate by LENGTH of the interval",
+        "If stuck, code a brute force — partial marks count!"
+      ],
+      "resources": [
+        {
+          "title": "Search YouTube: Infosys SP DSE DP questions",
+          "url": "https://www.youtube.com/results?search_query=infosys+specialist+programmer+dynamic+programming+questions"
+        }
+      ],
+      "problems": [
+        "binary-strings-balanced-mod-3",
+        "count-divisor-chain-arrays",
+        "longest-power-of-two-step-subsequence",
+        "min-exercises-exact-energy",
+        "longest-ascending-trail-grid",
+        "max-tile-triplets",
+        "split-array-k-segments-min-spread",
+        "merge-adjacent-piles-min-cost",
+        "two-mode-edit-distance",
+        "min-cost-break-subsequence",
+        "longest-shared-factor-chain",
+        "digit-sum-divisible-no-equal-adjacent"
+      ]
+    },
+    {
+      "title": "Graphs",
+      "goal": "BFS/DFS, multi-source BFS, DSU, topological sort and Dijkstra (including state-expanded Dijkstra).",
+      "tips": [
+        "Use `collections.deque` for BFS, `heapq` for Dijkstra",
+        "Never use recursive DFS for N = 10^5 in Python — use an explicit stack",
+        "Extra constraint (k passes, parity…) → put it in the state: (node, k)"
+      ],
+      "resources": [
+        {
+          "title": "BFS (cp-algorithms)",
+          "url": "https://cp-algorithms.com/graph/breadth-first-search.html"
+        },
+        {
+          "title": "Dijkstra (cp-algorithms)",
+          "url": "https://cp-algorithms.com/graph/dijkstra.html"
+        },
+        {
+          "title": "Disjoint Set Union (cp-algorithms)",
+          "url": "https://cp-algorithms.com/data_structures/disjoint_set_union.html"
+        },
+        {
+          "title": "Topological sort (cp-algorithms)",
+          "url": "https://cp-algorithms.com/graph/topological-sort.html"
+        }
+      ],
+      "problems": [
+        "shelter-evacuation-grid",
+        "server-cluster-merges",
+        "smallest-build-order",
+        "distance-band-pairs",
+        "toll-pass-route"
+      ]
+    },
+    {
+      "title": "Trees & range queries",
+      "goal": "Flatten trees with an Euler tour and answer subtree/path queries with a Fenwick tree.",
+      "tips": [
+        "Euler tour: subtree of v = contiguous range [tin[v], tout[v]]",
+        "Fenwick tree: point update + prefix sum in O(log N), ~10 lines of code",
+        "Count inversions with a Fenwick tree over compressed values"
+      ],
+      "resources": [
+        {
+          "title": "Fenwick tree (cp-algorithms)",
+          "url": "https://cp-algorithms.com/data_structures/fenwick.html"
+        }
+      ],
+      "problems": [
+        "subtree-sum-updates",
+        "ancestor-outshine-pairs",
+        "ordered-checkpoint-paths",
+        "min-inversions-reverse-k"
+      ]
+    },
+    {
+      "title": "Advanced mix: strings, combinatorics, XOR, stacks",
+      "goal": "The 'complex' question: combine two techniques under tight constraints.",
+      "tips": [
+        "Prefix function (KMP) answers border/period/palindrome-prefix questions in O(N)",
+        "nCr mod p: precompute factorials and inverse factorials once",
+        "XOR basis: rank r of N numbers → 2^(N−r) subsets XOR to any reachable value",
+        "Count 'bad' and subtract from total when 'good' is hard to count"
+      ],
+      "resources": [
+        {
+          "title": "Prefix function / KMP (cp-algorithms)",
+          "url": "https://cp-algorithms.com/string/prefix-function.html"
+        },
+        {
+          "title": "Binomial coefficients (cp-algorithms)",
+          "url": "https://cp-algorithms.com/combinatorics/binomial-coefficients.html"
+        }
+      ],
+      "problems": [
+        "min-chars-front-palindrome",
+        "hidden-border-key",
+        "blocked-grid-paths",
+        "coprime-team-pairs",
+        "xor-subset-count",
+        "xor-sum-maximization",
+        "good-subarrays-min-gap",
+        "four-part-balanced-cut",
+        "quest-power-maximizer"
+      ]
+    }
+  ]
+}

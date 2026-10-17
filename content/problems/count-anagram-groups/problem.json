@@ -1,0 +1,76 @@
+{
+  "slug": "count-anagram-groups",
+  "title": "Count Anagram Groups",
+  "difficulty": "Medium",
+  "tags": [
+    "Hashing",
+    "Strings",
+    "Sorting"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon"
+  ],
+  "collections": [
+    "hashing-drill"
+  ],
+  "source": "Counting variant of the classic Group Anagrams problem (LeetCode 49 family)",
+  "statement": "You are given `N` words made of lowercase English letters.\n\nTwo words are **anagrams** of each other if one can be obtained by rearranging the letters of the other (same letters, same counts). Identical words are anagrams too.\n\nPut the words into **groups** so that two words are in the same group **if and only if** they are anagrams.\n\nPrint two integers:\n- `G` — the number of groups, and\n- `M` — the number of words in the **largest** group.",
+  "inputFormat": "The first line contains an integer `N`.\nEach of the next `N` lines contains one word.",
+  "outputFormat": "Print `G` and `M` on one line, separated by a single space.",
+  "constraints": "- `1 ≤ N ≤ 2·10^4`\n- `1 ≤ length of each word ≤ 10`\n- Words contain only lowercase letters `a-z`\n- Words may repeat; each occurrence counts separately",
+  "samples": [
+    {
+      "input": "6\neat\ntea\ntan\nate\nnat\nbat\n",
+      "output": "3 3\n",
+      "explanation": "Groups: `{eat, tea, ate}`, `{tan, nat}`, `{bat}`. The largest has 3 words."
+    },
+    {
+      "input": "5\nab\nba\nab\nc\nc\n",
+      "output": "2 3\n",
+      "explanation": "`{ab, ba, ab}` (repeated words count separately) and `{c, c}`."
+    },
+    {
+      "input": "2\nab\nabb\n",
+      "output": "2 1\n",
+      "explanation": "Different letter counts, so they are not anagrams."
+    }
+  ],
+  "hints": [
+    "Comparing every pair of words is O(N²) comparisons — avoid it. Can you compute a **key** for each word such that anagrams get the same key?",
+    "Sorting the letters of a word gives a canonical form: `\"tea\"` → `\"aet\"`, `\"eat\"` → `\"aet\"`.",
+    "Use a dictionary `key → count`. The answer is `len(dict)` and `max(dict.values())`."
+  ],
+  "editorial": "### Intuition\n\"Is an anagram of\" is an equivalence relation, so the words split into classes. If every word maps to a **canonical key** that is identical exactly for anagrams, a hash map groups them in one pass.\n\n### Approach\n- Key = the word's letters sorted: `\"\".join(sorted(w))`. (Alternative key: a tuple of 26 letter counts — better when words are long.)\n- `groups[key] += 1` for every word.\n- Output `len(groups)` and `max(groups.values())`.\n\n### Complexity\nWith `L ≤ 10`, sorting each word is O(L log L), so total **O(N · L log L)** time and **O(N · L)** space. With the count-tuple key it is O(N · (L + 26)).\n\n### Common mistakes\n- Using `set(word)` as the key — ignores counts (`ab` vs `abb` in sample 3).\n- Using `sorted(w)` (a list) directly as a dictionary key — lists are unhashable; convert to a string or tuple.\n- De-duplicating words first — repeated words must be counted (sample 2).",
+  "youtube": [
+    {
+      "title": "Group Anagrams - Categorize Strings by Count - Leetcode 49 (NeetCode)",
+      "url": "https://www.youtube.com/watch?v=vzdNOK2oB2E",
+      "kind": "video"
+    },
+    {
+      "title": "DSA Day - 7 |Group Anagrams | Leetcode 49 | JAVA - hashmaps — Meghna Srivastava",
+      "url": "https://www.youtube.com/watch?v=6jDYOogn0Ps",
+      "kind": "video"
+    },
+    {
+      "title": "Leetcode 49 Group Anagrams — ThinkCode",
+      "url": "https://www.youtube.com/watch?v=xOcjj5pNI0U",
+      "kind": "video"
+    },
+    {
+      "title": "Group Anagrams Explained | Hashmap Interview Questions Playlist — Pepcoding",
+      "url": "https://www.youtube.com/watch?v=NNBQik4phMI",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: group anagrams hashmap sorted key",
+      "url": "https://www.youtube.com/results?search_query=group+anagrams+hashmap+sorted+key",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef anagram_groups(words):\n    # Return (number_of_groups, size_of_largest_group)\n    # Write your code here\n    return 0, 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    words = data[1:1 + n]\n    g, m = anagram_groups(words)\n    print(g, m)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

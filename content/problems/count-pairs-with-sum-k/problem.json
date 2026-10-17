@@ -1,0 +1,77 @@
+{
+  "slug": "count-pairs-with-sum-k",
+  "title": "Count Pairs with Sum K",
+  "difficulty": "Easy",
+  "tags": [
+    "Hashing",
+    "Arrays",
+    "Counting"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon",
+    "Flipkart"
+  ],
+  "collections": [
+    "hashing-drill"
+  ],
+  "source": "Classic Two-Sum counting variant (GfG 'count pairs with given sum' family)",
+  "statement": "You are given an array `A` of `N` integers and an integer `K`.\n\nCount the number of **index pairs** `(i, j)` with `1 ≤ i < j ≤ N` such that `A[i] + A[j] = K`.\n\nPairs are counted by **positions**, not by values: equal values at different positions form different pairs.",
+  "inputFormat": "The first line contains two integers `N` and `K`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the number of valid pairs. (It can exceed `2^31 - 1`.)",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `-10^9 ≤ A[i] ≤ 10^9`\n- `-2·10^9 ≤ K ≤ 2·10^9`",
+  "samples": [
+    {
+      "input": "6 7\n1 2 3 4 5 6\n",
+      "output": "3\n",
+      "explanation": "The pairs are (1,6), (2,5), (3,4) — by value `1+6`, `2+5`, `3+4`."
+    },
+    {
+      "input": "5 6\n3 3 3 3 3\n",
+      "output": "10\n",
+      "explanation": "Every pair of positions works: `5·4/2 = 10`."
+    },
+    {
+      "input": "4 0\n-5 5 0 0\n",
+      "output": "2\n",
+      "explanation": "`-5 + 5 = 0` (positions 1,2) and `0 + 0 = 0` (positions 3,4)."
+    }
+  ],
+  "hints": [
+    "The brute force checks all `N·(N-1)/2` pairs — too slow for `N = 10^5`.",
+    "Process the array left to right. When you are at `A[j]`, how many earlier positions `i < j` have `A[i] = K - A[j]`?",
+    "Keep a dictionary `seen[value] = how many times value appeared so far`. Add `seen[K - A[j]]` to the answer **before** inserting `A[j]` itself."
+  ],
+  "editorial": "### Intuition\nFor a fixed right end `j`, the partner value is forced: `K - A[j]`. So the number of pairs ending at `j` is simply **how many times `K - A[j]` appeared before `j`** — a hash-map lookup.\n\n### Approach\n```\nseen = {}\nfor x in A:\n    answer += seen.get(K - x, 0)\n    seen[x] = seen.get(x, 0) + 1\n```\nLooking up **before** inserting guarantees `i < j` and prevents pairing an element with itself (important when `x = K / 2`).\n\n### Complexity\n**O(N)** expected time, **O(N)** space.\n\nAlternative: sort + two pointers in O(N log N), but handling runs of equal values correctly is fiddly; hashing is simpler here.\n\n### Common mistakes\n- Inserting `x` before looking up `K - x` — then `x + x = K` counts the element with itself.\n- Counting unordered value pairs (`{3,3}` once) instead of position pairs (sample 2 expects 10).\n- Overflow in fixed-width languages: the count can reach about `5·10^9`. (Python integers don't overflow.)",
+  "youtube": [
+    {
+      "title": "2 Sum Problem | Brute-Better-Optimal (take U forward)",
+      "url": "https://www.youtube.com/watch?v=UXDSeD9mN-k",
+      "kind": "video"
+    },
+    {
+      "title": "Two Sum - Leetcode 1 - HashMap - Python (NeetCode)",
+      "url": "https://www.youtube.com/watch?v=KLlXCFG5TnA",
+      "kind": "video"
+    },
+    {
+      "title": "Count Pair with given sum | count pair with sum | Java DSA Placement | FAANG | gfg — ShashCode",
+      "url": "https://www.youtube.com/watch?v=NC9r8D2QnHk",
+      "kind": "video"
+    },
+    {
+      "title": "Count Pairs With Given Sum |Arrays | HashMap | — CodeWithArnab",
+      "url": "https://www.youtube.com/watch?v=jcgMCvkS7xM",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: count pairs with given sum hashing",
+      "url": "https://www.youtube.com/results?search_query=count+pairs+with+given+sum+hashing",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef count_pairs(arr, k):\n    # Return the number of index pairs i < j with arr[i] + arr[j] == k\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, k = int(data[0]), int(data[1])\n    arr = list(map(int, data[2:2 + n]))\n    print(count_pairs(arr, k))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

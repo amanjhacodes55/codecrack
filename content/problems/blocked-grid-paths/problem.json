@@ -1,0 +1,67 @@
+{
+  "slug": "blocked-grid-paths",
+  "title": "Blocked Grid Paths",
+  "difficulty": "Hard",
+  "tags": [
+    "Combinatorics",
+    "Number Theory",
+    "Modular Inverse",
+    "nCr mod p",
+    "Inclusion-Exclusion"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Combinatorics / nCr-mod-p pattern from Infosys SP/DSE prep material ('nCr Calculation' and modulo-counting problems such as 'Count Arrays with Divisibility Condition' on the bhasidhshaik GitHub SP/DSE sheet; 'Divisible Arrays Count' modulo question on PrepInsta's Infosys SP/DSE page) — original problem in the classic blocked-lattice-paths form",
+  "statement": "A robot stands in the top-left cell `(1, 1)` of a huge `H × W` warehouse floor and must reach the bottom-right cell `(H, W)`. In one move it goes either **one cell down** or **one cell right**.\n\n`K` cells are blocked by pallets and can never be entered. The start and the target are never blocked.\n\nCount the number of different routes from `(1, 1)` to `(H, W)` modulo `10^9 + 7`.",
+  "inputFormat": "The first line contains `H`, `W` and `K`.\nEach of the next `K` lines contains `r c` — a blocked cell (row `r`, column `c`). All blocked cells are distinct.",
+  "outputFormat": "Print the number of routes modulo `10^9 + 7`.",
+  "constraints": "- `1 ≤ H, W ≤ 10^5`\n- `0 ≤ K ≤ 1000`\n- `1 ≤ r ≤ H`, `1 ≤ c ≤ W`; `(r, c)` is neither `(1, 1)` nor `(H, W)`",
+  "samples": [
+    {
+      "input": "3 4 2\n2 2\n2 3\n",
+      "output": "2\n",
+      "explanation": "Without pallets there are C(5, 2) = 10 routes. With (2,2) and (2,3) blocked, only the route along the top row then down, and the route down the first column then along the bottom row, survive."
+    },
+    {
+      "input": "100000 100000 0\n",
+      "output": "691090292\n",
+      "explanation": "No pallets: the answer is C(199998, 99999) mod 10^9 + 7."
+    }
+  ],
+  "hints": [
+    "Without obstacles the number of routes from `(r1, c1)` to `(r2, c2)` (with `r1 ≤ r2`, `c1 ≤ c2`) is `C((r2−r1) + (c2−c1), r2−r1)`. Precompute factorials and inverse factorials modulo the prime to get each binomial in O(1).",
+    "A grid DP is impossible (10^10 cells), but K is small. Sort the blocked cells by (row, column) and append the target. Let `f[i]` = number of routes from the start to cell `i` that touch **no blocked cell before `i`**.",
+    "`f[i] = C(start → i) − Σ f[j] · C(j → i)` over earlier blocked cells `j` with `r_j ≤ r_i` and `c_j ≤ c_i` (`j` is the *first* blocked cell the route hits). The answer is `f[target]`. Total O(K²)."
+  ],
+  "editorial": "### Intuition\nCount all routes, then remove the bad ones. Classify a bad route by the **first** blocked cell it enters: that gives a partition, so there is no double counting.\n\n### Binomials modulo a prime\n`fact[i] = i! mod p` for `i ≤ H + W`, `invfact[N] = fact[N]^(p−2)` (Fermat's little theorem), then `invfact[i−1] = invfact[i] · i`. `C(n, k) = fact[n] · invfact[k] · invfact[n−k] mod p`.\n\n### Approach\n1. Sort blocked cells by `(r, c)` — any cell that can precede cell `i` on a monotone route comes earlier in this order. Append the target `(H, W)` last.\n2. For each point `i` in order: `f[i] = C(r_i + c_i − 2, r_i − 1) − Σ_{j<i, r_j ≤ r_i, c_j ≤ c_i} f[j] · C(r_i − r_j + c_i − c_j, r_i − r_j)`.\n3. Answer: `f[last] mod p`.\n\n### Complexity\n`O(H + W + K²)` time, `O(H + W + K)` memory.\n\n### Common mistakes\n- Subtracting `C(start→j) · C(j→target)` for every blocked `j` independently — routes through two pallets get subtracted twice.\n- Not sorting the blocked cells first.\n- Negative values after subtraction: reduce with `% MOD` at the end (Python's `%` is non-negative).\n- Computing each inverse with a separate `pow` inside the O(K²) loop — correct but slow; precompute inverse factorials.",
+  "youtube": [
+    {
+      "title": "Modular nCr using Fermat's Little Theorem (codestorywithMIK)",
+      "url": "https://www.youtube.com/watch?v=FMBW7m1Wap0",
+      "kind": "video"
+    },
+    {
+      "title": "Grid Unique paths using Combinatorics — CP with Sundar",
+      "url": "https://www.youtube.com/watch?v=Cx3pEMdhOUw",
+      "kind": "video"
+    },
+    {
+      "title": "Fermat’s Little Theorem | Full Intuition, Proof & Modular Inverse (Must Know for CP) — Yash Poonia",
+      "url": "https://www.youtube.com/watch?v=4dnbvcoF4oo",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: grid paths with obstacles combinatorics codeforces 559C",
+      "url": "https://www.youtube.com/results?search_query=codeforces+559C+gerald+and+giant+chess",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\nMOD = 10**9 + 7\n\n\ndef count_routes(h, w, blocked):\n    # blocked: list of (r, c) cells (1-indexed) that cannot be entered\n    # Return the number of down/right routes from (1,1) to (h,w) modulo MOD\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    h, w, k = int(data[0]), int(data[1]), int(data[2])\n    blocked = [(int(data[3 + 2 * i]), int(data[4 + 2 * i])) for i in range(k)]\n    print(count_routes(h, w, blocked))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

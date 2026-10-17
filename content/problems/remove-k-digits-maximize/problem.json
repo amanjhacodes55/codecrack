@@ -1,0 +1,72 @@
+{
+  "slug": "remove-k-digits-maximize",
+  "title": "Remove K Digits to Maximize",
+  "difficulty": "Medium",
+  "tags": [
+    "Greedy",
+    "Stack",
+    "Monotonic Stack",
+    "Strings"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates: 'Remove Digit to Maximize Number' is listed among frequently reported 2025 Infosys SP/DSE questions in a community prep sheet (GitHub: bhasidhshaik/Infosys-SP-DSE-resources). Reconstructed as the general 'delete exactly K digits' version.",
+  "statement": "You are given a positive integer as a string `S` of `N` digits (the first digit is not `0`) and an integer `K`.\n\nDelete **exactly `K`** digits from `S`. The remaining digits keep their original relative order and form a new number.\n\nPrint the **largest** number you can obtain.",
+  "inputFormat": "The first line contains the string `S`.\nThe second line contains the integer `K`.",
+  "outputFormat": "Print the largest obtainable number, written without leading zeros.",
+  "constraints": "- `1 ≤ N ≤ 2 × 10^5`\n- `0 ≤ K < N`\n- `S` consists of digits `0`–`9` and `S[0] ≠ '0'`",
+  "samples": [
+    {
+      "input": "1924\n2\n",
+      "output": "94\n",
+      "explanation": "The possible results are 19, 12, 14, 92, 94 and 24. The largest is 94."
+    },
+    {
+      "input": "4177252841\n4\n",
+      "output": "775841\n",
+      "explanation": "Delete the digits at positions 1, 2, 5 and 7 (`4`, `1`, `2`, `2`). The kept digits 7, 7, 5, 8, 4, 1 form 775841."
+    },
+    {
+      "input": "100\n1\n",
+      "output": "10\n",
+      "explanation": "Deleting a `0` gives 10. Deleting the `1` would give 00 = 0."
+    }
+  ],
+  "hints": [
+    "The leftmost digit matters most. Make the first digit of the answer as large as possible, then the second, and so on.",
+    "Scan left to right with a stack. When the current digit is **bigger** than the top of the stack and you still have deletions left, pop the top: a bigger digit earlier always wins.",
+    "If deletions remain after the scan, the stack is non-increasing, so delete from the **end**."
+  ],
+  "editorial": "### Greedy with a monotonic stack\nTwo numbers of equal length compare lexicographically. So we want the first digit as large as possible, then the second, and so on.\n\nMaintain a stack of kept digits. For each digit `d`:\n```\nwhile k > 0 and stack and stack[-1] < d:\n    stack.pop(); k -= 1\nstack.append(d)\n```\nPopping `stack[-1] < d` is always good. It lets a larger digit move one position to the left, and nothing later can make up for that. After the scan, if `k > 0`, the stack is non-increasing, so drop the last `k` digits.\n\nSince `S[0] ≠ '0'`, the first digit of the result is at least `S[0]`'s value or larger, so no leading zeros appear.\n\n### Complexity\nEvery digit is pushed and popped at most once: **O(N)**.\n\n### Common mistakes\n- Trying all `C(N, K)` subsets. That is exponential.\n- Forgetting to remove leftover `k` digits from the end (e.g. `S = 9876`, `K = 2` → `98`).\n- Popping on `<=` vs `<`. Both give the same digits here, but `<` avoids needless work.\n- Confusing this with the classic *minimize* version (LeetCode 402), which pops on `>` and must strip leading zeros.",
+  "youtube": [
+    {
+      "title": "Remove K Digits - Leetcode 402 - Python (minimize version; flip the comparison) - NeetCode",
+      "url": "https://www.youtube.com/watch?v=cFabMOnJaq0",
+      "kind": "video"
+    },
+    {
+      "title": "L14. Remove K Digits | Stack and Queue Playlist — take U forward",
+      "url": "https://www.youtube.com/watch?v=jmbuRzYPGrg",
+      "kind": "video"
+    },
+    {
+      "title": "402. Remove K Digits | Monotonic Stack | Greedy | Brute Force - Optimal Solution — Aryan Mittal",
+      "url": "https://www.youtube.com/watch?v=chte4pRYujs",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: monotonic stack largest number after removing k digits",
+      "url": "https://www.youtube.com/results?search_query=monotonic+stack+largest+number+after+removing+k+digits",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef largest_after_removal(num, k):\n    # num : string of digits (no leading zero)\n    # k   : number of digits to delete (exactly k)\n    # Return the largest possible resulting number as a string.\n    # Write your code here\n    return \"\"\n\n\ndef main():\n    data = sys.stdin.read().split()\n    num = data[0]\n    k = int(data[1])\n    print(largest_after_removal(num, k))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

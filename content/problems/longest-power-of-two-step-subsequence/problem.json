@@ -1,0 +1,81 @@
+{
+  "slug": "longest-power-of-two-step-subsequence",
+  "title": "Longest Power-of-Two Step Subsequence",
+  "difficulty": "Medium",
+  "tags": [
+    "Dynamic Programming",
+    "Hashing",
+    "LIS",
+    "Bit Manipulation"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by an Infosys SP candidate on Glassdoor ('longest non-decreasing subsequence where consecutive differences are 0 or a power of 2') - statement and constraints are our own reconstruction",
+  "statement": "You are given an array `A` of `N` positive integers.\n\nChoose a subsequence (keep the original order, delete any elements) `B[1], B[2], …, B[m]` such that for every consecutive pair\n\n`B[j+1] − B[j]` is either `0` or a **power of two** (`1, 2, 4, 8, …`).\n\nIn particular the subsequence is non-decreasing. A single element is always a valid subsequence.\n\nPrint the maximum possible length `m`.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the maximum length of a valid subsequence.",
+  "constraints": "- `1 ≤ N ≤ 5 × 10^4`\n- `1 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "7\n3 4 6 5 6 10 7\n",
+      "output": "5\n",
+      "explanation": "`3 4 5 6 7` (steps `1,1,1,1`) or `3 4 6 6 10` (steps `1,2,0,4`)."
+    },
+    {
+      "input": "6\n8 1 2 9 3 5\n",
+      "output": "4\n",
+      "explanation": "`1 2 3 5` with steps `1, 1, 2`."
+    },
+    {
+      "input": "5\n10 3 12 13 4\n",
+      "output": "3\n",
+      "explanation": "`10 12 13` (steps `2, 1`)."
+    }
+  ],
+  "hints": [
+    "This is LIS with a different rule between neighbours. The `O(N^2)` DP `dp[i] = 1 + max dp[j]` over valid `j < i` is correct but too slow for `N = 5·10^4`.",
+    "For a fixed new element `x`, which previous **values** could precede it? Only `x` itself and `x − 2^k` - at most 31 candidates, because `x ≤ 10^9 < 2^30`.",
+    "Keep a dictionary `best[value]` = longest valid subsequence seen so far that ends with that value. For each `x`: `cur = 1 + max(best[x], best[x − 2^k] for all k with 2^k ≤ x)`, then `best[x] = max(best[x], cur)`."
+  ],
+  "editorial": "### From LIS to this problem\nStandard LIS: `dp[i] = 1 + max(dp[j])` over `j < i` with a valid relation between `A[j]` and `A[i]`. That is `O(N^2)` ≈ `1.25·10^9` here - too slow.\n\n### Key observation\nThe predecessor of `x` must have **value** `x` or `x − 2^k`. So index the DP by value instead of by position.\n\n### State\n`best[v]` = length of the longest valid subsequence among the elements processed so far whose last element equals `v`.\n\n### Transition (process `A` left to right)\n```\ncur = best.get(x, 0)\nfor k in 0..30 while 2^k ≤ x:\n    cur = max(cur, best.get(x - 2^k, 0))\ncur += 1\nbest[x] = max(best.get(x, 0), cur)\n```\nProcessing in input order guarantees we only extend subsequences that end **earlier** in the array.\n\n### Complexity\n`O(31 · N)` dictionary lookups ≈ `1.5·10^6`, `O(N)` memory.\n\n### Common mistakes\n- Forgetting the difference `0` (equal values may repeat).\n- Treating `1` as not a power of two (`2^0 = 1`).\n- Allowing negative differences (the subsequence must not go down).\n- Using a value-indexed list of size `10^9`.",
+  "youtube": [
+    {
+      "title": "DP 42. Printing Longest Increasing Subsequence | Tabulation (take U forward)",
+      "url": "https://www.youtube.com/watch?v=IFfYfonAFGc",
+      "kind": "video"
+    },
+    {
+      "title": "DP 45. Longest String Chain | LIS variant (take U forward)",
+      "url": "https://www.youtube.com/watch?v=YY8iBaYcc4g",
+      "kind": "video"
+    },
+    {
+      "title": "DP 43. Longest Increasing Subsequence | Binary Search | Intuition — take U forward",
+      "url": "https://www.youtube.com/watch?v=on2hvxBXJH4",
+      "kind": "video"
+    },
+    {
+      "title": "DP 47. Number of Longest Increasing Subsequences — take U forward",
+      "url": "https://www.youtube.com/watch?v=cKVl1TFdNXg",
+      "kind": "video"
+    },
+    {
+      "title": "Longest Arithmetic Subsequence of Given Difference | Recur + Memo | Optimal | META | Leetcode-1218 — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=OHxwaAbO1A8",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: longest subsequence difference power of two dynamic programming hashmap",
+      "url": "https://www.youtube.com/results?search_query=longest+subsequence+difference+power+of+two+dp+hashmap",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef longest_power_step_subsequence(arr):\n    # Return the max length of a subsequence whose consecutive differences are 0 or a power of two\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    print(longest_power_step_subsequence(arr))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

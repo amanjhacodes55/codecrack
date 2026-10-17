@@ -1,0 +1,71 @@
+{
+  "slug": "count-divisor-chain-arrays",
+  "title": "Count Divisor Chain Arrays",
+  "difficulty": "Medium",
+  "tags": [
+    "Dynamic Programming",
+    "Number Theory",
+    "Counting",
+    "Modular Arithmetic"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported in Infosys SP/DSE papers ('Count Arrays with Divisibility Condition', listed on PrepInsta and the bhasidhshaik/Infosys-SP-DSE-resources 2025 list) - rewritten; modulus changed to 10^9+7 and constraints are our own",
+  "statement": "An array `B` of length `K` is called a **divisor chain** if\n\n- every element is an integer between `1` and `N` (inclusive), and\n- each element divides the next one: `B[i]` divides `B[i+1]` for every `1 ≤ i < K`.\n\nGiven `N` and `K`, count the divisor chains of length `K`. Since the answer can be huge, print it **modulo** `10^9 + 7`.",
+  "inputFormat": "A single line containing two integers `N` and `K`.",
+  "outputFormat": "Print the number of divisor chains of length `K`, modulo `10^9 + 7`.",
+  "constraints": "- `1 ≤ N ≤ 10^4`\n- `1 ≤ K ≤ 100`",
+  "samples": [
+    {
+      "input": "3 2\n",
+      "output": "5\n",
+      "explanation": "The chains are `[1,1]`, `[1,2]`, `[1,3]`, `[2,2]`, `[3,3]`."
+    },
+    {
+      "input": "4 3\n",
+      "output": "13\n",
+      "explanation": "For example `[1,2,4]`, `[1,1,4]`, `[2,2,4]`, `[4,4,4]`, `[1,3,3]` ... 13 chains in total."
+    },
+    {
+      "input": "5 1\n",
+      "output": "5\n",
+      "explanation": "Every single value `1..5` is a chain of length 1."
+    }
+  ],
+  "hints": [
+    "Build the chain left to right. To decide what can come next you only need to know the **last value**.",
+    "`dp[len][v]` = number of chains of length `len` ending in `v`. A chain ending in `d` can be extended by any **multiple** of `d` that is `≤ N`.",
+    "Instead of looking for divisors of `v`, push forward: for every `d`, add `dp[d]` to `new[m]` for `m = d, 2d, 3d, …`. Each step costs `N/1 + N/2 + … + N/N ≈ N ln N`."
+  ],
+  "editorial": "### State\n`dp[v]` (for the current length `L`) = number of divisor chains of length `L` whose last element is `v`.\n\n### Base case\n`L = 1`: `dp[v] = 1` for every `v` in `1..N`.\n\n### Transition (`L → L+1`)\n`new[m] = Σ dp[d]` over all divisors `d` of `m`. Implement it as a *push*: for each `d`, loop over its multiples `m = d, 2d, …` and add `dp[d]`. The harmonic series makes one step `O(N log N)`.\n\n### Answer\n`Σ dp[v]` after `K − 1` transitions, modulo `10^9+7`.\n\n**Total** `O(K · N log N)` ≈ `100 × 10^4 × 9 ≈ 10^7` simple additions (≈ 0.5 s in Python).\n\n### Going further (optional)\nThe number of chains ending in `v` depends only on the prime exponents of `v`: for `v = Π p^e` it equals `Π C(e + K − 1, K − 1)` (stars and bars on each exponent). This gives a near-linear solution for much larger `K`.\n\n### Common mistakes\n- Looping over all pairs `(d, m)` with a `%` check - `O(N²K)` = `10^10`, far too slow.\n- Forgetting `B[i] = B[i+1]` is allowed (`v` divides itself).\n- Applying the modulo only at the end (Python survives, other languages overflow).",
+  "youtube": [
+    {
+      "title": "DP 44. Largest Divisible Subset | Longest Increasing Subsequence (take U forward)",
+      "url": "https://www.youtube.com/watch?v=gDuZwBW9VvM",
+      "kind": "video"
+    },
+    {
+      "title": "Largest Divisible Subset | LIS Variant | DP Concepts & Qns-18 | Leetcode-368 — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=T-Fk9185a68",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: count arrays where each element divides the next dynamic programming",
+      "url": "https://www.youtube.com/results?search_query=count+arrays+each+element+divides+next+dynamic+programming",
+      "kind": "search"
+    },
+    {
+      "title": "Search YouTube: Infosys SP DSE count arrays divisibility condition",
+      "url": "https://www.youtube.com/results?search_query=infosys+sp+dse+count+arrays+divisibility+condition",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef count_divisor_chains(n, k):\n    # Return the number of length-k arrays with values in 1..n where each element divides the next, modulo 10**9 + 7\n    # Write your code here\n    return 0\n\n\ndef main():\n    n, k = map(int, sys.stdin.read().split())\n    print(count_divisor_chains(n, k))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

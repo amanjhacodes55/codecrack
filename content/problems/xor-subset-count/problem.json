@@ -1,0 +1,66 @@
+{
+  "slug": "xor-subset-count",
+  "title": "XOR Subset Count",
+  "difficulty": "Hard",
+  "tags": [
+    "Bit Manipulation",
+    "XOR Basis",
+    "Linear Algebra",
+    "Math"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates in Infosys SP/DSE / HackWithInfy: XOR-subset problems ('Maximum XOR Subset' on PrepInsta's Infosys SP/DSE question list, 'Bitwise XOR Subset' count-subsets-with-XOR-K on placementpreps.in, 'Maximum XOR Subset' in the bhasidhshaik GitHub SP/DSE sheet) — reconstructed with original wording at larger N",
+  "statement": "You are given an array `A` of `N` non-negative integers and an integer `K`.\n\nCount the **non-empty** subsets of indices whose elements have bitwise XOR equal to `K`. Two subsets are different if they contain a different set of **indices** (equal values at different positions are different elements).\n\nSince the answer can be huge, print it modulo `10^9 + 7`.",
+  "inputFormat": "The first line contains `N` and `K`.\nThe second line contains `N` integers `A[1..N]`.",
+  "outputFormat": "Print the number of non-empty subsets with XOR `K`, modulo `10^9 + 7`.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `0 ≤ A[i], K < 2^30`",
+  "samples": [
+    {
+      "input": "3 3\n1 2 3\n",
+      "output": "2\n",
+      "explanation": "Subsets with XOR 3: `{3}` and `{1, 2}`."
+    },
+    {
+      "input": "4 0\n5 5 5 5\n",
+      "output": "7\n",
+      "explanation": "Any subset of even size has XOR 0: C(4,2) + C(4,4) = 6 + 1 = 7 (the empty set is not counted)."
+    }
+  ],
+  "hints": [
+    "For N ≤ 20 you could enumerate all 2^N subsets; for N ≤ 40, meet-in-the-middle works. But N is up to 10^5 — think of XOR as addition of vectors over GF(2) (bits are coordinates).",
+    "Build a **linear (XOR) basis** of the array with Gaussian elimination: each number is reduced by the basis vectors of its highest bits; if something non-zero remains, it becomes a new basis vector. Let `r` be the basis size (rank).",
+    "If `K` cannot be reduced to 0 by the basis, the answer is 0. Otherwise exactly `2^(N - r)` subsets (including the empty one) have XOR `K`: the `N - r` dependent elements can be chosen freely and the basis part is then forced. Subtract 1 when `K = 0` to drop the empty set."
+  ],
+  "editorial": "### Intuition\nTreat each number as a 30-dimensional vector over GF(2). The XOR of a subset is a linear combination with coefficients 0/1. The map *subset → XOR* is a linear map from `GF(2)^N` onto the span of the array, whose dimension is the rank `r`. Each reachable value therefore has exactly `2^(N-r)` preimages (the size of the kernel), and unreachable values have none.\n\n### Approach\n1. **Insert** each `x` into `basis[0..29]` (indexed by highest set bit): for bits from 29 down to 0, if bit `b` is set and `basis[b]` exists, `x ^= basis[b]`; otherwise store `x` at `basis[b]`, `rank += 1`, stop.\n2. **Test** `K`: reduce it the same way; if it does not become 0, print 0.\n3. Else print `2^(N-rank) mod p`, minus 1 if `K == 0` (the empty subset).\n\n### Complexity\n**O(N · 30)** time, **O(30)** extra memory.\n\n### Common mistakes\n- Forgetting to remove the empty subset when `K = 0` — or removing it when `K ≠ 0`.\n- Treating equal values as one element: `{5,5,5,5}` has rank 1 and 2^3 = 8 subsets with XOR 0 including the empty one.\n- Trying a DP over XOR values: values go up to 2^30, so a `dp[xor]` table is impossible.\n- Forgetting the modulo on `2^(N-r)` (use Python's 3-argument `pow`).",
+  "youtube": [
+    {
+      "title": "Meet in the middle algorithm (Techdose) — the partial-score approach for N ≤ 40",
+      "url": "https://www.youtube.com/watch?v=naz_9njI0I0",
+      "kind": "video"
+    },
+    {
+      "title": "XOR Space | Competitive Programming Winning Technique 2 | Gaussian Elimination | Vivek Gupta — Vivek Gupta",
+      "url": "https://www.youtube.com/watch?v=qIXg9vJ6hZM",
+      "kind": "video"
+    },
+    {
+      "title": "Xor Basis | Gaussian elimination in binary | Linear Algebra over Binary numbers — CPNavigator",
+      "url": "https://www.youtube.com/watch?v=aFScgsEopqo",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: XOR basis linear basis gaussian elimination competitive programming",
+      "url": "https://www.youtube.com/results?search_query=xor+basis+linear+basis+gaussian+elimination+competitive+programming",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\nMOD = 10**9 + 7\n\n\ndef count_xor_subsets(arr, k):\n    # Return the number of non-empty subsets of arr (by index) whose XOR equals k, modulo MOD\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, k = int(data[0]), int(data[1])\n    arr = list(map(int, data[2:2 + n]))\n    print(count_xor_subsets(arr, k))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

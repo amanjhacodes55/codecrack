@@ -1,0 +1,76 @@
+{
+  "slug": "andys-longest-vacation",
+  "title": "Andy's Longest Vacation",
+  "difficulty": "Medium",
+  "tags": [
+    "Sliding Window",
+    "Two Pointers",
+    "Arrays"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Reconstructed from candidate reports: 'Andy's Vacation' appears in PrepInsta's Infosys SP/DSE coding question list and community 2025 SP/DSE prep sheets. Statement rewritten and made precise.",
+  "statement": "Andy's calendar has `N` days, numbered `1` to `N`. He has `M` **obligations** (meetings, classes, …). Obligation `j` is scheduled on day `d[j]`. Several obligations may fall on the **same** day.\n\nA day is **free** if no obligation is left on it. Andy may **cancel at most `K` obligations** in total. Cancelling an obligation removes it from its day.\n\nAndy wants the **longest vacation**: the maximum number of **consecutive** free days he can get after choosing which obligations to cancel.\n\nNote that a day with 3 obligations needs all 3 of them cancelled before it becomes free.",
+  "inputFormat": "The first line contains three integers `N`, `M` and `K`.\nThe second line contains `M` space-separated integers `d[1..M]`. If `M = 0`, this line is empty.",
+  "outputFormat": "Print one integer: the maximum length of a run of consecutive free days (possibly `0`).",
+  "constraints": "- `1 ≤ N ≤ 2 × 10^5`\n- `0 ≤ M ≤ 2 × 10^5`\n- `0 ≤ K ≤ 10^6`\n- `1 ≤ d[j] ≤ N`",
+  "samples": [
+    {
+      "input": "10 4 1\n3 6 6 8\n",
+      "output": "5\n",
+      "explanation": "Obligations per day: day 3 → 1, day 6 → 2, day 8 → 1. With `K = 1` you can free day 3, which makes days 1..5 free (5 days), or free day 8, which makes days 7..10 free (4 days). Day 6 needs 2 cancellations. Best = 5."
+    },
+    {
+      "input": "10 4 3\n3 6 6 8\n",
+      "output": "7\n",
+      "explanation": "Cancel both obligations on day 6 and the one on day 8. Days 4..10 are then free (7 days). Cancelling days 3 and 6 instead frees days 1..7, also 7 days."
+    }
+  ],
+  "hints": [
+    "First compress the input: let `c[t]` be the number of obligations on day `t`.",
+    "A window of days `[L, R]` can be made completely free iff `c[L] + … + c[R] ≤ K`.",
+    "All `c[t] ≥ 0`, so when you extend `R` the window sum only grows. Use two pointers: move `R` right, and while the sum exceeds `K`, move `L` right. Track the best `R − L + 1`."
+  ],
+  "editorial": "### Reformulation\nLet `c[t]` be the number of obligations on day `t`. Freeing a block of days `[L, R]` costs exactly `c[L] + … + c[R]` cancellations. So we want the **longest subarray of `c` whose sum is ≤ K**.\n\n### Sliding window\nBecause every `c[t] ≥ 0`, the window sum is monotone. Extending to the right never decreases it, and shrinking from the left never increases it. So the classic two-pointer technique works:\n```\nL = 1; s = 0; best = 0\nfor R in 1..N:\n    s += c[R]\n    while s > K: s -= c[L]; L += 1\n    best = max(best, R - L + 1)\n```\nEach pointer moves at most `N` times.\n\n### Complexity\n**O(N + M)** time, **O(N)** memory for the counts.\n\n### Common mistakes\n- Treating each **day** as costing 1 cancellation. A day with several obligations costs several cancellations.\n- Forgetting days before the first and after the last obligation. They are free for nothing.\n- Using `if` instead of `while` when shrinking the window.\n- `K` may be larger than `M`. Then the whole calendar is free and the answer is `N`.",
+  "youtube": [
+    {
+      "title": "Max Consecutive Ones III - LeetCode 1004 (same sliding-window idea) - JDCodebase",
+      "url": "https://www.youtube.com/watch?v=PnjpaxOx2LE",
+      "kind": "video"
+    },
+    {
+      "title": "Maximum Consecutive Ones III - Sliding Window Pattern Explained - CodeLucky",
+      "url": "https://www.youtube.com/watch?v=oSUL2UQb2wo",
+      "kind": "video"
+    },
+    {
+      "title": "Longest Subarray With at Most K Distinct Prime Factors | Leetcode 4032 — Techdose",
+      "url": "https://www.youtube.com/watch?v=74rzXOXyu5Q",
+      "kind": "video"
+    },
+    {
+      "title": "L6. Longest Substring With At Most K Distinct Characters | 2 Pointers and Sliding Window Playlist — take U forward",
+      "url": "https://www.youtube.com/watch?v=teM9ZsVRQyc",
+      "kind": "video"
+    },
+    {
+      "title": "L1. Introduction to Sliding Window and 2 Pointers | Templates | Patterns — take U forward",
+      "url": "https://www.youtube.com/watch?v=9kdHxplyl5I",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: Infosys SP DSE Andy vacation sliding window",
+      "url": "https://www.youtube.com/results?search_query=Infosys+SP+DSE+Andy+vacation+sliding+window",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef longest_vacation(n, k, days):\n    # n    : number of days (days are numbered 1..n)\n    # k    : maximum number of obligations Andy may cancel\n    # days : list of obligation days (a day may appear several times)\n    # Return the maximum number of consecutive completely free days.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, m, k = int(data[0]), int(data[1]), int(data[2])\n    days = list(map(int, data[3:3 + m]))\n    print(longest_vacation(n, k, days))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

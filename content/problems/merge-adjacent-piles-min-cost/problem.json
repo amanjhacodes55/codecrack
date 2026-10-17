@@ -1,0 +1,70 @@
+{
+  "slug": "merge-adjacent-piles-min-cost",
+  "title": "Merge Adjacent Piles",
+  "difficulty": "Hard",
+  "tags": [
+    "Dynamic Programming",
+    "Interval DP",
+    "Prefix Sums"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Classic interval-DP problem (stone merging). Included because partition/interval DP is repeatedly reported as the Infosys SP Hard-slot topic (e.g. Naukri Code360 SP experiences mentioning partition DP); not a verbatim Infosys question",
+  "statement": "A warehouse has `N` piles of crates in a single row; pile `i` contains `A[i]` crates.\n\nIn one operation you choose **two adjacent piles** and merge them into one pile (it takes their place in the row). The operation costs the total number of crates in the new pile.\n\nYou keep merging until a single pile remains. Print the minimum possible total cost.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the minimum total cost (`0` if `N = 1`).",
+  "constraints": "- `1 ≤ N ≤ 200`\n- `0 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "4\n4 1 3 2\n",
+      "output": "20\n",
+      "explanation": "Merge `4+1 = 5` (cost 5) → `5 3 2`; merge `3+2 = 5` (cost 5) → `5 5`; merge `5+5 = 10` (cost 10). Total `20`. Another optimal order is `1+3` (4), `4+2` (6), `4+6` (10). Merging `4+4` second would give `22`."
+    },
+    {
+      "input": "3\n10 1 10\n",
+      "output": "32\n",
+      "explanation": "`10+1 = 11` (cost 11), then `11+10 = 21` (cost 21) → `32`. Merging the other side first is symmetric."
+    }
+  ],
+  "hints": [
+    "Think about the **very last** merge: it joins a pile made from `A[i..m]` with a pile made from `A[m+1..j]`. Its cost is always `sum(A[i..j])`, whatever happened before.",
+    "So the cost to fully merge a range `[i, j]` = best split point `m` + the cost of each side + the range sum. Ranges depend only on strictly shorter ranges.",
+    "`dp[i][j] = min_{i ≤ m < j} (dp[i][m] + dp[m+1][j]) + prefix[j+1] − prefix[i]`, `dp[i][i] = 0`. Fill by increasing length."
+  ],
+  "editorial": "### State\n`dp[i][j]` = minimum cost to merge piles `i..j` (inclusive) into one pile.\n\n### Transition\nThe final merge of the range combines `[i..m]` and `[m+1..j]` for some `m`:\n`dp[i][j] = min_{m=i}^{j-1} (dp[i][m] + dp[m+1][j]) + S(i, j)`\nwhere `S(i, j)` is the range sum, obtained in `O(1)` from prefix sums.\n\n### Base case\n`dp[i][i] = 0` (a single pile needs no merge).\n\n### Order\nBy increasing range length `2..N`; every needed sub-range is shorter.\n\n### Answer\n`dp[0][N-1]`.\n\n### Complexity\n`O(N^3 / 6)` ≈ `1.3·10^6` for `N = 200`, `O(N^2)` memory.\n\n### Common mistakes\n- Greedy \"always merge the cheapest adjacent pair\" - not optimal for adjacent-only merging (it is optimal only when any two piles may be merged, i.e. Huffman).\n- Iterating `i` and `j` in plain nested loops (`dp[m+1][j]` not ready yet) instead of by length.\n- Forgetting the range sum is added once per merge level.",
+  "youtube": [
+    {
+      "title": "DP 48. Matrix Chain Multiplication | MCM | Partition DP Starts (take U forward)",
+      "url": "https://www.youtube.com/watch?v=vRVfmbCFW7Y",
+      "kind": "video"
+    },
+    {
+      "title": "34 Matrix Chain Multiplication Recursive | Aditya Verma",
+      "url": "https://www.youtube.com/watch?v=kMK148J9qEE",
+      "kind": "video"
+    },
+    {
+      "title": "DP 50. Minimum Cost to Cut the Stick (take U forward)",
+      "url": "https://www.youtube.com/watch?v=xwomavsC86c",
+      "kind": "video"
+    },
+    {
+      "title": "Minimum Cost to Merge Stones | GFG POTD 14 Nov 2025 | Interval DP + Prefix Sum | C++ Solution 🔥 — Optimal AF",
+      "url": "https://www.youtube.com/watch?v=YdaKTAbFQus",
+      "kind": "video"
+    },
+    {
+      "title": "Minimum Cost to Merge Stones - Dynamic Programming (LeetCode 1000) — CodeLucky",
+      "url": "https://www.youtube.com/watch?v=8fRSrGSOpfQ",
+      "kind": "video"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_merge_cost(piles):\n    # Return the minimum total cost to merge all piles into one by repeatedly merging two adjacent piles\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    piles = list(map(int, data[1:1 + n]))\n    print(min_merge_cost(piles))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "slug": "two-centre-interview-cost",
+  "title": "Two-Centre Interview Travel",
+  "difficulty": "Medium",
+  "tags": [
+    "Greedy",
+    "Sorting"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by a candidate on LeetCode Discuss ('Infosys SP/DSE OA Experience'): first question was sending 2N candidates to two cities at minimum cost. Same idea as LeetCode 1029. Original wording.",
+  "statement": "A company is hiring and has `2N` shortlisted candidates. Interviews happen at two centres, **A** and **B**, and **exactly `N`** candidates must go to each centre.\n\nSending candidate `i` to centre A costs `a[i]` and to centre B costs `b[i]` (travel reimbursement).\n\nFind the **minimum total cost** to send every candidate to one of the centres while respecting the `N`/`N` split.",
+  "inputFormat": "The first line contains an integer `N`.\nEach of the next `2N` lines contains two integers `a[i]` and `b[i]`.",
+  "outputFormat": "Print one integer: the minimum total cost.",
+  "constraints": "- `1 ≤ N ≤ 10^5` (so there are up to `2 × 10^5` candidates)\n- `1 ≤ a[i], b[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "2\n10 20\n30 200\n400 50\n30 20\n",
+      "output": "110\n",
+      "explanation": "Send candidates 1 and 2 to A (10 + 30) and candidates 3 and 4 to B (50 + 20). Total 110."
+    },
+    {
+      "input": "1\n5 5\n7 1\n",
+      "output": "6\n",
+      "explanation": "Candidate 2 strongly prefers B (saves 6), so candidate 1 goes to A: 5 + 1 = 6."
+    }
+  ],
+  "hints": [
+    "Imagine first sending **everyone** to B. Now pick `N` candidates to move to A.",
+    "Moving candidate `i` from B to A changes the cost by `a[i] − b[i]`.",
+    "Pick the `N` candidates with the smallest `a[i] − b[i]`: sort by that difference."
+  ],
+  "editorial": "### Greedy by difference\nStart with everyone at B: cost `Σ b[i]`. Moving candidate `i` to A adds `d[i] = a[i] − b[i]`, which may be negative. We must move exactly `N` people, and the total is `Σ b + Σ(chosen d)`. That is minimised by choosing the `N` **smallest** differences.\n\n```\nidx sorted by a[i] - b[i]\nfirst N → A, rest → B\n```\n\n### Complexity\n**O(N log N)** for sorting.\n\n### Common mistakes\n- Sorting by `a[i]` alone, or sending each candidate to their cheaper city. That breaks the `N`/`N` rule.\n- Sorting by `|a − b|` without handling the direction.\n- Reading only `N` lines instead of `2N`.",
+  "youtube": [
+    {
+      "title": "Two City Scheduling - LeetCode 1029 - Michael Vandi",
+      "url": "https://www.youtube.com/watch?v=cUgmVF3Qg_A",
+      "kind": "video"
+    },
+    {
+      "title": "Two City Scheduling | Leetcode 1029 | Greedy - Coding Decoded",
+      "url": "https://www.youtube.com/watch?v=3isvpHf5_MM",
+      "kind": "video"
+    },
+    {
+      "title": "Two City Scheduling - Leetcode 1029 - Python — NeetCode",
+      "url": "https://www.youtube.com/watch?v=d-B_gk_gJtQ",
+      "kind": "video"
+    },
+    {
+      "title": "Two city Scheduling Solution | Leetcode #1029 | C++ | Code + Explanation — Code with Alisha",
+      "url": "https://www.youtube.com/watch?v=PNv-3LkfMWo",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: two city scheduling greedy sort by difference",
+      "url": "https://www.youtube.com/results?search_query=two+city+scheduling+greedy+sort+by+difference",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_total_cost(cost_a, cost_b):\n    # cost_a[i], cost_b[i]: cost of sending candidate i to centre A / centre B\n    # Exactly half of the candidates must go to each centre.\n    # Return the minimum total cost.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    cost_a, cost_b = [], []\n    for i in range(2 * n):\n        cost_a.append(int(data[1 + 2 * i]))\n        cost_b.append(int(data[2 + 2 * i]))\n    print(min_total_cost(cost_a, cost_b))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

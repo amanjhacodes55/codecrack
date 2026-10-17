@@ -1,0 +1,71 @@
+{
+  "slug": "min-cost-break-subsequence",
+  "title": "Break the Hidden Pattern",
+  "difficulty": "Hard",
+  "tags": [
+    "Dynamic Programming",
+    "Strings",
+    "Subsequences"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "hackwithinfy",
+    "infosys-sp-dse"
+  ],
+  "source": "Reported from HackWithInfy 2022 — reconstructed from the Codeforces blog post 'Questions from Infosys HackWithInfy 2022' (entry 100661, question 2: delete characters of S with given costs so that C is no longer a subsequence). Statement, constraints and samples are original.",
+  "statement": "A text `S` of length `N` contains, possibly as a **subsequence**, a forbidden pattern `C` of length `M`. (A subsequence is obtained by deleting zero or more characters without changing the order of the rest.)\n\nYou may delete characters of `S`. Deleting the character at position `i` costs `cost[i]`. After deletions the remaining characters keep their order.\n\nFind the **minimum total cost** of deletions such that `C` is **not** a subsequence of the remaining text. If `C` is already not a subsequence of `S`, the answer is `0`.",
+  "inputFormat": "The first line contains two integers `N` and `M`.\nThe second line contains the string `S`.\nThe third line contains the string `C`.\nThe fourth line contains `N` integers `cost[1..N]`.",
+  "outputFormat": "Print a single integer — the minimum total deletion cost.",
+  "constraints": "- `1 ≤ N ≤ 5·10^4`\n- `1 ≤ M ≤ 100`\n- `S` and `C` consist of lowercase English letters\n- `1 ≤ cost[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "7 2\nhackhwi\nhw\n4 2 7 1 3 5 6\n",
+      "output": "5\n",
+      "explanation": "`hw` is a subsequence (`h` at position 1 or 5, `w` at 6). Either delete both `h`s (cost `4 + 3 = 7`) or delete the single `w` (cost `5`). The minimum is `5`."
+    },
+    {
+      "input": "5 3\naabba\naba\n3 1 4 1 5\n",
+      "output": "4\n",
+      "explanation": "Deleting the two `b`s costs `4 + 1 = 5`; deleting the last `a` costs `5`. Better: delete the first two `a`s (cost `3 + 1 = 4`) — the rest `bba` has no `a` before a `b`."
+    },
+    {
+      "input": "4 2\nxyzw\nzx\n9 9 9 9\n",
+      "output": "0\n",
+      "explanation": "`zx` is not a subsequence of `xyzw` already."
+    }
+  ],
+  "hints": [
+    "Scan `S` left to right and match `C` greedily. The only thing that matters about the kept prefix is `j` = how many characters of `C` have been matched so far.",
+    "State `dp[j]` = minimum cost so far such that the kept text matches exactly `C[0..j-1]` greedily (`0 ≤ j < M`). For the next character `ch` with cost `a`: if `ch ≠ C[j]` keeping it is free and `j` stays; if `ch = C[j]` you either pay `a` to delete it, or keep it and move to `j+1` — which is forbidden when `j+1 = M`.",
+    "Only states with `C[j] = ch` change, so precompute for each letter the list of positions in `C` and update those (in decreasing `j` so you read old values). Answer is `min(dp)`."
+  ],
+  "editorial": "### Intuition\n`C` is a subsequence of a text iff greedy matching (take the earliest possible character for each position of `C`) reaches the end of `C`. So the kept text is 'safe' iff its greedy match length stays below `M`.\n\n### DP\n`dp[j]` (for `0 ≤ j < M`) = minimum deletion cost over the processed prefix of `S` such that the greedy match length of the kept characters is exactly `j`. Start with `dp[0] = 0`, others `∞`.\n\nProcess `S[i] = ch` with cost `a`:\n- For `j` with `C[j] ≠ ch`: keeping `ch` doesn't advance the match — free, `dp[j]` unchanged (deleting it would only cost more).\n- For `j` with `C[j] = ch`:\n  - delete: `new[j] = dp[j] + a`;\n  - keep: `new[j+1] = min(new[j+1], dp[j])`, allowed only if `j + 1 < M`.\n\nUpdate only the positions `j` where `C[j] = ch`, iterating `j` in **decreasing** order: when you set `dp[j+1]` it already holds its own new value, and `dp[j]` still holds the old value you need.\n\nAnswer: `min(dp[0..M-1])`.\n\n### Complexity\n`O(N · M)` in the worst case (all letters equal), `O(M)` memory. With `N = 5·10^4`, `M = 100` that is `5·10^6` cheap steps. Typical inputs are much faster since a letter appears only a few times in `C`.\n\n### Common mistakes\n- Allowing the transition to `j = M` (that means the pattern was completed).\n- Updating in increasing `j` order — a single character would then advance the match by several steps.\n- Thinking it is enough to delete all copies of the cheapest letter of `C` — sample 2 shows mixing positions can be cheaper.",
+  "youtube": [
+    {
+      "title": "Is Subsequence (LeetCode 392) | Nikhil Lohia",
+      "url": "https://www.youtube.com/watch?v=Gkz3SwtdSes",
+      "kind": "video"
+    },
+    {
+      "title": "Two Pointer | Is Subsequence | LeetCode 392. — Nick White",
+      "url": "https://www.youtube.com/watch?v=RIa7SCyKTkQ",
+      "kind": "video"
+    },
+    {
+      "title": "Day 17: LeetCode 392 Is Subsequence | Two Pointers Explained | Top Interview 150 — Rahul Coder",
+      "url": "https://www.youtube.com/watch?v=24_9tsSK-aU",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: minimum cost to delete characters so string is not a subsequence dp",
+      "url": "https://www.youtube.com/results?search_query=minimum+cost+to+delete+characters+so+string+is+not+a+subsequence+dp",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_deletion_cost(s, c, cost):\n    # cost[i] is the price of deleting s[i].\n    # Return the minimum total price so that c is NOT a subsequence of what remains of s.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, m = int(data[0]), int(data[1])\n    s, c = data[2], data[3]\n    cost = list(map(int, data[4:4 + n]))\n    print(min_deletion_cost(s, c, cost))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

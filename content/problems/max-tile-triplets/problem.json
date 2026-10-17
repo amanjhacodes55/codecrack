@@ -1,0 +1,56 @@
+{
+  "slug": "max-tile-triplets",
+  "title": "Maximum Tile Triplets",
+  "difficulty": "Hard",
+  "tags": [
+    "Dynamic Programming",
+    "Greedy",
+    "Counting"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "hackwithinfy",
+    "infosys-sp-dse"
+  ],
+  "source": "Reported from HackWithInfy (2021 cycle) — reconstructed from the Codeforces blog post 'Infosys Contest Questions' (entry 90569: form the maximum number of triplets of identical or consecutive numbers, N ≤ 1e5, values ≤ 1e4). The same idea appears as Codeforces 1110D 'Jongmah'. Statement and samples are original.",
+  "statement": "You have `N` numbered tiles; tile `i` shows a value `A[i]` between `1` and `M`.\n\nA **triplet** is a group of exactly three tiles whose values are either\n\n- all **equal**: `(x, x, x)`, or\n- three **consecutive** values: `(x, x+1, x+2)`.\n\nEach tile can be used in at most one triplet, and tiles may be left unused. Print the **maximum** number of triplets you can form.",
+  "inputFormat": "The first line contains two integers `N` and `M`.\nThe second line contains `N` integers `A[1..N]`.",
+  "outputFormat": "Print a single integer — the maximum number of triplets.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `1 ≤ M ≤ 10^4`\n- `1 ≤ A[i] ≤ M`",
+  "samples": [
+    {
+      "input": "10 6\n2 3 3 3 4 4 4 5 5 6\n",
+      "output": "3\n",
+      "explanation": "Take `(2,3,4)`, `(3,4,5)`, `(3,4,5)`. Greedily taking the equal triplets `(3,3,3)` and `(4,4,4)` first would leave `2, 5, 5, 6` and give only 2."
+    },
+    {
+      "input": "7 7\n7 7 7 1 3 5 7\n",
+      "output": "1\n",
+      "explanation": "Only one `(7,7,7)` can be formed; `1, 3, 5` are not consecutive."
+    }
+  ],
+  "hints": [
+    "Work with `cnt[v]`, the number of tiles with value `v`. Greedy choices (equal triplets first, or consecutive first) both fail on some inputs.",
+    "Key exchange argument: you never need **3 or more** identical consecutive triplets starting at the same `x` — three copies of `(x, x+1, x+2)` can be replaced by `(x,x,x)`, `(x+1,x+1,x+1)`, `(x+2,x+2,x+2)`. So each start uses 0, 1 or 2 consecutive triplets.",
+    "DP over values with state `(j, k)` = number of consecutive triplets that started at `v−2` and at `v−1` (each 0..2). At value `v` choose `l ∈ {0,1,2}` new ones; they all consume `j + k + l` tiles of value `v`, and the leftover forms `(cnt[v] − j − k − l) // 3` equal triplets."
+  ],
+  "editorial": "### Intuition\nThe interaction between values is local: a consecutive triplet starting at `x` touches only `x, x+1, x+2`. If we knew how many consecutive triplets start at each value, the rest would be forced (all leftovers form equal triplets greedily).\n\n**Bounding the choices.** Three identical consecutive triplets `(x,x+1,x+2) × 3` use exactly three `x`, three `x+1` and three `x+2` — the same tiles as `(x,x,x) + (x+1,x+1,x+1) + (x+2,x+2,x+2)`. So w.l.o.g. at most **2** consecutive triplets start at any value.\n\n### DP\nLet `dp[j][k]` after processing value `v−1` be the best count where `j` triplets started at `v−2` and `k` at `v−1` (both still need a tile of value `v`).\n\nFor value `v` with `c = cnt[v]`, for every `l ∈ {0,1,2}` with `j + k + l ≤ c`:\n\n`new[k][l] = max(new[k][l], dp[j][k] + l + (c − j − k − l) // 3)`\n\n(`l` new consecutive triplets are counted when they start.) Iterate `v = 1 … M+2` — values `M+1`, `M+2` have count 0, which forces every open run to be closed — and answer `dp[0][0]`.\n\n### Complexity\n`O(27 · M + N)` time, `O(1)` extra memory beyond the counts.\n\n### Common mistakes\n- Greedy strategies (sample 1 breaks 'equal first'; other cases break 'consecutive first').\n- Allowing runs that start at `M−1` or `M` — they need values above `M`. Running the DP to `M+2` and reading `dp[0][0]` handles it.\n- Counting the new runs `l` again when they close — count each triplet exactly once.",
+  "youtube": [
+    {
+      "title": "Jongmah - Global Codeforces Round 1 Coding Problem (same DP idea)",
+      "url": "https://www.youtube.com/watch?v=f17r73WrYa8",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: maximum triplets consecutive or equal numbers dynamic programming",
+      "url": "https://www.youtube.com/results?search_query=maximum+triplets+consecutive+or+equal+numbers+dynamic+programming",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef max_triplets(a, m):\n    # Each value in a is between 1 and m. Form as many disjoint triplets as possible,\n    # where a triplet is three equal values (x, x, x) or three consecutive values (x, x+1, x+2).\n    # Return the maximum number of triplets.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, m = int(data[0]), int(data[1])\n    a = list(map(int, data[2:2 + n]))\n    print(max_triplets(a, m))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

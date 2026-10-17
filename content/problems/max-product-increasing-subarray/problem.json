@@ -1,0 +1,71 @@
+{
+  "slug": "max-product-increasing-subarray",
+  "title": "Maximum Product of an Increasing Subarray",
+  "difficulty": "Medium",
+  "tags": [
+    "Arrays",
+    "Kadane",
+    "Greedy"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Reconstructed from a candidate report on LeetCode Discuss ('Infosys SP/DSE OA Experience'): the second question was a maximum product of a strictly increasing subarray. Exact constraints were not given, so they were chosen here.",
+  "statement": "You are given an array `A` of `N` integers, which may be negative or zero.\n\nA subarray `A[l..r]` (contiguous, non-empty) is **increasing** if `A[l] < A[l+1] < … < A[r]`. A single element is always increasing.\n\nFind the **maximum product** `A[l] · A[l+1] · … · A[r]` over all increasing subarrays.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print one integer: the maximum product.",
+  "constraints": "- `1 ≤ N ≤ 2 × 10^5`\n- `-10 ≤ A[i] ≤ 10`\n- (An increasing subarray has at most 21 elements, so every product fits in a 64-bit integer.)",
+  "samples": [
+    {
+      "input": "6\n-3 -2 1 4 2 5\n",
+      "output": "24\n",
+      "explanation": "The increasing runs are [-3, -2, 1, 4] and [2, 5]. Inside the first run, the subarray [-3, -2, 1, 4] has product 24, and that is the best."
+    },
+    {
+      "input": "5\n-5 -4 -3 0 2\n",
+      "output": "20\n",
+      "explanation": "[-5, -4] gives 20. The whole run [-5, -4, -3, 0, 2] has product 0, and [-5, -4, -3] gives −60."
+    },
+    {
+      "input": "3\n-1 -1 -1\n",
+      "output": "-1\n",
+      "explanation": "Equal neighbours break the increasing property, so only single elements qualify."
+    }
+  ],
+  "hints": [
+    "Split the array into maximal strictly increasing runs. Any valid subarray lies inside one run.",
+    "Inside a run you need the classic *maximum product subarray*. Negative numbers flip max and min, so track both the max and the min product ending at the current element.",
+    "When `A[i] ≤ A[i−1]`, a new run starts: reset both trackers to `A[i]`."
+  ],
+  "editorial": "### Reduction\nA subarray is increasing iff it doesn't cross a position where `A[i] ≤ A[i−1]`. So the array splits into independent **maximal increasing runs**, and we solve *maximum product subarray* inside each run.\n\n### Max/min tracking (Kadane for products)\nFor the subarrays ending at `i` (inside the current run) keep `hi` = largest product and `lo` = smallest product:\n```\nif i == 0 or A[i] <= A[i-1]:\n    hi = lo = A[i]\nelse:\n    cand = (A[i], hi * A[i], lo * A[i])\n    hi, lo = max(cand), min(cand)\nbest = max(best, hi)\n```\nMultiplying by a negative turns the smallest product into the largest, so both are needed.\n\n### Complexity\n**O(N)** time, **O(1)** space.\n\n### Common mistakes\n- Ignoring the increasing condition and running plain max-product over the whole array.\n- Treating equal neighbours as increasing (`<` is strict).\n- Tracking only the maximum, which fails on `[-3, -2]` (answer 6).\n- Initialising `best = 0`. If every element is negative and isolated, the answer is negative.",
+  "youtube": [
+    {
+      "title": "Maximum Product Subarray - LeetCode 152 - Python - Deepti Talesra",
+      "url": "https://www.youtube.com/watch?v=eiJf3AjbCRk",
+      "kind": "video"
+    },
+    {
+      "title": "Maximum Product Subarray - Best Intuitive Approach Discussed — take U forward",
+      "url": "https://www.youtube.com/watch?v=hnswaLJvr6g",
+      "kind": "video"
+    },
+    {
+      "title": "Maximum Product Subarray - Dynamic Programming - Leetcode 152 — NeetCode",
+      "url": "https://www.youtube.com/watch?v=lXVy6YWFcRM",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: maximum product subarray track max and min",
+      "url": "https://www.youtube.com/results?search_query=maximum+product+subarray+track+max+and+min",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef max_increasing_product(arr):\n    # Return the maximum product of a non-empty contiguous subarray\n    # whose elements are strictly increasing from left to right.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    print(max_increasing_product(arr))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

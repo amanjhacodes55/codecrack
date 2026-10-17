@@ -1,0 +1,76 @@
+{
+  "slug": "binary-strings-balanced-mod-3",
+  "title": "Balanced Binary Strings Without Adjacent Ones",
+  "difficulty": "Medium",
+  "tags": [
+    "Dynamic Programming",
+    "Counting",
+    "Modular Arithmetic",
+    "State Machine DP"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by a candidate from an Infosys SP/DSE campus online test (r/infosys post, 2026) - statement reconstructed and rewritten; multi-query format and constraints are our own",
+  "statement": "A binary string of length `N` is called **good** if both conditions hold:\n\n1. it never contains two `1`s next to each other (no substring `11`), and\n2. `(number of 0s) − (number of 1s)` is a multiple of `3` (zero and negative multiples count too).\n\nYou are given `T` queries. For each query `N`, print how many good binary strings of length exactly `N` exist, **modulo** `10^9 + 7`.",
+  "inputFormat": "The first line contains an integer `T`.\nEach of the next `T` lines contains one integer `N`.",
+  "outputFormat": "For each query print the number of good strings of length `N` modulo `10^9 + 7`, one per line.",
+  "constraints": "- `1 ≤ T ≤ 10^5`\n- `1 ≤ N ≤ 10^5`",
+  "samples": [
+    {
+      "input": "4\n1\n2\n3\n6\n",
+      "output": "0\n2\n1\n5\n",
+      "explanation": "- `N = 1`: `0` has difference `1`, `1` has difference `−1` → none.\n- `N = 2`: `01` and `10` (difference `0`). `00` has difference `2`; `11` is forbidden.\n- `N = 3`: only `000` (difference `3`).\n- `N = 6`: `000000` (difference 6) and the four strings with three non-adjacent 1s: `010101`, `100101`, `101001`, `101010` (difference 0). With one `1` the difference would be 4, with two it would be 2."
+    }
+  ],
+  "hints": [
+    "Brute force over all `2^N` strings is hopeless, but notice you only need to remember **two** small facts about a prefix to know how it can be extended.",
+    "Fact 1: is the last character a `1`? (then the next one must be `0`). Fact 2: `(zeros − ones) mod 3`. That is just `2 × 3 = 6` states.",
+    "Let `end0[d]` / `end1[d]` = number of length-`n` prefixes ending in `0` / `1` with difference `≡ d (mod 3)`. Appending `0`: from both, `d → d+1`. Appending `1`: only from `end0`, `d → d−1`. Precompute answers for all `n` up to `max N` once, then answer queries in `O(1)`."
+  ],
+  "editorial": "### State\nFor prefixes of length `n`:\n- `end0[d]` = number of valid prefixes ending with `0` whose `(zeros − ones) mod 3 = d`\n- `end1[d]` = same but ending with `1`.\n\n### Transitions (length `n → n+1`)\n- append `0` (always allowed): `new_end0[(d+1) % 3] += end0[d] + end1[d]`\n- append `1` (only after a `0`): `new_end1[(d−1) % 3] += end0[d]`\n\n### Base case (`n = 1`)\n`end0[1] = 1` (string `0`), `end1[2] = 1` (string `1`, difference `−1 ≡ 2`).\n\n### Answer\n`ans[n] = end0[0] + end1[0]` (mod `10^9+7`).\n\n### Many queries\nRecomputing for each query costs `O(T·N) = 10^10`. Instead run the DP **once** up to the largest `N`, store `ans[n]` for every `n`, and answer each query by lookup. Total `O(max N + T)`.\n\n### Common mistakes\n- Python `%` of a negative number is fine, but in C++/Java `(d−1) % 3` can be negative - use `(d+2) % 3`.\n- Forgetting that a negative difference (more ones than zeros) can also be a multiple of 3.\n- Reading queries one by one with `input()` - use `sys.stdin` for `10^5` lines.\n- Forgetting the modulo (the count grows like Fibonacci).",
+  "youtube": [
+    {
+      "title": "DP 1. Introduction to Dynamic Programming (take U forward)",
+      "url": "https://www.youtube.com/watch?v=tyB0ztf0DNY",
+      "kind": "video"
+    },
+    {
+      "title": "Count binary strings without consecutive ones | Recursion Series Part 6 — AlgoCamp",
+      "url": "https://www.youtube.com/watch?v=3Rp1sBOR4jk",
+      "kind": "video"
+    },
+    {
+      "title": "Count Binary Strings | Binary Strings with no consecutive 0's | Dynamic Programming — Pepcoding",
+      "url": "https://www.youtube.com/watch?v=nqrXHJWMeBc",
+      "kind": "video"
+    },
+    {
+      "title": "Infosys SP/DSE Coding Questions Asked | Actual Infosys SP/DSE Coding Assessment Solutions PYQ — KN ACADEMY",
+      "url": "https://www.youtube.com/watch?v=T63J1FMRjpM",
+      "kind": "video"
+    },
+    {
+      "title": "Infosys SP DSE Today On-Campus Coding Questions Solution | Array + Hard DP Trick — Ace The Code",
+      "url": "https://www.youtube.com/watch?v=-DI9h7uAa4g",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: count binary strings without consecutive 1s dynamic programming",
+      "url": "https://www.youtube.com/results?search_query=count+binary+strings+without+consecutive+1s+dynamic+programming",
+      "kind": "search"
+    },
+    {
+      "title": "Search YouTube: Infosys SP DSE binary string no consecutive ones multiple of 3",
+      "url": "https://www.youtube.com/results?search_query=infosys+sp+dse+binary+string+no+consecutive+ones+multiple+of+3",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef count_good_strings(queries):\n    # Return a list: for each n in queries, the number of good binary strings of length n modulo 10**9 + 7\n    # Write your code here\n    return [0] * len(queries)\n\n\ndef main():\n    data = sys.stdin.read().split()\n    t = int(data[0])\n    queries = [int(x) for x in data[1:1 + t]]\n    print(\"\\n\".join(map(str, count_good_strings(queries))))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

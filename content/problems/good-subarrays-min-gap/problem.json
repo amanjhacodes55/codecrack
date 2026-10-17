@@ -1,0 +1,72 @@
+{
+  "slug": "good-subarrays-min-gap",
+  "title": "Close Minimums Subarrays",
+  "difficulty": "Hard",
+  "tags": [
+    "Monotonic Stack",
+    "Binary Search",
+    "Counting",
+    "Arrays"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "hackwithinfy",
+    "infosys-sp-dse"
+  ],
+  "source": "Reported from HackWithInfy 2022 — reconstructed from the Codeforces blog post 'HackwithInfy 2022 Questions' (entry 100748: count good subarrays where the gap between the minimum and the second minimum is at most D, modulo 1e9+7). Statement, tie rules and samples written here.",
+  "statement": "You are given an array `A` of `N` positive integers and an integer `D`.\n\nFor a subarray `A[l..r]` with **at least two** elements, sort its elements in non-decreasing order to get `b₁ ≤ b₂ ≤ … ≤ b_k`. Call `b₁` its **minimum** and `b₂` its **second minimum** (duplicates count separately, so if the smallest value appears twice then `b₂ = b₁`).\n\nThe subarray is **good** if `b₂ − b₁ ≤ D`.\n\nCount the good subarrays and print the count modulo `10^9 + 7`.",
+  "inputFormat": "The first line contains two integers `N` and `D`.\nThe second line contains `N` integers `A[1..N]`.",
+  "outputFormat": "Print a single integer — the number of good subarrays modulo `10^9 + 7`.",
+  "constraints": "- `1 ≤ N ≤ 2·10^5`\n- `0 ≤ D ≤ 10^9`\n- `1 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "4 3\n5 1 4 9\n",
+      "output": "4\n",
+      "explanation": "Good: `[1,4]` (gap 3), `[5,1,4]` (min 1, second min 4), `[1,4,9]` and `[5,1,4,9]`. Not good: `[5,1]` (gap 4) and `[4,9]` (gap 5)."
+    },
+    {
+      "input": "5 0\n2 7 2 3 7\n",
+      "output": "3\n",
+      "explanation": "With `D = 0` the minimum must appear at least twice: `[2,7,2]`, `[2,7,2,3]`, `[2,7,2,3,7]`."
+    }
+  ],
+  "hints": [
+    "Count the complement: there are `N(N−1)/2` subarrays of length ≥ 2. A subarray is **bad** iff its minimum is unique and every other element is `> min + D`.",
+    "Fix the position `p` of that unique minimum. A bad subarray around `p` cannot contain any other index `i` with `A[i] ≤ A[p] + D`. If `L`/`R` are the nearest such indices to the left/right, there are `(p − L)·(R − p) − 1` bad subarrays with minimum at `p` (minus 1 for the single element).",
+    "To find the nearest index to the left with value `≤ x`, keep a monotonic stack of strictly increasing values: the answer is always on the stack, so binary-search the stack's values with `bisect_right`. Run the same routine on the reversed array for `R`."
+  ],
+  "editorial": "### Intuition\nDirectly checking each subarray is `O(N²)`. Instead count **bad** subarrays (length ≥ 2, `b₂ − b₁ > D`) and subtract from `N(N−1)/2`.\n\nIn a bad subarray the minimum is **unique** (otherwise `b₂ = b₁`) and all other elements exceed `min + D`. Charge each bad subarray to the position `p` of its unique minimum — each is counted exactly once.\n\n### Counting around `p`\nLet `L` = the largest index `< p` with `A[L] ≤ A[p] + D` (or `−1`), and `R` = the smallest index `> p` with `A[R] ≤ A[p] + D` (or `N`). Any subarray `[l, r]` with `L < l ≤ p ≤ r < R` has all other elements `> A[p] + D ≥ A[p]`, so `p` is its unique minimum and it is bad (if length ≥ 2). Any subarray containing `L` or `R` is not bad *with minimum at p*. So `bad_p = (p − L)(R − p) − 1`.\n\n### Finding `L` fast\nMaintain a stack of indices whose values are strictly increasing from bottom to top (pop while `top ≥ A[i]` before pushing `i`). At time `p`, the stack contains exactly the indices `i < p` such that every element after `i` (up to `p−1`) is larger than `A[i]`. The nearest index with `A[i] ≤ x` has only elements `> x ≥ A[i]` after it, so it is on the stack — and it is the top-most stack entry with value `≤ x`. Since stack values are sorted, `bisect_right(values, A[p] + D) − 1` finds it.\n\n`R` is obtained by running the same function on the reversed array.\n\n### Complexity\n`O(N log N)` time, `O(N)` memory.\n\n### Common mistakes\n- Treating the second minimum as the second *distinct* value — duplicates count (`[2,7,2]` has gap `0`).\n- Using the plain 'previous smaller element' — the threshold here is `A[p] + D`, not `A[p]`.\n- Forgetting to subtract the length-1 subarray `[p, p]`, or forgetting the final modulo.",
+  "youtube": [
+    {
+      "title": "L9. Sum of Subarray Minimum | take U forward (contribution technique)",
+      "url": "https://www.youtube.com/watch?v=v0e8p9JCgRc",
+      "kind": "video"
+    },
+    {
+      "title": "Monotonic Stack in 6 minutes | LeetCode Pattern | AlgoMasterIO",
+      "url": "https://www.youtube.com/watch?v=DtJVwbbicjQ",
+      "kind": "video"
+    },
+    {
+      "title": "907. Sum of Subarray Minimums | Monotonic Stack | Brute - Better - Optimal — Aryan Mittal",
+      "url": "https://www.youtube.com/watch?v=5Hag64mLXac",
+      "kind": "video"
+    },
+    {
+      "title": "Day 92/120 |🔥What is Monotonic Stack | Master the Pattern & Solve Problems in O(n) #11 — CTO Bhaiya",
+      "url": "https://www.youtube.com/watch?v=aE3z0kZMxUg",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: count subarrays minimum second minimum difference monotonic stack",
+      "url": "https://www.youtube.com/results?search_query=count+subarrays+minimum+second+minimum+difference+monotonic+stack",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\nMOD = 10**9 + 7\n\n\ndef count_good_subarrays(a, d):\n    # A subarray (length >= 2) is good if (second smallest - smallest) <= d,\n    # where the second smallest is taken with multiplicity.\n    # Return the number of good subarrays modulo MOD.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, d = int(data[0]), int(data[1])\n    a = list(map(int, data[2:2 + n]))\n    print(count_good_subarrays(a, d))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

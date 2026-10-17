@@ -1,0 +1,65 @@
+{
+  "slug": "minimum-exercises-to-get-tired",
+  "title": "Minimum Exercises to Get Tired",
+  "difficulty": "Easy",
+  "tags": [
+    "Greedy",
+    "Sorting"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates: 'minimum exercises to get tired (each exercise at most twice)' appears in PrepInsta's Infosys SP/DSE coding question list. Original wording.",
+  "statement": "You start the day with `E` units of energy and want to get **tired**, meaning your energy becomes `0` or less, as quickly as possible.\n\nThere are `N` different exercises. One session of exercise `i` reduces your energy by `A[i]`. You may do the **same exercise at most twice**, and the sessions can be in any order.\n\nFind the **minimum number of sessions** needed to get tired. If it can't be done even after doing every exercise twice, print `-1`.",
+  "inputFormat": "The first line contains two integers `E` and `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print one integer: the minimum number of sessions, or `-1`.",
+  "constraints": "- `1 ≤ E ≤ 10^9`\n- `1 ≤ N ≤ 2 × 10^5`\n- `1 ≤ A[i] ≤ 10^5`",
+  "samples": [
+    {
+      "input": "11 3\n1 5 2\n",
+      "output": "3\n",
+      "explanation": "Do exercise 2 twice (5 + 5 = 10). Energy is now 1, so one more session of any exercise finishes it. Total 3 sessions."
+    },
+    {
+      "input": "100 2\n10 20\n",
+      "output": "-1\n",
+      "explanation": "Even 10 + 10 + 20 + 20 = 60 < 100, so you can never get tired."
+    },
+    {
+      "input": "4 2\n4 1\n",
+      "output": "1\n",
+      "explanation": "One session of the first exercise drops energy from 4 to 0."
+    }
+  ],
+  "hints": [
+    "To use as few sessions as possible, each session should drain as much as possible.",
+    "Every exercise is available twice, so think of a multiset that has each `A[i]` twice.",
+    "Sort in descending order and take sessions (each value twice) until the running sum reaches `E`. If the sum `2·ΣA` is still `< E`, answer `-1`."
+  ],
+  "editorial": "### Greedy\nIf `k` sessions can reach `E`, then the `k` **largest** available sessions can reach it too. Swapping a session for a larger one never hurts. The available sessions are `A[i]` twice each, so:\n\n1. If `2 · ΣA < E`, print `-1`.\n2. Sort `A` in descending order. Walk through it and, for each value, take it up to two times, counting sessions, until the total drained is `≥ E`.\n\n### Complexity\n**O(N log N)** for sorting. (Counting sort also works since `A[i] ≤ 10^5`.)\n\n### Common mistakes\n- Taking each exercise only once, or unlimited times.\n- Stopping one step late or early. You need drained `≥ E` (energy `≤ 0`), not `> E`.\n- When only one more session is needed, don't count a second session of the same exercise.",
+  "youtube": [
+    {
+      "title": "Minimum Exercises Problem | Sorting + Greedy Logic | HackWithInfy Prep - Raman Bhari",
+      "url": "https://www.youtube.com/watch?v=ekE1vko6qr4",
+      "kind": "video"
+    },
+    {
+      "title": "Coding Interview Patterns - Greedy Problems | 7 different problems in a single video — Nikhil Lohia",
+      "url": "https://www.youtube.com/watch?v=2Vxl2HMpt2M",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: Infosys minimum exercises energy each exercise at most twice greedy",
+      "url": "https://www.youtube.com/results?search_query=Infosys+minimum+exercises+energy+each+exercise+at+most+twice+greedy",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_exercises(energy, drains):\n    # energy : starting energy E\n    # drains : drains[i] = energy used by one session of exercise i (each exercise usable at most twice)\n    # Return the minimum number of sessions needed to bring energy to <= 0, or -1 if impossible.\n    # Write your code here\n    return -1\n\n\ndef main():\n    data = sys.stdin.read().split()\n    e, n = int(data[0]), int(data[1])\n    drains = list(map(int, data[2:2 + n]))\n    print(min_exercises(e, drains))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

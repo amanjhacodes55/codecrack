@@ -1,0 +1,67 @@
+{
+  "slug": "dp-longest-increasing-subsequence",
+  "title": "Longest Increasing Subsequence",
+  "difficulty": "Medium",
+  "tags": [
+    "Dynamic Programming",
+    "Binary Search",
+    "LIS"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon",
+    "Microsoft"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Classic LIS warm-up; LIS variants are repeatedly reported in Infosys SP/DSE papers (e.g. 'LIS with bitwise condition' on PrepInsta), so the base technique is a prerequisite",
+  "statement": "You are given an array `A` of `N` integers.\n\nA **subsequence** is obtained by deleting zero or more elements without changing the order of the remaining ones. A subsequence is **strictly increasing** if every element is strictly greater than the one before it.\n\nPrint the length of the longest strictly increasing subsequence of `A`.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the length of the longest strictly increasing subsequence.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `-10^9 ≤ A[i] ≤ 10^9`\n\n> An `O(N^2)` DP passes only for small `N`; the full constraints need `O(N log N)`.",
+  "samples": [
+    {
+      "input": "8\n10 9 2 5 3 7 101 18\n",
+      "output": "4\n",
+      "explanation": "One optimal subsequence is `2 3 7 18` (another is `2 5 7 101`)."
+    },
+    {
+      "input": "5\n4 4 4 4 4\n",
+      "output": "1\n",
+      "explanation": "Equal elements do not count as increasing, so only one element can be taken."
+    }
+  ],
+  "hints": [
+    "Start with the `O(N^2)` idea: `dp[i]` = length of the longest increasing subsequence that **ends at** index `i`; look at every `j < i` with `A[j] < A[i]`.",
+    "For speed, keep for every length `L` the **smallest possible last element** of an increasing subsequence of length `L`. This list is always sorted.",
+    "For each `x`, binary-search (`bisect_left`) the first tail `≥ x` and replace it with `x`; if none exists, append `x`. The answer is the final list length."
+  ],
+  "editorial": "### O(N²) DP (understand this first)\n`dp[i]` = length of the longest strictly increasing subsequence ending at `i`.\n`dp[i] = 1 + max(dp[j])` over `j < i` with `A[j] < A[i]` (or `1` if none). Answer = `max(dp)`.\n\n### O(N log N) - patience sorting\nMaintain `tails`, where `tails[k]` is the **minimum** possible last value of an increasing subsequence of length `k+1` seen so far. `tails` is strictly increasing.\n\nFor each `x`:\n- `k = bisect_left(tails, x)` (first position with `tails[k] ≥ x`)\n- if `k == len(tails)` append `x` (we extended the longest one), otherwise set `tails[k] = x` (a smaller ending for length `k+1`).\n\nAnswer = `len(tails)`. Note that `tails` itself is **not** necessarily a valid subsequence - only its length is meaningful.\n\n**Time** `O(N log N)`, **space** `O(N)`.\n\n### Common mistakes\n- Using `bisect_right` - that computes the longest **non-decreasing** subsequence.\n- Printing `tails` as the subsequence.\n- Running the `O(N^2)` DP on `N = 10^5` (≈ 5·10^9 steps).",
+  "youtube": [
+    {
+      "title": "DP 43. Longest Increasing Subsequence | Binary Search | Intuition (take U forward)",
+      "url": "https://www.youtube.com/watch?v=on2hvxBXJH4",
+      "kind": "video"
+    },
+    {
+      "title": "Longest Increasing Subsequence - Leetcode 300 (NeetCode)",
+      "url": "https://www.youtube.com/watch?v=cjWnW0hdF1Y",
+      "kind": "video"
+    },
+    {
+      "title": "Longest Increasing Subsequence | Patience Sorting | DP Concepts & Qns-17 | Leetcode 300 — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=dWmh3O8uX8A",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: longest increasing subsequence n log n patience sorting",
+      "url": "https://www.youtube.com/results?search_query=longest+increasing+subsequence+n+log+n+patience+sorting",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef longest_increasing_subsequence(arr):\n    # Return the length of the longest strictly increasing subsequence of arr\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    print(longest_increasing_subsequence(arr))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

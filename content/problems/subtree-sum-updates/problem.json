@@ -1,0 +1,67 @@
+{
+  "slug": "subtree-sum-updates",
+  "title": "Subtree Sum Updates",
+  "difficulty": "Hard",
+  "tags": [
+    "Trees",
+    "Euler Tour",
+    "Fenwick Tree",
+    "Binary Indexed Tree",
+    "DFS"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates in HackWithInfy / Infosys SP: hard question on trees with subtree queries (GeeksforGeeks 'HackWithInfy Online Assessment Exam Experience 2024' — hard question on trees; a Codeforces discussion attributed to a HackWithInfy practice round solved by Euler-tour flattening, seen via search summary; Fenwick/segment trees reported on CodeChef discuss for HackWithInfy 2021)",
+  "statement": "A company hierarchy is a tree of `N` employees numbered `1 … N`; employee `1` is the CEO (the root). Employee `i` currently has a performance score `S[i]` (scores can be negative).\n\nThe **team** of employee `u` is `u` together with everyone below `u` in the hierarchy (the subtree of `u` when the tree is rooted at `1`).\n\nProcess `Q` operations:\n- `1 u x` — the score of employee `u` becomes `x`.\n- `2 u` — print the total score of the team of `u`.",
+  "inputFormat": "The first line contains `N`.\nThe second line contains `N` integers `S[1..N]`.\nEach of the next `N − 1` lines contains two integers `u v` — an edge of the tree (in any orientation).\nThe next line contains `Q`, followed by `Q` lines with operations.",
+  "outputFormat": "For every operation of type `2`, print the answer on its own line.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `1 ≤ Q ≤ 10^5`\n- `-10^9 ≤ S[i], x ≤ 10^9`\n- The edges form a tree. The tree can be a long path (depth up to `10^5`).",
+  "samples": [
+    {
+      "input": "5\n4 2 -1 3 5\n1 2\n1 3\n3 4\n3 5\n4\n2 3\n2 1\n1 4 10\n2 3\n",
+      "output": "7\n13\n14\n",
+      "explanation": "Team of 3 = {3, 4, 5}: -1 + 3 + 5 = 7. Team of 1 is everyone: 13. After S[4] = 10 the team of 3 sums to -1 + 10 + 5 = 14."
+    }
+  ],
+  "hints": [
+    "Walking the subtree for every query is O(N) per query — 10^10 operations in the worst case.",
+    "Do one DFS and number nodes in the order they are first visited (`tin`). Every subtree then occupies a **contiguous** range `[tin[u], tin[u] + size[u] − 1]` of that numbering.",
+    "Now the problem is \"point update, range sum\" on an array — use a Fenwick tree (BIT). Write the DFS iteratively: the tree may be a path of length 10^5."
+  ],
+  "editorial": "### Intuition — flatten the tree\nIn a preorder DFS, a node is visited and then its entire subtree is visited before the DFS leaves it. So if `tin[u]` is the visit index, the subtree of `u` is exactly positions `tin[u] … tin[u] + size[u] − 1`. This **Euler tour / tree flattening** turns subtree queries into range queries.\n\n### Approach\n1. Iterative DFS from node 1 with an explicit stack, assigning `tin` on pop and recording the parent.\n2. Compute `size[u]` by processing nodes in reverse visit order and adding each size into its parent.\n3. Put `S[u]` at position `tin[u]` of a Fenwick tree (can be built in O(N)).\n4. Update `1 u x`: add `x − S[u]` at `tin[u]` and store `S[u] = x`.\n5. Query `2 u`: `prefix(tout[u]) − prefix(tin[u] − 1)`.\n\n### Complexity\n**O(N + Q log N)** time, **O(N)** memory.\n\n### Common mistakes\n- Recursive DFS on a 10^5-long path → `RecursionError` (or a crash even after raising the limit).\n- Adding `x` instead of the **difference** `x − S[u]` to the Fenwick tree on an assignment.\n- Forgetting to update the stored `S[u]`, so a second update on the same node computes the wrong delta.\n- Assuming edges are given parent-first — they can be in either orientation.",
+  "youtube": [
+    {
+      "title": "Euler Tour Technique Part 1: Tree Flattening & Subtree Queries (Yash Poonia)",
+      "url": "https://www.youtube.com/watch?v=_3VlhJedJvo",
+      "kind": "video"
+    },
+    {
+      "title": "Fenwick Tree range queries (WilliamFiset)",
+      "url": "https://www.youtube.com/watch?v=RgITNht_f4Q",
+      "kind": "video"
+    },
+    {
+      "title": "Euler Tour | Subtree Sum — Pepcoding",
+      "url": "https://www.youtube.com/watch?v=MfAEfhyD1oM",
+      "kind": "video"
+    },
+    {
+      "title": "Euler Tour + Segment Tree | Subtree Queries Explained | C++ | DSA — Yatish Garg",
+      "url": "https://www.youtube.com/watch?v=jZ7w5wSJFlU",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: CSES subtree queries euler tour fenwick",
+      "url": "https://www.youtube.com/results?search_query=cses+subtree+queries+euler+tour+fenwick",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef process(n, scores, adj, ops):\n    # scores[u] for u in 1..n (scores[0] unused)\n    # adj[u]    : neighbours of u in the tree (root is 1)\n    # ops       : list of tuples (1, u, x) or (2, u)\n    # Return a list with the answers of all type-2 operations, in order\n    # Tip: the tree can be a path of length 1e5 — avoid deep recursion\n    # Write your code here\n    return []\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    scores = [0] + [int(x) for x in data[1:1 + n]]\n    p = 1 + n\n    adj = [[] for _ in range(n + 1)]\n    for _ in range(n - 1):\n        u, v = int(data[p]), int(data[p + 1])\n        p += 2\n        adj[u].append(v)\n        adj[v].append(u)\n    q = int(data[p])\n    p += 1\n    ops = []\n    for _ in range(q):\n        if data[p] == b'1':\n            ops.append((1, int(data[p + 1]), int(data[p + 2])))\n            p += 3\n        else:\n            ops.append((2, int(data[p + 1])))\n            p += 2\n    res = process(n, scores, adj, ops)\n    sys.stdout.write(\"\\n\".join(map(str, res)) + \"\\n\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

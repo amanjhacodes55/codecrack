@@ -1,0 +1,76 @@
+{
+  "slug": "most-common-word",
+  "title": "Most Common Word",
+  "difficulty": "Easy",
+  "tags": [
+    "Hashing",
+    "Strings",
+    "Counting"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon"
+  ],
+  "collections": [
+    "hashing-drill"
+  ],
+  "source": "Classic text-processing + hashing problem (LeetCode 819 family), simplified to a single sentence with an exact word definition",
+  "statement": "You are given one line of text — a sentence that may contain letters, digits, spaces and punctuation.\n\nProcess it as follows:\n\n1. Convert every uppercase letter to lowercase.\n2. A **word** is a **maximal run of consecutive letters `a`–`z`**. Every other character (space, digit, apostrophe, comma, hyphen, …) only acts as a separator. For example `\"Don't stop-2day\"` contains the words `don`, `t`, `stop`, `day`.\n\nPrint the word that occurs the **most times**. If several words share the highest count, print the **lexicographically smallest** of them.\n\nIt is guaranteed that the line contains at least one letter.",
+  "inputFormat": "A single line containing the sentence (it may start or end with spaces).",
+  "outputFormat": "Print the most frequent word in lowercase.",
+  "constraints": "- `1 ≤ length of the line ≤ 10^5`\n- The line contains only printable ASCII characters (codes 32 to 126)\n- At least one character of the line is a letter",
+  "samples": [
+    {
+      "input": "Bob hit a ball, the hit BALL flew far after it was hit.\n",
+      "output": "hit\n",
+      "explanation": "`hit` appears 3 times, `ball` appears 2 times (case is ignored), every other word once."
+    },
+    {
+      "input": "...Zebra!!! zebra?? APPLE apple\n",
+      "output": "apple\n",
+      "explanation": "`zebra` and `apple` both appear twice. `apple` is lexicographically smaller."
+    },
+    {
+      "input": "don't stop, don't\n",
+      "output": "don\n",
+      "explanation": "The apostrophe is a separator, so the words are `don`, `t`, `stop`, `don`, `t`. `don` and `t` both appear twice and `\"don\" < \"t\"`."
+    }
+  ],
+  "hints": [
+    "Lowercase the whole line first, then scan it character by character, building the current word while you see letters and finishing it when you see anything else.",
+    "Store word → count in a dictionary. Don't forget to finish the last word if the line ends with a letter.",
+    "Pick the answer with `min(count, key=lambda w: (-count[w], w))` — highest count first, then alphabetical order."
+  ],
+  "editorial": "### Intuition\nThis is a frequency-count problem; the only tricky parts are **tokenising** exactly as defined and the **tie-break**.\n\n### Approach\n1. `line = line.lower()`.\n2. Scan characters. If `'a' <= ch <= 'z'`, append it to the current word; otherwise, if the current word is non-empty, count it and reset. Appending a sentinel space to the line makes sure the last word is counted.\n   (Equivalently: `re.findall(r\"[a-z]+\", line)`.)\n3. Choose the word with maximum count, breaking ties by the smaller word:\n```python\nbest = min(count, key=lambda w: (-count[w], w))\n```\n\n### Complexity\n**O(L)** to tokenise and count, where `L` is the line length. Choosing the best word is O(W · average word length) — linear overall.\n\n### Common mistakes\n- Using `line.split()` — it splits only on whitespace, so `ball,` and `ball` become different words.\n- Using `str.isalpha()` — fine for ASCII input, but the definition here is strictly `a`–`z`; digits must split words (`x1y` → `x`, `y`).\n- Treating `'` as part of a word (`don't`) — by the definition it is a separator.\n- Forgetting the lexicographic tie-break, or using `max` with `(count, w)` which picks the *largest* word on ties.",
+  "youtube": [
+    {
+      "title": "Most Common Word - LeetCode Solutions #819 (Python) — Peter Hu",
+      "url": "https://www.youtube.com/watch?v=s19QsN5Dva8",
+      "kind": "video"
+    },
+    {
+      "title": "Most Common Word | Leetcode - 819 | Approach + Code with explanation. — Pirai's Academy",
+      "url": "https://www.youtube.com/watch?v=XEJuqBAFzR4",
+      "kind": "video"
+    },
+    {
+      "title": "DSA Python Course 2025 - Store Frequency in Dictionary - Part 10 [Hindi] | Code & Debug — Code and Debug",
+      "url": "https://www.youtube.com/watch?v=Ocd_uHpsQyg",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: most common word leetcode 819 hashmap",
+      "url": "https://www.youtube.com/results?search_query=most+common+word+leetcode+819+hashmap",
+      "kind": "search"
+    },
+    {
+      "title": "Search YouTube: count frequency of words in a string python dictionary",
+      "url": "https://www.youtube.com/results?search_query=count+frequency+of+words+in+a+string+python+dictionary",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef most_common_word(sentence):\n    # Words = maximal runs of letters a-z after lowercasing; everything else separates words.\n    # Return the most frequent word; ties -> lexicographically smallest.\n    # Write your code here\n    return \"\"\n\n\ndef main():\n    sentence = sys.stdin.readline().rstrip(\"\\n\")\n    print(most_common_word(sentence))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

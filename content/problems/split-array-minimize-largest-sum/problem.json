@@ -1,0 +1,73 @@
+{
+  "slug": "split-array-minimize-largest-sum",
+  "title": "Split Array to Minimize the Largest Sum",
+  "difficulty": "Medium",
+  "tags": [
+    "Binary Search",
+    "Binary Search on Answer",
+    "Greedy",
+    "Arrays"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon",
+    "Google"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Fundamental technique drill (binary search on the answer; Painter's Partition / Book Allocation / LeetCode 410 family)",
+  "statement": "You are given an array `A` of `N` positive integers and an integer `K`.\n\nSplit the array into **exactly `K`** contiguous, **non-empty** parts (every element belongs to exactly one part, and the original order is kept).\n\nThe **cost** of a split is the **largest** sum among its `K` parts. Print the **minimum possible cost**.\n\n> Story version: `N` boards of lengths `A[1..N]` must be painted by `K` painters; each painter paints a contiguous block of at least one board, all painters work in parallel at the same speed — minimise the time until all boards are done.",
+  "inputFormat": "The first line contains two integers `N` and `K`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the minimum possible value of the largest part sum.",
+  "constraints": "- `1 ≤ K ≤ N ≤ 10^5`\n- `1 ≤ A[i] ≤ 10^4`",
+  "samples": [
+    {
+      "input": "5 2\n7 2 5 10 8\n",
+      "output": "18\n",
+      "explanation": "Split as `[7, 2, 5] | [10, 8]` with sums 14 and 18. No split into 2 parts has a largest sum below 18."
+    },
+    {
+      "input": "4 2\n1 2 3 4\n",
+      "output": "6\n",
+      "explanation": "`[1, 2, 3] | [4]` gives sums 6 and 4."
+    },
+    {
+      "input": "3 3\n4 9 2\n",
+      "output": "9\n",
+      "explanation": "Each element is its own part; the largest is 9."
+    }
+  ],
+  "hints": [
+    "Turn the question around: given a limit `X`, can you split the array so that **every** part has sum `≤ X` using at most `K` parts?",
+    "That check is greedy: walk left to right, keep adding to the current part while it stays `≤ X`, otherwise start a new part. If the count of parts is `≤ K`, the limit `X` is feasible. (Having fewer than `K` parts is fine — you can always split a part further because `K ≤ N`.)",
+    "Feasibility is monotonic in `X` (if `X` works, `X+1` works). Binary search `X` in `[max(A), sum(A)]` for the smallest feasible value."
+  ],
+  "editorial": "### Intuition\nDirectly searching over all splits is exponential (or O(K·N²) with DP). But checking **\"is answer ≤ X possible?\"** is easy and greedy, and the answer to that check is monotonic: false, false, …, false, true, true, … That is the signature of **binary search on the answer**.\n\n### Feasibility check `parts_needed(X)`\nScan the array, accumulating a running sum. If adding the next element would exceed `X`, close the current part and start a new one with that element. This greedy uses the **minimum** possible number of parts for limit `X` (packing each part as full as possible never hurts). `X` is feasible iff `parts_needed(X) ≤ K` — when fewer parts are used, split some part further (possible since `K ≤ N`); splitting never increases a part sum.\n\n### Binary search\n- Lower bound `max(A)` — some part must contain the largest element.\n- Upper bound `sum(A)` — one part holding everything.\n```\nlo, hi = max(A), sum(A)\nwhile lo < hi:\n    mid = (lo + hi) // 2\n    if parts_needed(mid) <= K: hi = mid\n    else: lo = mid + 1\nprint(lo)\n```\n\n### Complexity\n`O(N · log(sum(A)))` ≈ `10^5 × 30` operations. O(1) extra space.\n\n### Common mistakes\n- Starting `lo` at 0 or 1: with `X < max(A)` the greedy check is wrong (a single element doesn't fit anywhere).\n- Requiring `parts_needed == K` instead of `≤ K` — breaks monotonicity.\n- Mixing up `hi = mid` / `lo = mid + 1` and looping forever.\n- Same template solves Book Allocation, Ship Packages Within D Days, Koko Eating Bananas, Aggressive Cows (with `≥`).",
+  "youtube": [
+    {
+      "title": "BS 19. Painter's Partition and Split Array - Largest Sum (take U forward)",
+      "url": "https://www.youtube.com/watch?v=thUd_WJn6wk",
+      "kind": "video"
+    },
+    {
+      "title": "BS-18. Allocate Books or Book Allocation | Hard Binary Search (take U forward)",
+      "url": "https://www.youtube.com/watch?v=Z0hwjftStI4",
+      "kind": "video"
+    },
+    {
+      "title": "Leetcode 410: Split Array Largest Sum | Binary Search | Intuition and Approach — Code Concepts with Animesh",
+      "url": "https://www.youtube.com/watch?v=FkNz59urgto",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: binary search on answer pattern",
+      "url": "https://www.youtube.com/results?search_query=binary+search+on+answer+pattern",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_largest_part_sum(arr, k):\n    # Split arr into exactly k non-empty contiguous parts.\n    # Return the minimum possible value of the largest part sum.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, k = int(data[0]), int(data[1])\n    arr = list(map(int, data[2:2 + n]))\n    print(min_largest_part_sum(arr, k))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

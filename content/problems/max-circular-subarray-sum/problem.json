@@ -1,0 +1,76 @@
+{
+  "slug": "max-circular-subarray-sum",
+  "title": "Maximum Circular Subarray Sum",
+  "difficulty": "Medium",
+  "tags": [
+    "Kadane",
+    "Arrays",
+    "Prefix Sum"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates: Kadane's maximum subarray sum is cited as a frequent Infosys SP/DSE easy question (Great Learning SP/DSE guide), and a late-2025 SP/DSE interview report on LeetCode Discuss mentions maximum circular subarray sum. Original wording.",
+  "statement": "`N` stalls are arranged in a **circle** around a fountain. Stall `i` earned a profit `A[i]`, which can be negative (a loss). Stall `N` is next to stall `1`.\n\nYou may pick one **non-empty block of consecutive stalls** going around the circle, possibly wrapping past stall `N` back to stall `1`. Each stall can be picked **at most once**, so the block has at most `N` stalls.\n\nFind the **maximum total profit** of such a block.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print one integer: the maximum circular subarray sum.",
+  "constraints": "- `1 ≤ N ≤ 2 × 10^5`\n- `-10^9 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "5\n5 -3 -2 6 -1\n",
+      "output": "10\n",
+      "explanation": "Take stalls 4, 5, 1 (wrapping around): 6 + (−1) + 5 = 10. The best non-wrapping block is [6] = 6."
+    },
+    {
+      "input": "4\n2 -1 3 -10\n",
+      "output": "4\n",
+      "explanation": "No wrap needed: 2 + (−1) + 3 = 4."
+    },
+    {
+      "input": "3\n-4 -2 -7\n",
+      "output": "-2\n",
+      "explanation": "All values are negative, so the best is the single stall with −2."
+    }
+  ],
+  "hints": [
+    "If the best block does **not** wrap, it's ordinary Kadane.",
+    "If it **does** wrap, the stalls *not* chosen form a normal (non-wrapping) block in the middle. Maximising the chosen sum = total − (minimum subarray sum).",
+    "Answer = max(maxKadane, total − minKadane), **except** when all numbers are negative: then `total − min` would correspond to an empty block, so the answer is just `maxKadane`."
+  ],
+  "editorial": "### Two cases\n1. **No wrap**: the classic maximum subarray, Kadane's algorithm, gives `maxSum`.\n2. **Wrap**: the chosen block is a prefix plus a suffix. Its complement is a contiguous middle block, so the best wrapping sum is `total − minSum`, where `minSum` is the minimum subarray sum (Kadane with `min`).\n\nAnswer = `max(maxSum, total − minSum)`.\n\n### The all-negative trap\nIf every element is negative, `minSum = total` and `total − minSum = 0`, which corresponds to choosing **nothing**. That isn't allowed. In that case (equivalently, `maxSum < 0`) the answer is `maxSum`.\n\n### Complexity\n**O(N)** time, **O(1)** space.\n\n### Common mistakes\n- Doubling the array and running Kadane. That can pick more than `N` elements, i.e. use a stall twice.\n- Missing the all-negative case.\n- O(N²) over all start points, which is too slow for `N = 2 × 10^5`.",
+  "youtube": [
+    {
+      "title": "Maximum Sum Circular Subarray | Leetcode #918 - Techdose",
+      "url": "https://www.youtube.com/watch?v=Q1TYVUEr-wY",
+      "kind": "video"
+    },
+    {
+      "title": "Kadane's Algorithm to Maximum Sum Subarray Problem - CS Dojo",
+      "url": "https://www.youtube.com/watch?v=86CQq3pKSUw",
+      "kind": "video"
+    },
+    {
+      "title": "Maximum Sum Circular Subarray | With Proof | Leetcode 918 | codestorywithMIK — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=Za8V4wkZKkM",
+      "kind": "video"
+    },
+    {
+      "title": "[Hindi] 918. Maximum Sum Circular Subarray | Leetcode — Pen Paper & Code",
+      "url": "https://www.youtube.com/watch?v=SKoEmB6ba_U",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: maximum sum circular subarray kadane total minus minimum",
+      "url": "https://www.youtube.com/results?search_query=maximum+sum+circular+subarray+kadane+total+minus+minimum",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef max_circular_subarray_sum(arr):\n    # arr is circular: the element after arr[-1] is arr[0].\n    # Return the maximum sum of a non-empty contiguous (circular) subarray,\n    # using each element at most once.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    print(max_circular_subarray_sum(arr))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

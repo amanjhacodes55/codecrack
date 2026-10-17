@@ -1,0 +1,76 @@
+{
+  "slug": "shelter-evacuation-grid",
+  "title": "Shelter Evacuation Grid",
+  "difficulty": "Medium",
+  "tags": [
+    "Graphs",
+    "Breadth-First Search",
+    "Multi-Source BFS",
+    "Grid"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates in Infosys SP/DSE: 'graph problem involving a slight variation of BFS' / grid BFS (reconstructed from candidate write-ups surfaced in search: GeeksforGeeks SP/DSE 2026 experience, Glassdoor SP reviews)",
+  "statement": "A city is drawn as an `R × C` grid. Every cell is one of:\n\n- `.` an open street cell where one resident lives,\n- `S` a shelter (also an open cell; its resident is already safe),\n- `#` a building that nobody can walk through.\n\nWhen the alarm sounds, **every resident walks to the nearest shelter**. In one minute a person moves to one of the 4 side-adjacent cells (up, down, left, right) that is not `#` and stays inside the grid. Any number of people may share a cell.\n\nFor each open cell (`.` or `S`) let `d` be the minimum number of minutes needed to reach *some* shelter (`d = 0` on a shelter). A resident is **stranded** if no shelter is reachable.\n\nPrint three numbers:\n1. `maxTime` — the largest `d` among all non-stranded open cells (`0` if there are none),\n2. `totalTime` — the sum of `d` over all non-stranded open cells,\n3. `stranded` — the number of stranded open cells.",
+  "inputFormat": "The first line contains two integers `R` and `C`.\nEach of the next `R` lines contains a string of length `C` made of the characters `.`, `S` and `#`.",
+  "outputFormat": "Print `maxTime totalTime stranded` separated by single spaces.",
+  "constraints": "- `1 ≤ R, C`\n- `R × C ≤ 2.5 × 10^5`\n- The grid may contain zero shelters (then every open cell is stranded).",
+  "samples": [
+    {
+      "input": "3 4\nS#..\n.#..\n.#.S\n",
+      "output": "3 12 0\n",
+      "explanation": "Distances to the nearest shelter (`x` = building):\n```\n0 x 3 2\n1 x 2 1\n2 x 1 0\n```\nMaximum = 3, sum = 0+1+2+3+2+2+1+1+0 = 12, nobody is stranded."
+    },
+    {
+      "input": "2 5\nS.#..\n..#.#\n",
+      "output": "2 4 3\n",
+      "explanation": "The three open cells right of the wall column cannot reach the only shelter. The left block has distances 0,1,1,2 → max 2, sum 4."
+    }
+  ],
+  "hints": [
+    "Running a separate BFS from every shelter is far too slow when there are many shelters. What if all shelters started *at the same time*?",
+    "Push **every** shelter into the BFS queue with distance 0 before the loop starts. The first time BFS reaches a cell is its distance to the nearest shelter.",
+    "After the BFS, any open cell that was never reached is stranded. Use a flat array (index `i*C + j`) instead of nested lists / tuples for speed in Python."
+  ],
+  "editorial": "### Intuition\nAsking \"distance to the *nearest* of many sources\" is the classic **multi-source BFS**: imagine a single super-source connected with 0-cost edges to every shelter. A BFS from that super-source is the same as starting the BFS with all shelters already in the queue at distance 0.\n\n### Approach\n1. Read the grid, put every `S` into a deque with `dist = 0`.\n2. Standard BFS over the 4 neighbours, skipping `#` and already-visited cells.\n3. Scan all open cells: unreached → `stranded += 1`; otherwise update `maxTime` and `totalTime`.\n\nImplementation tip: pad the grid with a border of walls and flatten it into a 1-D array of size `(R+2)(C+2)`. Neighbours are `u±1` and `u±(C+2)`, and you never need bounds checks.\n\n### Complexity\nEvery cell enters the queue at most once: **O(R·C)** time and memory.\n\n### Common mistakes\n- BFS from each shelter separately — O(shelters × R·C), times out.\n- Forgetting that a grid with **no shelters** is valid (answer `0 0 #open`).\n- Counting `#` cells as stranded — only open cells count.\n- Using recursion (DFS) — DFS does not give shortest distances and also overflows the recursion limit.",
+  "youtube": [
+    {
+      "title": "Rotting Oranges - LeetCode 994 - Multi-Source BFS Pattern Explained (CodeLucky)",
+      "url": "https://www.youtube.com/watch?v=98sQNjDo4kw",
+      "kind": "video"
+    },
+    {
+      "title": "Rotting Oranges | Multi-source BFS | Leetcode 994 — Shradha Khapra",
+      "url": "https://www.youtube.com/watch?v=RmXo5SWkhCs",
+      "kind": "video"
+    },
+    {
+      "title": "Rotting Oranges | Multi-Source BFS | Leetcode 994 | Graph Concepts & Qns - 47 | codestorywithMIK — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=Jiu0jqm0mB0",
+      "kind": "video"
+    },
+    {
+      "title": "01 Matrix | Detailed Dry Run | Why BFS from 0s | GOOGLE | Leetcode - 542 — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=gu2MD0mpy9w",
+      "kind": "video"
+    },
+    {
+      "title": "G-13. Distance of nearest cell having 1 | 0/1 Matrix | C++ | Java — take U forward",
+      "url": "https://www.youtube.com/watch?v=edXdVwkYHF8",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: multi source BFS grid nearest distance striver",
+      "url": "https://www.youtube.com/results?search_query=multi+source+bfs+grid+nearest+distance+striver",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\nfrom collections import deque\n\n\ndef evacuate(grid, r, c):\n    # grid: list of r strings, each of length c, made of '.', 'S', '#'\n    # Return a tuple (max_time, total_time, stranded)\n    # Write your code here\n    return (0, 0, 0)\n\n\ndef main():\n    data = sys.stdin.read().split()\n    r, c = int(data[0]), int(data[1])\n    grid = data[2:2 + r]\n    print(*evacuate(grid, r, c))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

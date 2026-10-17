@@ -1,0 +1,61 @@
+{
+  "slug": "xor-equals-sum-pairs",
+  "title": "XOR Pairs Under a Huge Binary Limit",
+  "difficulty": "Medium",
+  "tags": [
+    "Bit Manipulation",
+    "Math",
+    "Combinatorics"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "hackwithinfy",
+    "infosys-sp-dse"
+  ],
+  "source": "Reported from HackWithInfy (2021 cycle) — reconstructed from the Codeforces blog post 'Help in Hack with Infy question named Ordinary Numbers' (entry 90892), which describes a binary string of length up to 1e5 and counting pairs with i + j ≤ X and i XOR j = X modulo 1e9+7. Statement rewritten.",
+  "statement": "A number `X` is given to you in **binary**, and it can be enormous — up to `10^5` bits.\n\nCount the **ordered** pairs `(i, j)` of **non-negative integers** that satisfy **both**\n\n- `i + j ≤ X`, and\n- `i XOR j = X` (bitwise exclusive or).\n\nPairs `(i, j)` and `(j, i)` are different when `i ≠ j`. Print the count modulo `10^9 + 7`.\n\nAnswer `T` independent queries.",
+  "inputFormat": "The first line contains an integer `T`.\nEach of the next `T` lines contains a binary string `Q` — the value `X` written in base 2 (no leading zeros, except that `X = 0` is written as `0`).",
+  "outputFormat": "For each query print the number of valid pairs modulo `10^9 + 7`.",
+  "constraints": "- `1 ≤ T ≤ 100`\n- `1 ≤ |Q| ≤ 10^5`\n- The sum of `|Q|` over all queries is at most `2·10^5`",
+  "samples": [
+    {
+      "input": "3\n101\n0\n1101\n",
+      "output": "4\n1\n8\n",
+      "explanation": "`101₂ = 5`. The valid pairs are `(0,5), (1,4), (4,1), (5,0)`. For example `(2,7)` has XOR `5` but `2 + 7 = 9 > 5`.\n\n`X = 0` only allows `(0,0)`. `1101₂ = 13` has 8 valid pairs."
+    }
+  ],
+  "hints": [
+    "Converting `Q` to an integer and looping is hopeless. Look for an identity linking `i + j`, `i XOR j` and `i AND j`.",
+    "`i + j = (i XOR j) + 2·(i AND j)`. With `i XOR j = X`, the condition `i + j ≤ X` forces `i AND j = 0`.",
+    "So every 1-bit of `X` goes to exactly one of `i`, `j`, and every 0-bit goes to neither: the answer is `2^(number of 1s in Q)` mod `10^9+7`."
+  ],
+  "editorial": "### Intuition\nAddition is XOR plus carries: `i + j = (i XOR j) + 2·(i AND j)` (the AND marks the positions that generate a carry).\n\n### Approach\nGiven `i XOR j = X`, we get `i + j = X + 2·(i AND j) ≥ X`. Combined with `i + j ≤ X` this means `i AND j = 0`.\n\nSo we need `i XOR j = X` **and** `i AND j = 0`, i.e. `i` and `j` split the set bits of `X` between them with no overlap, and neither has a bit where `X` has a 0. Each of the `k` set bits of `X` independently goes to `i` or to `j`: `2^k` ordered pairs.\n\nAnswer: `pow(2, Q.count('1'), 10**9 + 7)`.\n\n### Complexity\n`O(|Q|)` per query to count the ones; `pow` with modulus is `O(log k)`.\n\n### Common mistakes\n- Converting the binary string to a Python `int` and then iterating — the conversion itself is fine in Python, but any enumeration of pairs is exponential.\n- Counting unordered pairs (`2^(k-1)`) — the problem asks for ordered pairs.\n- Forgetting the modulus, or forgetting that `X = 0` gives `1` (the pair `(0,0)`).",
+  "youtube": [
+    {
+      "title": "Sum vs XOR | Bit Manipulation | HackerRank Solution | Hackers Realm",
+      "url": "https://www.youtube.com/watch?v=B63AtD7h6o0",
+      "kind": "video"
+    },
+    {
+      "title": "Master Bit Manipulation in One Video | XOR Tricks + Interview Questions",
+      "url": "https://www.youtube.com/watch?v=T56nhL8Y1po",
+      "kind": "video"
+    },
+    {
+      "title": "Sum vs XOR   HACKERRANK   SOLUTION — Abhi",
+      "url": "https://www.youtube.com/watch?v=xICixw7K-WY",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: a+b = a xor b + 2*(a and b) bit manipulation",
+      "url": "https://www.youtube.com/results?search_query=a%2Bb+%3D+a+xor+b+%2B+2%2A%28a+and+b%29+bit+manipulation",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\nMOD = 10**9 + 7\n\n\ndef count_pairs(q):\n    # q is X written in binary (a string of '0'/'1').\n    # Count ordered pairs (i, j) of non-negative integers with i + j <= X and i XOR j == X,\n    # and return the count modulo MOD.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    t = int(data[0])\n    answers = [count_pairs(q) for q in data[1:1 + t]]\n    print(\"\\n\".join(map(str, answers)))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

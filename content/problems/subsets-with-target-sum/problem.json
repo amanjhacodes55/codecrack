@@ -1,0 +1,80 @@
+{
+  "slug": "subsets-with-target-sum",
+  "title": "All Subsets with Target Sum",
+  "difficulty": "Medium",
+  "tags": [
+    "Recursion",
+    "Backtracking"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Fundamental technique drill (recursion / backtracking with pruning; Combination Sum family)",
+  "statement": "You are given `N` **distinct positive** integers and a target `T`.\n\nFind **every** subset of these numbers (each number used **at most once**) whose sum is exactly `T`.\n\nOutput rules:\n- Write each subset with its numbers in **increasing order**, separated by single spaces.\n- List the subsets in **lexicographic order**, comparing them as sequences of integers (compare the first numbers; if equal compare the second numbers; and so on). Because all numbers are positive and every listed subset has the same sum, no listed subset is a prefix of another.\n- First print the number of such subsets `C`, then the `C` subsets, one per line. If `C = 0`, print only `0`.",
+  "inputFormat": "The first line contains two integers `N` and `T`.\nThe second line contains `N` distinct space-separated integers `A[1..N]`.",
+  "outputFormat": "The first line contains `C`. Each of the next `C` lines contains one subset as described.",
+  "constraints": "- `1 ≤ N ≤ 15`\n- `1 ≤ A[i] ≤ 100`, all `A[i]` are distinct\n- `1 ≤ T ≤ 1500`",
+  "samples": [
+    {
+      "input": "5 8\n6 1 5 2 3\n",
+      "output": "3\n1 2 5\n2 6\n3 5\n",
+      "explanation": "The subsets with sum 8 are `{1,2,5}`, `{2,6}` and `{3,5}`. In lexicographic order, `1 2 5` comes first because `1 < 2 < 3`."
+    },
+    {
+      "input": "3 6\n1 2 3\n",
+      "output": "1\n1 2 3\n",
+      "explanation": "Only `1 + 2 + 3 = 6`."
+    },
+    {
+      "input": "1 4\n5\n",
+      "output": "0\n",
+      "explanation": "No subset sums to 4."
+    }
+  ],
+  "hints": [
+    "Every subset is a sequence of include/exclude decisions — `2^N ≤ 32768` possibilities, small enough to enumerate with recursion.",
+    "Sort the numbers first. Then build subsets with a recursive function `dfs(start, remaining)` that tries each index `j ≥ start` as the **next** (larger) element. Trying `j` in increasing order produces subsets in lexicographic order automatically.",
+    "Prune: since the numbers are sorted and positive, once `A[j] > remaining`, no later `j` can work either — `break` out of the loop. Record a subset when `remaining == 0`."
+  ],
+  "editorial": "### Intuition\nGenerating subsets is the \"hello world\" of recursion/backtracking: at each step, choose the next element to add, recurse, then **undo** the choice (backtrack).\n\n### Approach\n1. Sort `A`.\n2. `dfs(start, remaining)` with a shared `path` list:\n   - if `remaining == 0`: record `path` (it is already increasing).\n   - for `j` from `start` to `N-1`:\n     - if `A[j] > remaining`: **break** (pruning — everything after is larger).\n     - `path.append(A[j])`, `dfs(j + 1, remaining - A[j])`, `path.pop()`.\n3. Print the count and the recorded subsets.\n\n**Why is the order lexicographic?** The DFS fixes the first element in increasing order, then within that the second element in increasing order, and so on — exactly the definition of lexicographic order. (Alternatively, generate all subsets in any order and `sort` the list of integer lists — make sure to sort lists of *integers*, not strings: as strings, `\"10 …\"` would come before `\"9 …\"`.)\n\n### Complexity\nAt most `2^N` subsets are explored, each taking up to O(N) to output: **O(N · 2^N)** worst case ≈ `5·10^5` — tiny. Pruning usually cuts much more. Recursion depth ≤ `N`.\n\n### Common mistakes\n- Forgetting `path.pop()` (no backtracking) — later subsets contain stale elements.\n- Appending `path` itself instead of a copy/string — all recorded entries end up identical.\n- Sorting output lines as strings (wrong for multi-digit numbers).\n- Printing nothing instead of `0` when there are no subsets.",
+  "youtube": [
+    {
+      "title": "Power Set | Print all Subsequences (take U forward)",
+      "url": "https://www.youtube.com/watch?v=b7AYbpM5YrE",
+      "kind": "video"
+    },
+    {
+      "title": "L9. Combination Sum II | Recursion (take U forward)",
+      "url": "https://www.youtube.com/watch?v=G1fRTGRxXU8",
+      "kind": "video"
+    },
+    {
+      "title": "Recursion Part 3 : Backtracking in Detail | Print all Subsets | Subsets II — Apna College",
+      "url": "https://www.youtube.com/watch?v=pNzljlzDCiI",
+      "kind": "video"
+    },
+    {
+      "title": "6.2 Sum Of Subsets Problem - Backtracking — Abdul Bari",
+      "url": "https://www.youtube.com/watch?v=kyLxTdsT8ws",
+      "kind": "video"
+    },
+    {
+      "title": "Combination Sum II | Simple Khandani Template | Leetcode 40 | codestorywithMIK — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=bfKwLi6jtDk",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: subset sum backtracking print all subsets with given sum",
+      "url": "https://www.youtube.com/results?search_query=subset+sum+backtracking+print+all+subsets+with+given+sum",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef subsets_with_sum(nums, target):\n    # nums: distinct positive integers.\n    # Return a list of subsets (each a list of ints in increasing order) whose sum is target,\n    # with the subsets themselves in lexicographic order.\n    # Write your code here\n    return []\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, t = int(data[0]), int(data[1])\n    nums = list(map(int, data[2:2 + n]))\n    result = subsets_with_sum(nums, t)\n    out = [str(len(result))] + [\" \".join(map(str, s)) for s in result]\n    sys.stdout.write(\"\\n\".join(out) + \"\\n\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

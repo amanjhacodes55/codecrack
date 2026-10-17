@@ -1,0 +1,71 @@
+{
+  "slug": "shortest-subarray-sum-at-least-s",
+  "title": "Shortest Subarray with Sum at Least S",
+  "difficulty": "Medium",
+  "tags": [
+    "Sliding Window",
+    "Two Pointers",
+    "Arrays"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Fundamental technique drill (variable-size sliding window; LeetCode 209 family)",
+  "statement": "You are given an array `A` of `N` **positive** integers and an integer `S`.\n\nFind the **minimum length** of a contiguous, non-empty subarray `A[l..r]` whose sum is **at least** `S` (i.e. `≥ S`).\n\nIf no such subarray exists, print `0`.",
+  "inputFormat": "The first line contains two integers `N` and `S`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the minimum length, or `0` if no subarray reaches `S`.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `1 ≤ A[i] ≤ 10^4`\n- `1 ≤ S ≤ 10^9`",
+  "samples": [
+    {
+      "input": "6 7\n2 3 1 2 4 3\n",
+      "output": "2\n",
+      "explanation": "`[4, 3]` (positions 5..6) has sum 7. No single element is ≥ 7."
+    },
+    {
+      "input": "5 10000\n1 1 10000 1 1\n",
+      "output": "1\n",
+      "explanation": "The single element `10000` already reaches `S`."
+    },
+    {
+      "input": "3 4\n1 1 1\n",
+      "output": "0\n",
+      "explanation": "Even the whole array sums to only 3."
+    }
+  ],
+  "hints": [
+    "Because all numbers are positive, extending a subarray to the right always **increases** its sum and shrinking it from the left always **decreases** it.",
+    "Keep a window `[left, right]` and its sum. Move `right` forward one step at a time, adding `A[right]`.",
+    "Whenever the window sum is `≥ S`, record its length and shrink from the left (subtract `A[left]`, `left += 1`) — repeat while it is still `≥ S`."
+  ],
+  "editorial": "### Intuition\nFor a fixed right end `r`, the best left end is the **largest** `l` with `sum(A[l..r]) ≥ S`. When `r` moves right, that best `l` can only move right too (all numbers are positive). Both pointers only ever move forward → a sliding window.\n\n### Approach\n```\nleft = 0; window = 0; best = INF\nfor right in range(N):\n    window += A[right]\n    while window >= S:\n        best = min(best, right - left + 1)\n        window -= A[left]; left += 1\nprint(best if best != INF else 0)\n```\n\n### Complexity\nEach index is added once and removed at most once: **O(N)** time, **O(1)** extra space. Brute force over all `(l, r)` is O(N²).\n\n### When does sliding window work?\nIt needs a **monotonic** condition: if a window is valid, every larger window containing it is also valid (here, thanks to positive numbers). With negative numbers this breaks — use prefix sums with a monotonic deque or hashing instead (see *Count Subarrays with Sum K*).\n\n### Common mistakes\n- Using `if` instead of `while` for shrinking — misses shorter windows.\n- Recording the length **after** shrinking (off by one).\n- Printing `INF`/`N+1` instead of `0` when no window reaches `S`.\n- Condition `> S` instead of `≥ S`.",
+  "youtube": [
+    {
+      "title": "Minimum Size Subarray Sum - Leetcode 209 - Python (NeetCode)",
+      "url": "https://www.youtube.com/watch?v=aYqYMIqZx5s",
+      "kind": "video"
+    },
+    {
+      "title": "L1. Introduction to Sliding Window and 2 Pointers | Templates | Patterns (take U forward)",
+      "url": "https://www.youtube.com/watch?v=9kdHxplyl5I",
+      "kind": "video"
+    },
+    {
+      "title": "LeetCode 209 -  Minimum Size Subarray Sum — Engineering Digest",
+      "url": "https://www.youtube.com/watch?v=xBZfV0OBmLY",
+      "kind": "video"
+    },
+    {
+      "title": "Leetcode 209. Minimum Size Subarray Sum | Hindi | Python | Leetcode 1 | Optimized way — DataEngineering360",
+      "url": "https://www.youtube.com/watch?v=r5O9fODudVU",
+      "kind": "video"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef shortest_subarray_at_least(arr, s):\n    # arr contains positive integers.\n    # Return the minimum length of a contiguous subarray with sum >= s, or 0 if none exists.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, s = int(data[0]), int(data[1])\n    arr = list(map(int, data[2:2 + n]))\n    print(shortest_subarray_at_least(arr, s))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

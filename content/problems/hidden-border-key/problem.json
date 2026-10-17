@@ -1,0 +1,76 @@
+{
+  "slug": "hidden-border-key",
+  "title": "Hidden Border Key",
+  "difficulty": "Hard",
+  "tags": [
+    "Strings",
+    "KMP",
+    "Prefix Function",
+    "String Matching"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "String-algorithm pattern for Infosys SP/DSE (strings listed among the main HackWithInfy topics on CodeChef discuss 2021 and in the bhasidhshaik GitHub SP/DSE sheet; prefix/suffix string questions in PrepInsta's SP/DSE list) — original statement of the classic prefix-function 'border that also occurs inside' task",
+  "statement": "A vault code is hidden inside a long string `S` of lowercase letters. The key `T` is the **longest** non-empty string that satisfies all three conditions:\n\n1. `T` is a prefix of `S`,\n2. `T` is a suffix of `S`,\n3. `T` also occurs somewhere strictly **inside** `S` — an occurrence that is neither at the very beginning nor at the very end (i.e. it starts at a position `> 1` and ends at a position `< |S|`, 1-indexed).\n\n`T` must be shorter than `S`. Print `T`, or `-1` if no such string exists.",
+  "inputFormat": "A single line containing `S`.",
+  "outputFormat": "Print the key `T`, or `-1`.",
+  "constraints": "- `1 ≤ |S| ≤ 5 × 10^5`\n- `S` consists of lowercase English letters.",
+  "samples": [
+    {
+      "input": "abababab\n",
+      "output": "abab\n",
+      "explanation": "Borders (strings that are both prefix and suffix) are `ababab`, `abab`, `ab`. `ababab` occurs only at positions 1 and 3 — the second one is the suffix, so no interior occurrence. `abab` also occurs at position 3 (characters 3..6), strictly inside → answer `abab`."
+    },
+    {
+      "input": "abcdabc\n",
+      "output": "-1\n",
+      "explanation": "The borders are `abc` only. `abc` appears only as the prefix and the suffix, never strictly inside."
+    }
+  ],
+  "hints": [
+    "Compute the prefix function `pi[i]` = length of the longest proper prefix of `S[0..i]` that is also a suffix of it (KMP failure function). All borders of `S` are `pi[n−1]`, `pi[pi[n−1]−1]`, … .",
+    "An occurrence of a prefix of length `L` that ends at index `i ≤ n−2` and starts after index 0 exists if `pi[i] ≥ L` for some `i` in `[1, n−2]` (the prefix of length `pi[i]` ends at `i`, and its own prefix of length L starts at the same place).",
+    "Try `L = pi[n−1]`: valid iff `max(pi[0..n−2]) ≥ L`. If not, the next border `L' = pi[L−1]` (if > 0) is always valid: it occurs as a suffix of the prefix of length `L`, which is strictly inside. Otherwise print -1."
+  ],
+  "editorial": "### Intuition\nStrings that are both a prefix and a suffix are the **borders** of `S`; the prefix function enumerates them from longest to shortest via `L → pi[L−1]`. We need the longest border that also occurs strictly inside.\n\n### Approach\n1. Build `pi` in O(n) (classic KMP loop).\n2. Let `L = pi[n−1]`. If `L > 0` and some `pi[i] ≥ L` with `i ≤ n−2`, then the prefix of length `L` occurs ending at `i − pi[i] + L ≤ n−2` and starting at `i − pi[i] + 1 ≥ 1` → answer `S[:L]`. (A border can never be longer than the longest border, so this is optimal.)\n3. Otherwise take `L2 = pi[L−1]`. If `L2 > 0`, then `S[:L2]` is a border of `S[:L]`, so it occurs ending at index `L−1 ≤ n−2` and starting at `L − L2 ≥ 1` → answer `S[:L2]`.\n4. Otherwise `-1`.\n\n### Complexity\n**O(|S|)** time and memory.\n\n### Common mistakes\n- Using `str.find` in a loop over all borders → O(n²) on strings like `aaaa…a`.\n- Allowing the occurrence to touch the start or end (the prefix/suffix themselves do not count).\n- Answer equal to the whole string — `T` must be shorter than `S` (the prefix function already guarantees proper borders).\n- Hashing without care for collisions; KMP is exact and simpler here.",
+  "youtube": [
+    {
+      "title": "KMP algorithm for pattern searching (senXei)",
+      "url": "https://www.youtube.com/watch?v=nVAwPQV2-uE",
+      "kind": "video"
+    },
+    {
+      "title": "CodeForces 126B - Password (SolverToBe) — the same prefix-function idea",
+      "url": "https://www.youtube.com/watch?v=A5qANFRVq5w",
+      "kind": "video"
+    },
+    {
+      "title": "Password - Codeforces | Rabin Karp Rolling Hash | Text Processing — Pepcoding",
+      "url": "https://www.youtube.com/watch?v=fnSD3MsfKf8",
+      "kind": "video"
+    },
+    {
+      "title": "kmp algorithm prefix function shortcut method | kmp algorithm in daa — Tech Program Mind",
+      "url": "https://www.youtube.com/watch?v=6V-h-6v93G0",
+      "kind": "video"
+    },
+    {
+      "title": "KMP algorithm for string matching DAA in Hindi | Knuth-Morris-Pratt | Solved Example ADA | substring — CSE concepts with Parinita",
+      "url": "https://www.youtube.com/watch?v=bPZtygliH6s",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: prefix function KMP explained competitive programming",
+      "url": "https://www.youtube.com/results?search_query=prefix+function+kmp+explained+competitive+programming",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef find_key(s):\n    # Return the longest string that is a prefix, a suffix, and also occurs strictly inside s.\n    # Return \"-1\" if there is none.\n    # Write your code here\n    return \"-1\"\n\n\ndef main():\n    s = sys.stdin.readline().strip()\n    print(find_key(s))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

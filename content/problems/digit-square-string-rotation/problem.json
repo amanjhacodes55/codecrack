@@ -1,0 +1,60 @@
+{
+  "slug": "digit-square-string-rotation",
+  "title": "Digit-Square String Rotation",
+  "difficulty": "Easy",
+  "tags": [
+    "Strings",
+    "Math",
+    "Simulation"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infytq"
+  ],
+  "source": "Reported from the InfyTQ certification coding round (2020) — reconstructed from a GeeksforGeeks 'Infosys Certification Exam Experience | InfyTQ Questions 2020' write-up and Edyst's InfyTQ Python question list. Statement rewritten; rotation rules preserved.",
+  "statement": "A message-scrambling unit receives `N` jobs. Each job is a word `S` paired with a non-negative integer key `X`.\n\nFor each job, compute `Q` = the **sum of the squares of the decimal digits** of `X` (for example `X = 203` gives `Q = 4 + 0 + 9 = 13`). Then:\n\n- if `Q` is **even**, rotate `S` **right by 1** position (the last character moves to the front);\n- if `Q` is **odd**, rotate `S` **left by 2** positions (the first two characters move, in order, to the end).\n\nA rotation by `r` positions of a word of length `L` is the same as a rotation by `r mod L` positions (so a 1-letter word never changes, and rotating a 2-letter word left by 2 leaves it unchanged).\n\nPrint the scrambled word for every job, in input order.",
+  "inputFormat": "The first line contains an integer `N`.\nEach of the next `N` lines contains a word `S` and an integer `X`, separated by a space.",
+  "outputFormat": "Print `N` lines; the `i`-th line is the scrambled form of the `i`-th word.",
+  "constraints": "- `1 ≤ N ≤ 10^4`\n- `1 ≤ |S| ≤ 100`, `S` consists of English letters (case-sensitive)\n- `0 ≤ X ≤ 10^18` (no leading zeros)",
+  "samples": [
+    {
+      "input": "3\nrhythm 12\ninfosys 203\ncode 0\n",
+      "output": "ythmrh\nfosysin\necod\n",
+      "explanation": "- `rhythm`, `X = 12`: `Q = 1 + 4 = 5` (odd) → move `rh` to the end → `ythmrh`.\n- `infosys`, `X = 203`: `Q = 4 + 0 + 9 = 13` (odd) → `fosysin`.\n- `code`, `X = 0`: `Q = 0` (even) → last letter to the front → `ecod`."
+    },
+    {
+      "input": "2\nab 7\nq 99\n",
+      "output": "ab\nq\n",
+      "explanation": "`7² = 49` is odd, and rotating a 2-letter word left by 2 gives it back unchanged. A 1-letter word never changes."
+    }
+  ],
+  "hints": [
+    "Treat `X` as a string and add up `int(c)**2` for every character `c` — no need to convert the whole key to an integer.",
+    "Python slicing does the rotations: right by 1 is `s[-1:] + s[:-1]`, left by 2 is `s[2:] + s[:2]`.",
+    "Reduce the shift modulo `len(s)` first so 1- and 2-letter words are handled safely."
+  ],
+  "editorial": "### Intuition\nThis is a pure simulation problem — the only work is computing the digit-square sum and doing the right rotation.\n\n### Approach\n1. `Q = sum(int(c)**2 for c in X)`. Only the parity matters, so you could even note that `d²` has the same parity as `d` and just sum the digits — but computing `Q` directly is clearer.\n2. Let `L = len(S)`.\n   - Even `Q`: `r = 1 % L`, answer `S[L-r:] + S[:L-r]`.\n   - Odd `Q`: `r = 2 % L`, answer `S[r:] + S[:r]`.\n\n### Complexity\n`O(|S| + digits(X))` per job, `O(total input)` overall.\n\n### Common mistakes\n- Mixing up directions: *right* rotation brings the **last** characters to the front.\n- Crashing / mis-rotating on words of length 1 or 2 — always reduce the shift mod `L`.\n- Building the result with repeated `+=` inside a loop of `print`s is fine here, but collect the lines and print once for speed.",
+  "youtube": [
+    {
+      "title": "infyTQ String Rotation | Edyst",
+      "url": "https://www.youtube.com/watch?v=B9EfcABqT8I",
+      "kind": "video"
+    },
+    {
+      "title": "InfyTQ previous year Coding Question #2 | InfyTQ String Rotation Code | InfyTQ  final round 2022 — Bade Tutorials",
+      "url": "https://www.youtube.com/watch?v=kWGHzbeIvnc",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: InfyTQ string rotation previous year question python",
+      "url": "https://www.youtube.com/results?search_query=InfyTQ+string+rotation+previous+year+question+python",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef scramble(word, key):\n    # key is given as a string of digits.\n    # Return the word rotated according to the parity of the digit-square sum of key.\n    # Write your code here\n    return \"\"\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    out = []\n    for k in range(n):\n        word = data[1 + 2 * k]\n        key = data[2 + 2 * k]\n        out.append(scramble(word, key))\n    print(\"\\n\".join(out))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

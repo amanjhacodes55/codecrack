@@ -1,0 +1,65 @@
+{
+  "slug": "total-set-bits-1-to-n",
+  "title": "Total Set Bits from 1 to N",
+  "difficulty": "Medium",
+  "tags": [
+    "Bit Manipulation",
+    "Math"
+  ],
+  "companies": [
+    "Infosys",
+    "Amazon"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Fundamental technique drill (bit manipulation: per-bit counting patterns)",
+  "statement": "For a positive integer `x`, let `popcount(x)` be the number of `1` bits in the binary representation of `x` (e.g. `popcount(6) = popcount(110₂) = 2`).\n\nYou are given `T` queries. Each query is a single integer `N`. For each query print\n\n`popcount(1) + popcount(2) + … + popcount(N)`.\n\n`N` can be as large as `10^18`, so iterating over all numbers is impossible.",
+  "inputFormat": "The first line contains an integer `T`.\nEach of the next `T` lines contains one integer `N`.",
+  "outputFormat": "Print `T` lines; the `i`-th line contains the total number of set bits over all integers from `1` to `N` for the `i`-th query. (The value can exceed `2^63 − 1`.)",
+  "constraints": "- `1 ≤ T ≤ 10^4`\n- `1 ≤ N ≤ 10^18`",
+  "samples": [
+    {
+      "input": "3\n3\n6\n7\n",
+      "output": "4\n9\n12\n",
+      "explanation": "`1, 10, 11` → 1+1+2 = 4. Adding `100, 101, 110` → 4+1+2+2 = 9. Adding `111` → 12."
+    },
+    {
+      "input": "2\n1\n10\n",
+      "output": "1\n17\n",
+      "explanation": "From 1 to 10: `1,1,2,1,2,2,3,1,2,2` → 17."
+    }
+  ],
+  "hints": [
+    "Count **column by column** instead of number by number: how many numbers in `0..N` have bit `k` set?",
+    "Write the numbers `0, 1, 2, …` in binary and look at bit `k`: it follows a repeating pattern of `2^k` zeros then `2^k` ones, i.e. a cycle of length `2^(k+1)`.",
+    "With `M = N + 1` numbers (`0..N`): bit `k` is set in `(M // 2^(k+1)) · 2^k + max(0, M % 2^(k+1) − 2^k)` of them. Sum this for every `k` with `2^k ≤ N` — about 60 terms."
+  ],
+  "editorial": "### Intuition\nSumming `popcount` over `10^18` numbers is impossible, but there are only ~60 **bit positions**. Swap the order of summation: total = Σ over bits `k` of (how many numbers in `1..N` have bit `k` set).\n\n### Counting one bit position\nListing `0, 1, 2, …`, bit `k` goes `0` for `2^k` numbers, then `1` for `2^k` numbers, and repeats — period `2^(k+1)`. Over `M = N + 1` numbers `0..N` (including 0 doesn't change the total):\n- complete cycles: `M // 2^(k+1)`, each contributing `2^k` ones;\n- the leftover `M % 2^(k+1)` numbers contribute `max(0, leftover − 2^k)` ones.\n\n### Approach\n```\ntotal = 0; M = N + 1; k = 0\nwhile (1 << k) <= N:\n    cycle, half = 1 << (k+1), 1 << k\n    total += (M // cycle) * half + max(0, M % cycle - half)\n    k += 1\n```\n\n### Complexity\n**O(log N)** per query, **O(T log N)** total.\n\n### Bit tricks worth knowing (used here and elsewhere)\n- `x & 1` — lowest bit; `x >> 1` — drop it; `1 << k` — `2^k`.\n- `x & (x − 1)` clears the lowest set bit (Brian Kernighan's popcount loop).\n- `x & -x` isolates the lowest set bit.\n- Python: `bin(x).count(\"1\")` or `x.bit_count()` (3.10+).\n\n### Alternative\nRecursive: if `2^b ≤ N < 2^(b+1)`, then `f(N) = b · 2^(b−1) + (N − 2^b + 1) + f(N − 2^b)` — also O(log N) steps.\n\n### Common mistakes\n- Counting over `1..N` but using `M = N` in the formula (off by one — the formula counts `0..M−1`).\n- Forgetting the leftover partial cycle.\n- Overflow in fixed-width languages (the total for `N = 10^18` is about `3·10^19`). Python is safe.",
+  "youtube": [
+    {
+      "title": "L1 | Bit Manipulations | Introduction to Bit Manipulations (Raj / Striver)",
+      "url": "https://www.youtube.com/watch?v=5rtVTYAk9KQ",
+      "kind": "video"
+    },
+    {
+      "title": "Count Set Bits in First N natural numbers | Total Set Bits from 1 to N | Bit Manipulation — Pepcoding",
+      "url": "https://www.youtube.com/watch?v=g6OxU-hRGtY",
+      "kind": "video"
+    },
+    {
+      "title": "Count total set bits | Problem of the Day 23/09/21 | Siddharth Hazra — School of AI ",
+      "url": "https://www.youtube.com/watch?v=ZzZcFXDcbJw",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: count total set bits in all numbers from 1 to n",
+      "url": "https://www.youtube.com/results?search_query=count+total+set+bits+in+all+numbers+from+1+to+n",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef total_set_bits(n):\n    # Return popcount(1) + popcount(2) + ... + popcount(n). n can be up to 10^18.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    t = int(data[0])\n    out = [total_set_bits(int(x)) for x in data[1:1 + t]]\n    sys.stdout.write(\"\\n\".join(map(str, out)) + \"\\n\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

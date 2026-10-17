@@ -1,0 +1,62 @@
+{
+  "slug": "majority-element",
+  "title": "Majority Element",
+  "difficulty": "Easy",
+  "tags": [
+    "Arrays",
+    "Hashing",
+    "Boyer-Moore Voting"
+  ],
+  "companies": [
+    "Infosys",
+    "TCS",
+    "Amazon"
+  ],
+  "collections": [
+    "hashing-drill"
+  ],
+  "source": "Classic interview problem (asked across Infosys / TCS / Amazon screening rounds)",
+  "statement": "You are given an array `A` of `N` integers.\n\nAn element is called a **majority element** if it appears **strictly more than** `N / 2` times in the array.\n\nPrint the majority element if it exists, otherwise print `-1`.\n\n> There can be at most one such element. Can you see why?",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the majority element, or `-1` if none exists.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `-10^9 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "7\n2 2 1 1 1 2 2\n",
+      "output": "2\n",
+      "explanation": "`2` appears 4 times and 4 > 7/2 = 3.5."
+    },
+    {
+      "input": "4\n1 2 1 2\n",
+      "output": "-1\n",
+      "explanation": "Both `1` and `2` appear exactly 2 times, which is not strictly more than 4/2 = 2."
+    }
+  ],
+  "hints": [
+    "A hash map from value → count solves it in O(N) time and O(N) space.",
+    "Can you do it in O(1) extra space? Think about cancelling out pairs of different elements.",
+    "Boyer–Moore voting gives you a *candidate*. You still need a second pass to verify it really is a majority."
+  ],
+  "editorial": "### Approach 1 — Hashing\nCount every value with a dictionary, then check whether any count is `> N/2`. **O(N)** time, **O(N)** space.\n\n### Approach 2 — Boyer–Moore Voting (optimal)\nKeep a `candidate` and a `count`. For each element: if `count == 0` adopt it as candidate; if it equals the candidate increment, else decrement. A true majority can never be fully cancelled, so if one exists it is the final candidate. Because a majority may **not** exist, do a second pass to count the candidate.\n\n**O(N)** time, **O(1)** space.\n\n### Common mistakes\n- Using `>=` instead of `>` (exactly half is *not* a majority).\n- Forgetting the verification pass.",
+  "youtube": [
+    {
+      "title": "Majority Element | Brute- Better-Best Approach | Moore's Voting Algorithm | & Pair Sum — Apna College",
+      "url": "https://www.youtube.com/watch?v=_xqIp2rj8bo",
+      "kind": "video"
+    },
+    {
+      "title": "Majority Element I | Brute-Better-Optimal | Moore's Voting Algorithm | Intuition 🔥|Brute to Optimal — take U forward",
+      "url": "https://www.youtube.com/watch?v=nP_ns3uSh80",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: Majority Element Boyer-Moore voting algorithm",
+      "url": "https://www.youtube.com/results?search_query=majority+element+boyer+moore+voting+algorithm",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef majority_element(arr):\n    # Return the element that appears more than len(arr) // 2 times, else -1\n    # Write your code here\n    return -1\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    print(majority_element(arr))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

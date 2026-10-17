@@ -1,0 +1,67 @@
+{
+  "slug": "longest-ascending-trail-grid",
+  "title": "Longest Ascending Drone Route",
+  "difficulty": "Medium",
+  "tags": [
+    "Dynamic Programming",
+    "Grid DP",
+    "Memoization",
+    "Sorting"
+  ],
+  "companies": [
+    "Infosys",
+    "Google"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "'Longest Increasing Path in a Matrix' is listed as a Hard Infosys SP/DSE practice question in Great Learning's 2026 Infosys SP/DSE article (not a verified candidate report); grid DP is also named by a HackWithInfy 2026 L3 candidate (LeetCode Discuss). Story, statement and constraints are our own",
+  "statement": "A survey drone flies over an `R × C` grid of sensors. Sensor `(i, j)` reports an altitude reading `H[i][j]`.\n\nA **route** is a sequence of cells where each next cell is one of the 4 side-neighbours (up, down, left, right) of the previous cell and has a **strictly greater** reading than the previous cell. A route may start at any cell; a single cell is a route of length `1`.\n\nPrint the number of cells in the longest possible route.",
+  "inputFormat": "The first line contains two integers `R` and `C`.\nEach of the next `R` lines contains `C` space-separated integers - the readings of one grid row.",
+  "outputFormat": "Print a single integer: the maximum number of cells in a route.",
+  "constraints": "- `1 ≤ R, C ≤ 300`\n- `0 ≤ H[i][j] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "2 3\n3 4 5\n3 2 6\n",
+      "output": "4\n",
+      "explanation": "`2 → 4 → 5 → 6`: from `(2,2)` up to `(1,2)`, right to `(1,3)`, down to `(2,3)`."
+    },
+    {
+      "input": "3 4\n5 6 7 8\n4 1 2 9\n3 3 2 10\n",
+      "output": "8\n",
+      "explanation": "`3 → 4 → 5 → 6 → 7 → 8 → 9 → 10`, starting at the bottom-left cell, going up the first column, right along the top row and down the last column."
+    }
+  ],
+  "hints": [
+    "Because readings must strictly increase, a route can never revisit a cell - the moves form a **DAG**, so DP is valid.",
+    "Let `best(cell)` = longest route **ending** at `cell`. It equals `1 + max best(neighbour)` over neighbours with a smaller reading.",
+    "To compute it bottom-up, process cells in **increasing order of reading**: when a cell is processed, all its smaller neighbours already have their final value. (Top-down DFS + memo also works, but deep recursion is risky in Python on a 300×300 grid.)"
+  ],
+  "editorial": "### Why DP works\nEdges go only from a smaller reading to a strictly larger one, so there are no cycles: the grid is a directed acyclic graph and \"longest path in a DAG\" is a DP.\n\n### State\n`dp[v]` = number of cells in the longest route that ends at cell `v`.\n\n### Transition\n`dp[v] = 1 + max(dp[u])` over side-neighbours `u` with `H[u] < H[v]` (or `1` if none).\n\n### Order of computation\nSort all `R·C` cells by reading ascending and process them in that order (a topological order). Equal readings never depend on each other, so ties may be in any order.\n\n### Answer\n`max(dp)`.\n\n### Complexity\nSorting `O(RC log RC)` + `4·R·C` transitions ≈ `10^5 · 17` - fast.\n\n### Common mistakes\n- Recursive DFS without raising the recursion limit (a snake-shaped grid gives a route of length 90 000 → `RecursionError`). Use the sorted bottom-up order or an explicit stack.\n- Allowing equal readings (must be **strictly** greater).\n- Running BFS/DFS from every cell without memo: exponential.",
+  "youtube": [
+    {
+      "title": "Longest Increasing Path in a Matrix - Leetcode 329 (NeetCode)",
+      "url": "https://www.youtube.com/watch?v=wCc_nd-GiEc",
+      "kind": "video"
+    },
+    {
+      "title": "DP 8. Grid Unique Paths | Learn Everything about DP on Grids (take U forward)",
+      "url": "https://www.youtube.com/watch?v=sdE0A2Oxofw",
+      "kind": "video"
+    },
+    {
+      "title": "Longest Increasing Path in a Matrix | Live Coding with Explanation | Leetcode - 329 — Algorithms Made Easy",
+      "url": "https://www.youtube.com/watch?v=WiEqhI7v2FY",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: longest increasing path in a matrix topological sort dp",
+      "url": "https://www.youtube.com/results?search_query=longest+increasing+path+in+a+matrix+topological+sort+dp",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef longest_ascending_route(grid):\n    # grid is a list of R rows (lists of C ints). Return the max number of cells in a strictly ascending 4-directional route\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    r, c = int(data[0]), int(data[1])\n    vals = list(map(int, data[2:2 + r * c]))\n    grid = [vals[i * c:(i + 1) * c] for i in range(r)]\n    print(longest_ascending_route(grid))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

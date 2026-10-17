@@ -1,0 +1,67 @@
+{
+  "slug": "coprime-team-pairs",
+  "title": "Coprime Team Pairs",
+  "difficulty": "Hard",
+  "tags": [
+    "Number Theory",
+    "Sieve",
+    "Möbius Function",
+    "Inclusion-Exclusion",
+    "GCD"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Number-theory pattern for Infosys SP/DSE (divisibility/GCD counting such as 'Count Arrays with Divisibility Condition' on the bhasidhshaik GitHub SP/DSE sheet and 'Divisible Arrays Count' on PrepInsta's SP/DSE list; GCD-counting hard problems on dsaprep.dev's Infosys list) — original statement of the classic coprime-pair count",
+  "statement": "A hackathon has `N` participants; participant `i` wears a badge with the positive integer `A[i]`. Two participants make a **compatible pair** if the numbers on their badges are coprime, i.e. `gcd(A[i], A[j]) = 1`.\n\nCount the pairs of participants `i < j` that are compatible. (Badges may repeat; note that `gcd(1, 1) = 1`.)",
+  "inputFormat": "The first line contains `N`.\nThe second line contains `N` integers `A[1..N]`.",
+  "outputFormat": "Print the number of compatible pairs.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `1 ≤ A[i] ≤ 2 × 10^5`",
+  "samples": [
+    {
+      "input": "5\n2 3 4 5 6\n",
+      "output": "6\n",
+      "explanation": "Compatible: (2,3), (2,5), (3,4), (3,5), (4,5), (5,6). Pairs like (2,4), (2,6), (3,6), (4,6) share a factor."
+    },
+    {
+      "input": "4\n6 10 15 7\n",
+      "output": "3\n",
+      "explanation": "6, 10 and 15 pairwise share a prime (2, 3 or 5), but each of them is coprime with 7."
+    }
+  ],
+  "hints": [
+    "Checking all N(N−1)/2 pairs with `gcd` is ~5·10^9 operations. Count the *non*-coprime pairs differently: by a common divisor.",
+    "Let `c[d]` be how many badges are multiples of `d` (computable for all `d ≤ MAX` in O(MAX log MAX) with a harmonic loop). Then `C(c[d], 2)` pairs share the divisor `d` — but a pair sharing 6 is also counted under 2 and 3. Inclusion–exclusion fixes the over-counting.",
+    "The inclusion–exclusion coefficients are exactly the Möbius function: `answer = Σ_d μ(d) · C(c[d], 2)`. Compute `μ` with a linear (or Eratosthenes) sieve."
+  ],
+  "editorial": "### Intuition\n`[gcd(x, y) = 1] = Σ_{d | gcd(x,y)} μ(d)`. Summing over all pairs and swapping the order of summation:\n\n`answer = Σ_d μ(d) · #{pairs where d divides both} = Σ_d μ(d) · C(c[d], 2)`,\n\nwhere `c[d]` is the number of array elements divisible by `d`. `μ(d)` is 0 if `d` has a squared prime factor, otherwise `(−1)^(number of prime factors)` — exactly the inclusion–exclusion signs over the primes of `d`.\n\n### Approach\n1. `freq[v]` = occurrences of value `v`.\n2. Linear sieve up to `MAX = max(A)` to get `μ`.\n3. For every `d` with `μ(d) ≠ 0`: `c = freq[d] + freq[2d] + …` (in Python, `sum(freq[d::d])` runs in C and is fast), add `μ(d) · c(c−1)/2`.\n\n### Complexity\nSieve `O(MAX)`; the multiples loop is `Σ MAX/d = O(MAX log MAX)` ≈ 2.5·10^6 additions. Total well under a second.\n\n### Common mistakes\n- Plain O(N²) gcd loop — times out.\n- Forgetting `1`s: every 1 is coprime with everything, including other 1s (handled automatically by the formula).\n- Counting ordered pairs (double) or including `i = j`.\n- Sieving up to 10^9 or a fixed huge bound instead of `max(A)`.",
+  "youtube": [
+    {
+      "title": "[CSES][Mathematics] Counting Coprime Pairs (NeatlyStructured)",
+      "url": "https://www.youtube.com/watch?v=2H65yrmM0wY",
+      "kind": "video"
+    },
+    {
+      "title": "Mobius Inversion Explained in 14 minutes | CSES Count Coprime Pairs — Prakhar Srivastav",
+      "url": "https://www.youtube.com/watch?v=8eiNpdEybDU",
+      "kind": "video"
+    },
+    {
+      "title": "17. Mobius Function | Mobius Inversion Formula | Number Theory | Ravina Tutorial | in Hindi — Ravina Tutorial",
+      "url": "https://www.youtube.com/watch?v=fmTDMdi3QWY",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: mobius function inclusion exclusion competitive programming",
+      "url": "https://www.youtube.com/results?search_query=mobius+function+inclusion+exclusion+competitive+programming",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef count_coprime_pairs(arr):\n    # Return the number of pairs i < j with gcd(arr[i], arr[j]) == 1\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    print(count_coprime_pairs(arr))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

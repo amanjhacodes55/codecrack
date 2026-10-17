@@ -1,0 +1,71 @@
+{
+  "slug": "smallest-build-order",
+  "title": "Smallest Build Order",
+  "difficulty": "Medium",
+  "tags": [
+    "Graphs",
+    "Topological Sort",
+    "Heap",
+    "Cycle Detection"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by candidates in Infosys SP interviews (topological sorting mentioned in a 2025 SP interview write-up on Medium, seen via search summary); dependency-ordering graph questions are a staple of SP/DSE prep lists",
+  "statement": "A build system has `N` modules numbered `1 … N`. There are `M` dependency rules; the rule `u v` means **module `u` must be built before module `v`**.\n\nFind an order that builds every module exactly once and respects all rules. If several valid orders exist, print the **lexicographically smallest** one (compare the sequences element by element; the first position where they differ decides, smaller module number wins).\n\nIf no valid order exists (the rules contain a cycle — a rule `u u` also counts as a cycle), print `-1`.\n\nDuplicate rules may appear and should be treated like a single rule.",
+  "inputFormat": "The first line contains two integers `N` and `M`.\nEach of the next `M` lines contains two integers `u v` (`1 ≤ u, v ≤ N`).",
+  "outputFormat": "Print the `N` module numbers of the lexicographically smallest valid order separated by spaces, or `-1` if impossible.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `0 ≤ M ≤ 10^5`\n- `1 ≤ u, v ≤ N`",
+  "samples": [
+    {
+      "input": "5 4\n3 1\n3 2\n2 4\n5 4\n",
+      "output": "3 1 2 5 4\n",
+      "explanation": "Initially modules 3 and 5 have no prerequisites; 3 is smaller so it goes first. Then 1, 2 and 5 are free → take 1, then 2, then 5, and finally 4."
+    },
+    {
+      "input": "3 3\n1 2\n2 3\n3 1\n",
+      "output": "-1\n",
+      "explanation": "1 → 2 → 3 → 1 is a cycle, so no order exists."
+    }
+  ],
+  "hints": [
+    "Kahn's algorithm builds a topological order by repeatedly taking a node whose in-degree is 0 and removing its outgoing edges.",
+    "To get the lexicographically smallest order, among all currently available (in-degree 0) nodes always take the smallest one. Which data structure gives you the minimum quickly?",
+    "Replace Kahn's queue with a min-heap (`heapq`). If fewer than `N` nodes are popped in total, there is a cycle → print -1."
+  ],
+  "editorial": "### Intuition\nAny valid order must start with a node that has no unmet prerequisites. To make the sequence lexicographically smallest, the first element should be the **smallest available** node — and choosing it never hurts later positions, because taking a node only *adds* more available nodes. Repeating this greedy choice gives the answer.\n\n### Approach (Kahn + min-heap)\n1. Build adjacency lists and in-degrees (duplicates simply increase both counters consistently, so they are harmless).\n2. Push all nodes with in-degree 0 into a min-heap.\n3. Pop the smallest `u`, append to the answer, decrement the in-degree of each neighbour, push neighbours that reach 0.\n4. If the answer has fewer than `N` nodes, some nodes were stuck in a cycle → `-1`.\n\n### Complexity\n**O((N + M) log N)** time, **O(N + M)** memory.\n\n### Common mistakes\n- Using a plain FIFO queue: gives *a* valid order but not the smallest.\n- DFS-based topological sort (reverse post-order) cannot easily produce the lexicographically smallest order, and recursion depth can reach 10^5.\n- Forgetting self-loops `u u` — they make the answer `-1` (Kahn handles them automatically because the node's in-degree never reaches 0).",
+  "youtube": [
+    {
+      "title": "Kahn's algorithm | Topological sort | Course schedule 2 | Leetcode #210 (Techdose)",
+      "url": "https://www.youtube.com/watch?v=tggiFvaxjrY",
+      "kind": "video"
+    },
+    {
+      "title": "Lecture 91: Topological Sort (Using Kahn's Algorithm) — CodeHelp by Babbar",
+      "url": "https://www.youtube.com/watch?v=6XmzL04mlgQ",
+      "kind": "video"
+    },
+    {
+      "title": "G-22. Kahn's Algorithm | Topological Sort Algorithm | BFS — take U forward",
+      "url": "https://www.youtube.com/watch?v=73sneFXuTEg",
+      "kind": "video"
+    },
+    {
+      "title": "Topological Sort | Kahn's Algorithm — Coder Army",
+      "url": "https://www.youtube.com/watch?v=2JgYwQ6TZ44",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: lexicographically smallest topological sort priority queue",
+      "url": "https://www.youtube.com/results?search_query=lexicographically+smallest+topological+sort+priority+queue",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\nimport heapq\n\n\ndef build_order(n, adj, indeg):\n    # adj[u]   : list of modules v such that u must be built before v (1-indexed, adj[0] unused)\n    # indeg[v] : number of rules pointing into v\n    # Return the lexicographically smallest valid order as a list, or [] if impossible\n    # Write your code here\n    return []\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, m = int(data[0]), int(data[1])\n    adj = [[] for _ in range(n + 1)]\n    indeg = [0] * (n + 1)\n    p = 2\n    for _ in range(m):\n        u, v = int(data[p]), int(data[p + 1])\n        p += 2\n        adj[u].append(v)\n        indeg[v] += 1\n    order = build_order(n, adj, indeg)\n    print(*order) if order else print(-1)\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

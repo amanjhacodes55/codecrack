@@ -1,0 +1,82 @@
+{
+  "slug": "check-string-permutation",
+  "title": "Check if Two Strings are Permutations",
+  "difficulty": "Easy",
+  "tags": [
+    "Hashing",
+    "Strings",
+    "Counting"
+  ],
+  "companies": [
+    "Infosys",
+    "TCS",
+    "Amazon"
+  ],
+  "collections": [
+    "hashing-drill"
+  ],
+  "source": "Classic warm-up hashing problem (anagram / permutation check)",
+  "statement": "You are given two strings `S` and `T` consisting of lowercase English letters.\n\n`T` is a **permutation** of `S` if `T` can be obtained by rearranging the characters of `S` — that is, both strings contain **exactly the same characters with exactly the same counts** (so they also have the same length).\n\nPrint `YES` if `T` is a permutation of `S`, otherwise print `NO`.",
+  "inputFormat": "The first line contains the string `S`.\nThe second line contains the string `T`.",
+  "outputFormat": "Print `YES` or `NO` (uppercase).",
+  "constraints": "- `1 ≤ |S|, |T| ≤ 10^5`\n- `S` and `T` contain only lowercase letters `a-z`\n- `|S|` and `|T|` may be different",
+  "samples": [
+    {
+      "input": "listen\nsilent\n",
+      "output": "YES\n",
+      "explanation": "Both strings contain `e, i, l, n, s, t` once each."
+    },
+    {
+      "input": "aab\nabb\n",
+      "output": "NO\n",
+      "explanation": "Same length and same set of letters, but `S` has two `a`s while `T` has only one."
+    },
+    {
+      "input": "abc\nab\n",
+      "output": "NO\n",
+      "explanation": "Different lengths can never be permutations of each other."
+    }
+  ],
+  "hints": [
+    "If the lengths differ, the answer is immediately `NO`.",
+    "Comparing `sorted(S) == sorted(T)` works in O(N log N). Can you do it in O(N)?",
+    "Use a count array of size 26: add 1 for each character of `S`, subtract 1 for each character of `T`. The answer is `YES` iff every entry ends at 0."
+  ],
+  "editorial": "### Intuition\nTwo strings are permutations of each other exactly when their **character frequency tables** are identical.\n\n### Approach 1 — Sorting\n`sorted(S) == sorted(T)`. Simple and correct, **O(N log N)**.\n\n### Approach 2 — Counting (optimal)\n1. If `len(S) != len(T)`, print `NO`.\n2. Keep `cnt[26]`. For every `c` in `S` do `cnt[c] += 1`; for every `c` in `T` do `cnt[c] -= 1`.\n3. Print `YES` iff all counts are zero.\n\n`collections.Counter(S) == Counter(T)` is the same idea in one line.\n\n**O(N)** time, **O(1)** extra space (26 counters).\n\n### Common mistakes\n- Checking only that both strings use the *same set* of letters (`set(S) == set(T)`) — ignores counts (sample 2).\n- Skipping the length check when using a one-sided count (only checking that each char of `T` exists in `S`).\n- Printing `Yes`/`yes` instead of exactly `YES`.",
+  "youtube": [
+    {
+      "title": "Valid Anagram - Leetcode 242 - Python (NeetCode)",
+      "url": "https://www.youtube.com/watch?v=9UtInBqnCgA",
+      "kind": "video"
+    },
+    {
+      "title": "Check if two strings are anagrams — Techdose",
+      "url": "https://www.youtube.com/watch?v=QZmh8-Auqo8",
+      "kind": "video"
+    },
+    {
+      "title": "Determine if two strings/phrases are valid Anagrams | Study Algorithms — Nikhil Lohia",
+      "url": "https://www.youtube.com/watch?v=y6ht-CoRI4Q",
+      "kind": "video"
+    },
+    {
+      "title": "Valid Anagram | LeetCode problem 242 | Top 150 interview question series — Technosage",
+      "url": "https://www.youtube.com/watch?v=wKF6L9Zo8PQ",
+      "kind": "video"
+    },
+    {
+      "title": "2. Valid Anagram | Strings - Easy | #LearnDSA | Leetcode 242 — Ayushi Sharma",
+      "url": "https://www.youtube.com/watch?v=kF7HXifK4a8",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: check if two strings are permutation of each other hashing",
+      "url": "https://www.youtube.com/results?search_query=check+if+two+strings+are+permutation+of+each+other+hashing",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef is_permutation(s, t):\n    # Return True if t is a rearrangement of s, else False\n    # Write your code here\n    return False\n\n\ndef main():\n    data = sys.stdin.read().split()\n    s, t = data[0], data[1]\n    print(\"YES\" if is_permutation(s, t) else \"NO\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

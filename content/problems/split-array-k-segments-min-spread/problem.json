@@ -1,0 +1,65 @@
+{
+  "slug": "split-array-k-segments-min-spread",
+  "title": "Split Into K Segments - Minimum Total Spread",
+  "difficulty": "Hard",
+  "tags": [
+    "Dynamic Programming",
+    "Partition DP",
+    "Arrays"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Pattern reported by an Infosys SP candidate (Naukri Code360 experience, Jul 2024: hard DP problem splitting an array into K contiguous segments to minimise total segment cost). The cost function and constraints here are our own",
+  "statement": "You are given an array `A` of `N` integers and an integer `K`.\n\nSplit the array into **exactly `K` non-empty contiguous segments** (every element belongs to exactly one segment and the order is preserved).\n\nThe **spread** of a segment is `max(segment) − min(segment)`. Print the minimum possible sum of spreads over all `K` segments.",
+  "inputFormat": "The first line contains two integers `N` and `K`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the minimum total spread.",
+  "constraints": "- `1 ≤ K ≤ N ≤ 250`\n- `K ≤ 25`\n- `0 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "6 2\n1 3 2 10 12 11\n",
+      "output": "4\n",
+      "explanation": "`[1 3 2] [10 12 11]` → spreads `2 + 2 = 4`."
+    },
+    {
+      "input": "5 3\n5 1 9 2 8\n",
+      "output": "7\n",
+      "explanation": "`[5] [1] [9 2 8]` → `0 + 0 + 7 = 7`. For instance `[5 1] [9] [2 8]` costs `4 + 0 + 6 = 10`."
+    }
+  ],
+  "hints": [
+    "Focus on the **last** segment. If it is `A[j..i-1]`, the rest is the same problem on the prefix `A[0..j-1]` with one fewer segment.",
+    "`dp[s][i]` = minimum total spread splitting the first `i` elements into exactly `s` segments.",
+    "`dp[s][i] = min over j of dp[s-1][j] + spread(A[j..i-1])`. Iterate `j` from `i-1` **downwards** while maintaining the running max and min, so each spread costs `O(1)`."
+  ],
+  "editorial": "### State\n`dp[s][i]` = minimum sum of spreads when the prefix `A[0..i-1]` (length `i`) is split into exactly `s` non-empty segments. Unreachable states are `∞`.\n\n### Base case\n`dp[1][i] = max(A[0..i-1]) − min(A[0..i-1])`.\n\n### Transition\n`dp[s][i] = min_{j = s-1 .. i-1} ( dp[s-1][j] + spread(A[j..i-1]) )`.\nWalk `j` from `i-1` down to `s-1`, extending the last segment one element to the left and updating `hi`/`lo` - no extra precomputation needed.\n\n### Order\nIncreasing `s`, and for each `s` any order of `i` (only row `s-1` is read) → two 1D arrays suffice.\n\n### Answer\n`dp[K][N]`.\n\n### Complexity\n`O(K · N^2 / 2)` ≈ `25 × 31 000 ≈ 8·10^5` steps.\n\n### Common mistakes\n- Allowing empty segments (start `j` at `s-1`, not `0`).\n- Recomputing `max`/`min` of each slice from scratch (`O(K N^3)`).\n- Assuming more segments always help and greedily cutting at the largest gaps - the segments must be contiguous in the **original** order, so sorting is not allowed.",
+  "youtube": [
+    {
+      "title": "DP 54. Partition Array for Maximum Sum | Front Partition (take U forward)",
+      "url": "https://www.youtube.com/watch?v=PhWWJmaKfMc",
+      "kind": "video"
+    },
+    {
+      "title": "DP 53. Palindrome Partitioning - II | Front Partition (take U forward)",
+      "url": "https://www.youtube.com/watch?v=_H8V5hJUGd0",
+      "kind": "video"
+    },
+    {
+      "title": "Divide an Array Into Subarrays With Minimum Cost I | Simple Intuition | Leetcode 3010 | MIK — codestorywithMIK",
+      "url": "https://www.youtube.com/watch?v=zuBKtLVXAgY",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: split array into k contiguous segments minimum cost dp",
+      "url": "https://www.youtube.com/results?search_query=split+array+into+k+contiguous+segments+minimum+cost+dynamic+programming",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_total_spread(arr, k):\n    # Split arr into exactly k non-empty contiguous segments; return the minimum sum of (max - min) over segments\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, k = int(data[0]), int(data[1])\n    arr = list(map(int, data[2:2 + n]))\n    print(min_total_spread(arr, k))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

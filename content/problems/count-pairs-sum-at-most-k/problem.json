@@ -1,0 +1,80 @@
+{
+  "slug": "count-pairs-sum-at-most-k",
+  "title": "Count Pairs with Sum at Most K",
+  "difficulty": "Easy",
+  "tags": [
+    "Two Pointers",
+    "Sorting",
+    "Arrays"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "fundamentals"
+  ],
+  "source": "Fundamental technique drill (sort + two pointers)",
+  "statement": "You are given an array `A` of `N` integers and an integer `K`.\n\nCount the number of **index pairs** `(i, j)` with `1 ≤ i < j ≤ N` such that\n\n`A[i] + A[j] ≤ K`.\n\nPairs are counted by positions: equal values at different positions form different pairs.",
+  "inputFormat": "The first line contains two integers `N` and `K`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print a single integer: the number of valid pairs.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `-10^9 ≤ A[i] ≤ 10^9`\n- `-2·10^9 ≤ K ≤ 2·10^9`",
+  "samples": [
+    {
+      "input": "5 6\n1 5 2 4 3\n",
+      "output": "6\n",
+      "explanation": "Valid value pairs: `1+5, 1+2, 1+4, 1+3, 2+4, 2+3`. (`5+2 = 7`, `5+4`, `5+3`, `4+3` exceed 6.)"
+    },
+    {
+      "input": "4 -1\n-1 0 0 1\n",
+      "output": "2\n",
+      "explanation": "`-1+0` (twice, one for each `0`). `-1+1 = 0` is not ≤ -1."
+    },
+    {
+      "input": "1 100\n5\n",
+      "output": "0\n",
+      "explanation": "A single element forms no pair."
+    }
+  ],
+  "hints": [
+    "The answer does not depend on the order of the elements — so you may **sort** the array first.",
+    "In a sorted array, place `lo` at the start and `hi` at the end. If `A[lo] + A[hi] ≤ K`, then `A[lo]` also works with **every** index between `lo+1` and `hi`.",
+    "So: if the sum fits, add `hi - lo` and move `lo` right; otherwise move `hi` left. Stop when `lo == hi`."
+  ],
+  "editorial": "### Intuition\nCounting pairs is order-independent, so sort. In a sorted array, sums behave **monotonically**: moving the left pointer right can only increase the sum, moving the right pointer left can only decrease it. That's exactly what two pointers exploit.\n\n### Approach\n```\nsort A\nlo, hi = 0, N-1\nwhile lo < hi:\n    if A[lo] + A[hi] <= K:\n        ans += hi - lo     # A[lo] works with A[lo+1..hi] (all ≤ A[hi])\n        lo += 1\n    else:\n        hi -= 1            # A[hi] is too big even for the smallest remaining partner\n```\nEach step moves one pointer, so the loop runs at most `N` times.\n\n### Complexity\nSorting **O(N log N)** + scan **O(N)**. Space O(N) for the sorted copy. Brute force is O(N²) — about `5·10^9` pair checks at `N = 10^5`.\n\n(Alternative: for each `i`, binary-search the largest `j` with `A[i] + A[j] ≤ K` using `bisect` — also O(N log N).)\n\n### Common mistakes\n- Adding just `1` instead of `hi - lo` when the sum fits.\n- Running the loop with `lo <= hi` — that pairs an element with itself.\n- Thinking sorting \"changes the answer\" — it doesn't, because we count unordered position pairs.",
+  "youtube": [
+    {
+      "title": "L1. Introduction to Sliding Window and 2 Pointers | Templates | Patterns (take U forward)",
+      "url": "https://www.youtube.com/watch?v=9kdHxplyl5I",
+      "kind": "video"
+    },
+    {
+      "title": "Count Pairs whose sum is less than target | Two Pointer Technique | Java — NullPointer",
+      "url": "https://www.youtube.com/watch?v=m3v1ViV5K0Q",
+      "kind": "video"
+    },
+    {
+      "title": "LeetCode 2824: Count Pairs Whose Sum is Less than Target — Engineering Digest",
+      "url": "https://www.youtube.com/watch?v=JFv928_0_L4",
+      "kind": "video"
+    },
+    {
+      "title": "Lec-10: Two 2️⃣ Pointer👆 Technique | Two 2️⃣ Sum Problem in Data Structure — Gate Smashers",
+      "url": "https://www.youtube.com/watch?v=B2L4mAglJZA",
+      "kind": "video"
+    },
+    {
+      "title": "How to Use the Two Pointer Technique — Team AlgoDaily",
+      "url": "https://www.youtube.com/watch?v=-gjxg6Pln50",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: count pairs with sum less than or equal to k two pointers",
+      "url": "https://www.youtube.com/results?search_query=count+pairs+with+sum+less+than+or+equal+to+k+two+pointers",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef count_pairs_at_most(arr, k):\n    # Return the number of index pairs i < j with arr[i] + arr[j] <= k\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, k = int(data[0]), int(data[1])\n    arr = list(map(int, data[2:2 + n]))\n    print(count_pairs_at_most(arr, k))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "slug": "digit-sum-divisible-no-equal-adjacent",
+  "title": "Counting Smooth Numbers in a Range",
+  "difficulty": "Hard",
+  "tags": [
+    "Dynamic Programming",
+    "Digit DP",
+    "Counting"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Original digit-DP practice problem. Digit DP is commonly listed in Infosys SP/DSE prep material for the Hard slot, but we did not find a verified candidate report of a specific digit-DP question",
+  "statement": "Call a positive integer **smooth** if, in its decimal representation (without leading zeros):\n\n1. no two **adjacent** digits are equal, and\n2. the sum of its digits is divisible by `D`.\n\nYou are given `D` and `T` queries. For each query `L R`, print how many smooth integers `x` satisfy `L ≤ x ≤ R`.",
+  "inputFormat": "The first line contains two integers `D` and `T`.\nEach of the next `T` lines contains two integers `L` and `R`.",
+  "outputFormat": "For each query print the count on its own line (the counts fit in a 64-bit integer, no modulo).",
+  "constraints": "- `1 ≤ D ≤ 100`\n- `1 ≤ T ≤ 100`\n- `1 ≤ L ≤ R ≤ 10^18`",
+  "samples": [
+    {
+      "input": "4 2\n1 50\n100 200\n",
+      "output": "10\n22\n",
+      "explanation": "In `[1, 50]` the smooth numbers are `4, 8, 13, 17, 26, 31, 35, 39, 40, 48`. Note `22` and `44` have digit sums divisible by 4 but repeated adjacent digits."
+    },
+    {
+      "input": "3 3\n1 30\n1 100\n50 60\n",
+      "output": "10\n30\n4\n",
+      "explanation": "For `[50, 60]`: `51, 54, 57, 60`."
+    }
+  ],
+  "hints": [
+    "Answer each query as `count(R) − count(L − 1)`, where `count(X)` counts smooth numbers in `[1, X]`.",
+    "Walk the digits of `X` from the left. At the first position where your number goes **below** `X`, all remaining positions are free - you only need to know (a) how many digits remain, (b) the digit sum so far mod `D`, (c) the last digit placed.",
+    "Precompute `f[len][r][first]` = number of length-`len` digit strings starting with `first`, no equal neighbours, digit sum `≡ r (mod D)`. Numbers shorter than `X` are counted separately (their first digit is `1..9`), which handles leading zeros cleanly."
+  ],
+  "editorial": "### Reduction\n`answer(L, R) = count(R) − count(L − 1)`, with `count(X)` = number of smooth integers in `[1, X]`.\n\n### Free-suffix table\n`f[l][r][d]` = number of digit strings of length `l` that **start with digit `d`**, have no two equal adjacent digits, and digit sum `≡ r (mod D)`.\n- `f[1][d mod D][d] = 1`\n- `f[l][r][d] = Σ_{e ≠ d} f[l−1][(r − d) mod D][e]` (use the row total minus the `e = d` term)\n\nThen `g(l, need, last)` = strings of length `l` whose first digit `≠ last` with sum `≡ need` is `Σ_d f[l][need][d] − f[l][need][last]` (and `g(0, need, ·) = [need ≡ 0]`).\n\nThe table has `19 × D × 10` entries and is shared by all queries.\n\n### count(X) with `L = len(X)` digits\n1. **Shorter numbers**: for each length `l < L` and first digit `d = 1..9`: add `g(l−1, −d, d)`.\n2. **Same length, tight walk**: keep `prev` (last digit placed) and `acc` (digit sum). At position `p` try every digit `d` smaller than `X[p]` (`d ≥ 1` at `p = 0`) with `d ≠ prev`: add `g(L−p−1, −(acc+d), d)`. Then place `X[p]` itself; if it equals `prev`, stop - every remaining number of this prefix is invalid.\n3. If the whole of `X` was placed, add `1` when its digit sum is divisible by `D`.\n\n### Complexity\nPre-computation `O(19 · D · 10)`, each query `O(19 · 10)` lookups.\n\n### Common mistakes\n- Treating leading zeros as digits (`0` followed by `0` would wrongly be \"equal adjacent\"). Counting shorter lengths separately avoids that.\n- Forgetting to stop the tight walk when `X` itself has equal adjacent digits.\n- Off-by-one with `count(L − 1)` when `L = 1`.\n- Memoising states that include the `tight` flag across queries (they depend on `X`).",
+  "youtube": [
+    {
+      "title": "Introduction to Digit Dynamic Programming | Kartik Arora",
+      "url": "https://www.youtube.com/watch?v=heUFId6Qd1A",
+      "kind": "video"
+    },
+    {
+      "title": "Digit DP | All you need to know | DSA | Discord session — A Code Daily!",
+      "url": "https://www.youtube.com/watch?v=pSW4mt0JMOM",
+      "kind": "video"
+    },
+    {
+      "title": "Digit DP Tutorial | Ep - 01 | Complete Explanation | Dynamic Programming | C++ | By Aman Babu — Aman Babu",
+      "url": "https://www.youtube.com/watch?v=cthI6e5KGgg",
+      "kind": "video"
+    },
+    {
+      "title": "Codeforces 1900 | Classy Numbers | Digit DP Tutorial | Count Classy Integers in a Range — Yash Poonia",
+      "url": "https://www.youtube.com/watch?v=Jkqf6tHp28g",
+      "kind": "video"
+    },
+    {
+      "title": "Classy Numbers || Digit DP || Codeforces — Pepcoding",
+      "url": "https://www.youtube.com/watch?v=wWfGCIL0AfU",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: digit dp count numbers no two adjacent digits same",
+      "url": "https://www.youtube.com/results?search_query=digit+dp+count+numbers+no+two+adjacent+digits+same",
+      "kind": "search"
+    },
+    {
+      "title": "Search YouTube: digit dp digit sum divisible by k in range",
+      "url": "https://www.youtube.com/results?search_query=digit+dp+digit+sum+divisible+by+k+range",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef count_smooth(d, lo, hi):\n    # Return how many x in [lo, hi] have no two equal adjacent digits and digit sum divisible by d\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    d, t = int(data[0]), int(data[1])\n    out = []\n    for i in range(t):\n        lo, hi = int(data[2 + 2 * i]), int(data[3 + 2 * i])\n        out.append(count_smooth(d, lo, hi))\n    print(\"\\n\".join(map(str, out)))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

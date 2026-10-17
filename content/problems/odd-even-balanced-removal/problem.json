@@ -1,0 +1,69 @@
+{
+  "slug": "odd-even-balanced-removal",
+  "title": "Odd-Even Balanced Removal",
+  "difficulty": "Medium",
+  "tags": [
+    "Prefix Sum",
+    "Arrays"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium"
+  ],
+  "source": "Inspired by 'Difference Between Odd & Even Index Elements', listed among reported Infosys SP/DSE questions in a community prep sheet (GitHub: bhasidhshaik/Infosys-SP-DSE-resources). The original was too vaguely described, so this is a reconstructed prefix-sum version (same idea as LeetCode 1664).",
+  "statement": "You are given an array `A` of `N` integers. Positions are numbered from `1`.\n\nFor an array, let `ODD` be the sum of elements at odd positions (1, 3, 5, …) and `EVEN` the sum at even positions (2, 4, 6, …). The array is **balanced** if `ODD = EVEN`. An empty array is balanced (both sums are 0).\n\nYou will delete **exactly one** element. After the deletion, the remaining elements close the gap and their positions are **re-numbered** from `1`.\n\nCount the indices `i` (`1 ≤ i ≤ N`) such that deleting `A[i]` leaves a **balanced** array.",
+  "inputFormat": "The first line contains an integer `N`.\nThe second line contains `N` space-separated integers `A[1..N]`.",
+  "outputFormat": "Print one integer: the number of indices whose deletion makes the array balanced.",
+  "constraints": "- `1 ≤ N ≤ 2 × 10^5`\n- `-10^9 ≤ A[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "4\n2 1 6 4\n",
+      "output": "1\n",
+      "explanation": "Delete A[2] = 1 → [2, 6, 4]: odd positions 2 + 4 = 6, even position 6. Balanced. No other deletion works, e.g. deleting A[1] → [1, 6, 4]: 5 vs 6."
+    },
+    {
+      "input": "3\n1 1 1\n",
+      "output": "3\n",
+      "explanation": "Deleting any element leaves [1, 1], which is balanced."
+    },
+    {
+      "input": "3\n1 2 3\n",
+      "output": "0\n",
+      "explanation": "Deletions give [2,3], [1,3], [1,2], and none of them is balanced."
+    }
+  ],
+  "hints": [
+    "Recomputing both sums after each deletion is O(N²). What changes when you delete position `i`?",
+    "Elements **before** `i` keep their positions. Elements **after** `i` shift left by one, so their parity flips.",
+    "With prefix sums of odd-position and even-position elements: new ODD = (odd-prefix before i) + (even-suffix after i), and new EVEN = (even-prefix before i) + (odd-suffix after i)."
+  ],
+  "editorial": "### Observation\nDeleting position `i` leaves elements `< i` at the same positions, while every element `> i` moves one step left and **switches parity**.\n\n### Algorithm\nKeep totals `totOdd`, `totEven`, and running prefixes `preOdd`, `preEven` (elements before `i`). For each `i`:\n```\nsufOdd  = totOdd  - preOdd  - (A[i] if i is odd  else 0)\nsufEven = totEven - preEven - (A[i] if i is even else 0)\nnewOdd  = preOdd  + sufEven\nnewEven = preEven + sufOdd\ncount += (newOdd == newEven)\n```\nthen add `A[i]` to the matching prefix.\n\n### Complexity\n**O(N)** time, **O(1)** extra space.\n\n### Common mistakes\n- Forgetting that the suffix's parity flips, i.e. treating the deletion as just subtracting `A[i]`.\n- Off-by-one between 0-based Python indices and the statement's 1-based positions. Parity is defined on positions!\n- `N = 1`: deleting the only element leaves an empty, balanced array, so the answer is 1.",
+  "youtube": [
+    {
+      "title": "Ways to Make a Fair Array | Leetcode 1664 - EasyLeetcode",
+      "url": "https://www.youtube.com/watch?v=MAAxG5ckHf0",
+      "kind": "video"
+    },
+    {
+      "title": "Ways to Make a Fair Array || Leetcode — Pepcoding",
+      "url": "https://www.youtube.com/watch?v=s0JtNntehsM",
+      "kind": "video"
+    },
+    {
+      "title": "LeetCode 1664. Ways to Make a Fair Array — Happy Coding",
+      "url": "https://www.youtube.com/watch?v=GS9BQo3-1mg",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: ways to make a fair array prefix sum explanation",
+      "url": "https://www.youtube.com/results?search_query=ways+to+make+a+fair+array+prefix+sum+explanation",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef count_balanced_removals(arr):\n    # Return how many indices i have this property: after deleting arr[i],\n    # the sum at even positions equals the sum at odd positions (positions re-numbered from 1).\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n = int(data[0])\n    arr = list(map(int, data[1:1 + n]))\n    print(count_balanced_removals(arr))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

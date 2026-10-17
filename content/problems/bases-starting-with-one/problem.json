@@ -1,0 +1,61 @@
+{
+  "slug": "bases-starting-with-one",
+  "title": "Bases Where N Starts With 1",
+  "difficulty": "Medium",
+  "tags": [
+    "Math",
+    "Number Theory",
+    "Binary Search"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "hackwithinfy",
+    "infosys-sp-dse"
+  ],
+  "source": "Reported from HackWithInfy Round 1 — reconstructed from PrepInsta's 'HackWithInfy Coding Questions' page (the 'bases whose representation starts with 1' question). Statement and samples rewritten.",
+  "statement": "Write a non-negative integer `N` in base `b` (for any integer `b ≥ 2`). For bases larger than 10, imagine that new symbols exist for the digits `10, 11, …, b-1`, so every base is allowed — the representation is just the usual list of base-`b` digits, most significant first, without leading zeros. (The number `0` is written as the single digit `0` in every base.)\n\nFor how many bases `b ≥ 2` does the base-`b` representation of `N` **start with the digit 1**?\n\nIf there are infinitely many such bases, print `INFINITY` instead of a number.\n\nAnswer `T` independent queries.",
+  "inputFormat": "The first line contains an integer `T`.\nEach of the next `T` lines contains one integer `N` (given in base ten).",
+  "outputFormat": "For each query print the number of valid bases, or the word `INFINITY`.",
+  "constraints": "- `1 ≤ T ≤ 10^4`\n- `0 ≤ N < 10^12`",
+  "samples": [
+    {
+      "input": "3\n6\n24\n100\n",
+      "output": "4\n14\n56\n",
+      "explanation": "For `N = 6`: base 2 → `110` ✓, base 3 → `20` ✗, base 4 → `12` ✓, base 5 → `11` ✓, base 6 → `10` ✓, and every base `b > 6` gives a single digit `6` ✗. So 4 bases.\n\nFor `N = 24` the valid bases are `2` (`11000`), `4` (`120`) and every base from `13` to `24` (two-digit numbers `1x`) — 14 in total."
+    },
+    {
+      "input": "2\n1\n0\n",
+      "output": "INFINITY\n0\n",
+      "explanation": "`1` is written `1` in every base, so infinitely many bases work. `0` is always `0`."
+    }
+  ],
+  "hints": [
+    "In base `b`, `N` has `k+1` digits exactly when `b^k ≤ N < b^(k+1)`. Its leading digit is `1` exactly when `b^k ≤ N < 2·b^k`.",
+    "For a fixed number of digits `k+1`, the valid bases form one contiguous range: `(N/2)^(1/k) < b ≤ N^(1/k)`. Different `k` give disjoint ranges, so you can add them up.",
+    "`k` only goes up to about 40 (`2^k ≤ N`). For `k = 1` the range is simply `N//2 + 1 … N`. Compute integer k-th roots exactly — a float root followed by `±1` correction is enough."
+  ],
+  "editorial": "### Intuition\nBrute force over bases fails because `N` can be `10^12` and every base from `N/2` up to `N` works. Instead, group the bases by **how many digits** `N` has in them.\n\nIf `N` has `k+1` digits in base `b`, then `b^k ≤ N < b^(k+1)` and the leading digit is `⌊N / b^k⌋`. It equals `1` iff `b^k ≤ N < 2·b^k`. (The second condition also implies `N < b^(k+1)` because `b ≥ 2`.)\n\n### Approach\nSpecial cases: `N = 1` → `INFINITY`; `N = 0` → `0`.\n\nFor `N ≥ 2` and each `k ≥ 1` while `2^k ≤ N`:\n- `hi = iroot(N, k)` — the largest `b` with `b^k ≤ N`;\n- `b^k > N/2` ⇔ `b^k > ⌊N/2⌋` (because `b^k` is an integer), so `lo = iroot(⌊N/2⌋, k) + 1`, and also `lo ≥ 2`;\n- add `max(0, hi − lo + 1)`.\n\nEach base belongs to exactly one `k` (its digit count), so no base is counted twice. For `k = 1` this is `N − ⌊N/2⌋` bases (all two-digit representations `1x`, including `b = N` → `10`).\n\n`iroot(n, k)`: start from `round(n ** (1/k))` and nudge it down/up while `b**k > n` or `(b+1)**k ≤ n` — Python's big integers make the check exact.\n\n### Complexity\n`O(log N)` roots per query, each `O(1)`-ish — about `40 · T` cheap operations.\n\n### Common mistakes\n- Floating-point k-th roots without correction (e.g. `int(1000 ** (1/3))` is `9`, not `10`).\n- Counting `b > N`: there `N` is a single digit, which is `1` only when `N = 1`.\n- Missing the strictness: `2·b^k > N`, not `≥` (a leading digit of `2` must be excluded).",
+  "youtube": [
+    {
+      "title": "BS-11. Find the Nth root of an Integer | take U forward",
+      "url": "https://www.youtube.com/watch?v=rjEJeYCasHs",
+      "kind": "video"
+    },
+    {
+      "title": "Nth Root of a Number Using Binary Search — take U forward",
+      "url": "https://www.youtube.com/watch?v=WjpswYrS2nY",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: HackWithInfy number of bases representation starts with 1",
+      "url": "https://www.youtube.com/results?search_query=HackWithInfy+number+of+bases+representation+starts+with+1",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef count_bases(n):\n    # Return the number of bases b >= 2 in which n's representation starts with digit 1,\n    # as a string; return \"INFINITY\" if there are infinitely many.\n    # Write your code here\n    return \"0\"\n\n\ndef main():\n    data = sys.stdin.read().split()\n    t = int(data[0])\n    answers = [count_bases(int(x)) for x in data[1:1 + t]]\n    print(\"\\n\".join(answers))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

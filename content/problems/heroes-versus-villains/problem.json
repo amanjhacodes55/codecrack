@@ -1,0 +1,72 @@
+{
+  "slug": "heroes-versus-villains",
+  "title": "Heroes versus Villains",
+  "difficulty": "Medium",
+  "tags": [
+    "Simulation",
+    "Prefix Sum",
+    "Greedy",
+    "Math"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-easy-medium",
+    "infosys-sp-dse"
+  ],
+  "source": "Reconstructed from candidate reports: a 'heroes vs villains' battle problem appears in PrepInsta's Infosys SP/DSE coding question list. The fight rules were made fully precise here.",
+  "statement": "`M` heroes, each with health `H`, must defeat `N` villains standing in a line. Villain `i` (1-indexed from the front) has health `V[i]`.\n\nThe battle is a sequence of duels. The first living hero always fights the villain currently at the front of the line. Let the hero's current health be `h` and the villain's current health be `v`:\n\n- If `h > v`: the villain dies and the hero keeps fighting with health `h − v`.\n- If `h < v`: the hero dies and the villain stays at the front with health `v − h`.\n- If `h = v`: both die.\n\nThe battle ends when all villains are dead (**heroes win**) or all heroes are dead while some villain is still alive (**villains win**). The heroes win even if the last hero dies in the final duel.\n\nBefore the battle you may **remove the first `R` villains** from the line (`0 ≤ R ≤ N`). Find the **minimum `R`** that guarantees the heroes win.",
+  "inputFormat": "The first line contains three integers `N`, `M` and `H`.\nThe second line contains `N` space-separated integers `V[1..N]`.",
+  "outputFormat": "Print one integer: the minimum number of villains to remove from the front.",
+  "constraints": "- `1 ≤ N, M ≤ 2 × 10^5`\n- `1 ≤ H, V[i] ≤ 10^9`",
+  "samples": [
+    {
+      "input": "4 2 5\n3 4 2 2\n",
+      "output": "1\n",
+      "explanation": "With R = 0: hero 1 (5) beats villain 1 (3) and has 2 left. It then dies against villain 2, which drops to 2. Hero 2 (5) beats that villain (3 left), beats villain 3 (1 left), and then dies against villain 4 (2 → 1 left). Villains win. With R = 1, the villains have total health 4 + 2 + 2 = 8 ≤ 10 and the heroes win."
+    },
+    {
+      "input": "3 1 10\n4 3 3\n",
+      "output": "0\n",
+      "explanation": "The single hero beats villains 1 and 2 (10 → 6 → 3) and then ties villain 3. Both die, but no villain is left alive, so the heroes win with R = 0."
+    }
+  ],
+  "hints": [
+    "Simulate a few battles on paper and track the *total* health of each side after every duel.",
+    "Each duel subtracts exactly `min(h, v)` from **both** sides' total health. So the heroes win iff the total villain health is `≤ M · H`.",
+    "So you need the smallest `R` with `V[R+1] + … + V[N] ≤ M · H`. Use a suffix sum, or subtract the prefix from the total while increasing `R`."
+  ],
+  "editorial": "### Key observation\nIn every duel both fighters lose exactly `min(h, v)` health. If `h > v` the hero loses `v` and the villain loses all `v`. If `h < v` both lose `h`. If they are equal both lose `h`. So the **sum of hero health** and the **sum of villain health** drop by the same amount in each duel.\n\nThe battle stops only when one side's total reaches 0. So the heroes win **iff** `sum(remaining villains) ≤ M · H`. When the sums are equal, both sides hit zero together, and that counts as a hero win because no villain is alive.\n\n### Algorithm\n```\ntotal = sum(V); budget = M * H\nR = 0\nwhile total > budget:\n    total -= V[R]; R += 1\nprint(R)\n```\n`R = N` always works (empty line), so the loop terminates.\n\n### Complexity\n**O(N)** time, **O(1)** extra space.\n\n### Common mistakes\n- Simulating the battle again for every `R`. That is O(N²) and too slow, though fine as a brute force for checking.\n- Using `<` instead of `≤`. A final tie still kills the last villain.\n- `M · H` reaches `2 × 10^14`, which overflows 32-bit integers in C++/Java.",
+  "youtube": [
+    {
+      "title": "Infosys SP/DSE Coding Question Solution | Specialist Programmer PYQ - KN ACADEMY",
+      "url": "https://www.youtube.com/watch?v=yNDdiDDVA0s",
+      "kind": "video"
+    },
+    {
+      "title": "Infosys SP/DSE Coding Questions Asked | Actual Infosys SP/DSE Coding Assessment Solutions PYQ — KN ACADEMY",
+      "url": "https://www.youtube.com/watch?v=T63J1FMRjpM",
+      "kind": "video"
+    },
+    {
+      "title": "Actual Infosys Coding Question Asked Today | Infosys SP/DSE Coding Solution | DP Problem | PYQ — KN ACADEMY",
+      "url": "https://www.youtube.com/watch?v=F7UOWVnlX60",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: prefix sum suffix sum array technique",
+      "url": "https://www.youtube.com/results?search_query=prefix+sum+suffix+sum+array+technique",
+      "kind": "search"
+    },
+    {
+      "title": "Search YouTube: Infosys SP DSE heroes villains coding question",
+      "url": "https://www.youtube.com/results?search_query=Infosys+SP+DSE+heroes+villains+coding+question",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 2000,
+  "starter": {
+    "python": "import sys\n\n\ndef min_villains_to_remove(m, h, villains):\n    # m        : number of heroes, each starting with health h\n    # villains : health of the villains, in fighting order\n    # Return the minimum number of villains to remove from the FRONT so the heroes win.\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.read().split()\n    n, m, h = int(data[0]), int(data[1]), int(data[2])\n    villains = list(map(int, data[3:3 + n]))\n    print(min_villains_to_remove(m, h, villains))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}

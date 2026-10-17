@@ -1,0 +1,62 @@
+{
+  "slug": "ancestor-outshine-pairs",
+  "title": "Ancestor Outshine Pairs",
+  "difficulty": "Hard",
+  "tags": [
+    "Trees",
+    "DFS",
+    "Fenwick Tree",
+    "Coordinate Compression",
+    "Counting"
+  ],
+  "companies": [
+    "Infosys"
+  ],
+  "collections": [
+    "infosys-sp-dse"
+  ],
+  "source": "Tree + Fenwick counting pattern; tree data-structure question as the Hard slot reported in the GeeksforGeeks 'HackWithInfy Online Assessment Exam Experience 2024', and ancestor/descendant pair counting seen in the HackerEarth 'Beautiful pair of nodes' practice problem (found while searching HackWithInfy tree samples) — original simplified statement",
+  "statement": "A family tree has `N` members numbered `1 … N`; member `1` is the eldest ancestor (the root). Member `i` has a fortune `F[i]`.\n\nA pair `(a, d)` is called an **outshine pair** if `a` is a **proper ancestor** of `d` (`a` lies on the path from the root to `d` and `a ≠ d`) and the descendant is strictly richer: `F[d] > F[a]`.\n\nCount the outshine pairs.",
+  "inputFormat": "The first line contains `N`.\nThe second line contains `N` integers `F[1..N]`.\nEach of the next `N − 1` lines contains two integers `u v` — an edge of the tree (in any orientation).",
+  "outputFormat": "Print the number of outshine pairs.",
+  "constraints": "- `1 ≤ N ≤ 10^5`\n- `1 ≤ F[i] ≤ 10^9`\n- The tree may be a path of length `10^5`.",
+  "samples": [
+    {
+      "input": "5\n3 5 1 4 2\n1 2\n1 3\n3 4\n3 5\n",
+      "output": "4\n",
+      "explanation": "Ancestor pairs and fortunes: (1,2): 5 > 3 ✔, (1,3): 1 > 3 ✘, (1,4): 4 > 3 ✔, (1,5): 2 > 3 ✘, (3,4): 4 > 1 ✔, (3,5): 2 > 1 ✔ → 4 pairs. Siblings such as (2,3) or (4,5) are not ancestor pairs."
+    }
+  ],
+  "hints": [
+    "The brute force walks from every node up to the root: O(N · depth), which is O(N²) on a path.",
+    "During a DFS, the nodes on the stack (the current root-to-node path) are exactly the ancestors of the current node. Maintain a data structure over the fortunes of the nodes currently on that path.",
+    "Compress fortunes to ranks `1..m` and keep a Fenwick tree of counts: on entering `u` add `count(rank < rank[u])` to the answer and then insert `u`; on leaving `u` remove it. Use an iterative DFS with explicit enter/exit events."
+  ],
+  "editorial": "### Intuition\nWhen a DFS is standing at node `d`, the set of its ancestors is exactly the current root-to-`d` path. If we keep the fortunes of that path in a structure that can answer *\"how many are smaller than `F[d]`?\"*, each node contributes its count in `O(log N)`.\n\n### Approach\n1. Coordinate-compress the fortunes into ranks `1..m`.\n2. Iterative DFS with a stack of events: push `+u` to enter and `-u` to exit.\n3. On entering `u`: `ans += BIT.prefix(rank[u] − 1)` (strictly smaller ancestors), then `BIT.add(rank[u], +1)`, push `-u`, then push the unvisited neighbours.\n4. On exiting `u`: `BIT.add(rank[u], −1)`.\n\n### Complexity\n**O(N log N)** time, **O(N)** memory.\n\n### Alternatives\nFlatten the tree with an Euler tour; a pair `(a, d)` means `tin[a] < tin[d] ≤ tout[a]`, which can be counted offline with a sweep — more complex for the same complexity.\n\n### Common mistakes\n- Counting `≤` instead of strictly smaller (`prefix(rank − 1)`, not `prefix(rank)`).\n- Forgetting to remove a node when the DFS leaves it — then cousins get counted as ancestors.\n- Recursive DFS on a deep path → `RecursionError`.\n- Using the raw fortunes (up to 10^9) as Fenwick indices without compression.",
+  "youtube": [
+    {
+      "title": "Range Sum Query and Inversion Count Using BIT | Part 2 (Luv)",
+      "url": "https://www.youtube.com/watch?v=NOykDuH1_OY",
+      "kind": "video"
+    },
+    {
+      "title": "Binary Indexed Trees / Fenwick Trees made easy | Part 1 — Luv",
+      "url": "https://www.youtube.com/watch?v=DPiY9wFxGIw",
+      "kind": "video"
+    },
+    {
+      "title": "Fenwick Tree (Binary Index Tree) - Quick Tutorial and Source Code Explanation — Stable Sort",
+      "url": "https://www.youtube.com/watch?v=uSFzHCZ4E-8",
+      "kind": "video"
+    },
+    {
+      "title": "Search YouTube: count ancestor descendant pairs dfs fenwick tree",
+      "url": "https://www.youtube.com/results?search_query=count+ancestor+descendant+pairs+dfs+fenwick+tree",
+      "kind": "search"
+    }
+  ],
+  "timeLimitMs": 3000,
+  "starter": {
+    "python": "import sys\n\n\ndef count_outshine_pairs(n, fortune, adj):\n    # fortune[u] for u in 1..n (fortune[0] unused); adj[u] = neighbours of u; root is 1\n    # Return the number of pairs (a, d) with a a proper ancestor of d and fortune[d] > fortune[a]\n    # Tip: the tree can be a path of length 1e5 — use an explicit stack instead of recursion\n    # Write your code here\n    return 0\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    fortune = [0] + [int(x) for x in data[1:1 + n]]\n    adj = [[] for _ in range(n + 1)]\n    p = 1 + n\n    for _ in range(n - 1):\n        u, v = int(data[p]), int(data[p + 1])\n        p += 2\n        adj[u].append(v)\n        adj[v].append(u)\n    print(count_outshine_pairs(n, fortune, adj))\n\n\nif __name__ == \"__main__\":\n    main()\n"
+  }
+}
