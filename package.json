@@ -44,5 +44,6 @@
     "tailwindcss": "^4",
     "tsx": "^4.19.2",
     "typescript": "^5"
-  }
+  },
+  "license": "AGPL-3.0-or-later"
 }

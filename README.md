@@ -4,6 +4,8 @@
 
 # CodeCrack — practise like it's the real exam
 
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
+
 **🚀 Live demo: [codecrack-6okk.onrender.com](https://codecrack-6okk.onrender.com)** (free instance, so the first load can take ~1 minute while it wakes up)
 
 A full-stack, HackerRank-style coding practice platform built to crack the **Infosys Specialist Programmer (SP) / Digital Specialist Engineer (DSE)** coding assessment, plus HackWithInfy and InfyTQ.
@@ -358,3 +360,11 @@ scripts/                 seed.ts, make-admin.ts, host.sh, copy-monaco.mjs
 ---
 
 Built for cracking Infosys SP/DSE. Good luck! 🚀
+
+## License
+
+CodeCrack is free and open-source software, licensed under the **GNU Affero General Public License v3.0 or later** ([AGPL-3.0-or-later](LICENSE)).
+
+You can use, study, share and modify it for any purpose, including commercially. If you distribute a modified version, **or run one as a service that others use over a network**, you must publish your changes under the same license so the community benefits too.
+
+Copyright © 2026 Aman Jha
