@@ -64,6 +64,10 @@ const ProblemSchema = new Schema(
 );
 
 ProblemSchema.index({ title: "text", tags: "text", statement: "text" });
+// Problem documents are large (statements, tests); listing them sorted without an index trips
+// Atlas's in-memory sort limit on the free tier. These let Mongo walk the index instead of sorting.
+ProblemSchema.index({ status: 1, order: 1, createdAt: 1 });
+ProblemSchema.index({ order: 1, createdAt: 1 });
 
 export type ProblemDoc = InferSchemaType<typeof ProblemSchema> & { _id: string };
 export const Problem: Model<InferSchemaType<typeof ProblemSchema>> = models.Problem || model("Problem", ProblemSchema);
