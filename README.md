@@ -361,10 +361,16 @@ scripts/                 seed.ts, make-admin.ts, host.sh, copy-monaco.mjs
 
 Built for cracking Infosys SP/DSE. Good luck! 🚀
 
-## Support
+## ☕ Buy me a coffee
 
-CodeCrack is free and open source. If it saves you time or money, you can **buy me a coffee** ☕ over UPI
-(Google Pay, PhonePe, Paytm, BHIM) at **+91 8941951465**. Starring the repository helps too.
+I build CodeCrack on my own time and keep it free for everyone. If it saved you time, taught you something, or powers
+something you're building, a coffee is the kindest way to say thanks, and every one buys me more hours to build
+and improve CodeCrack and my other open-source projects.
+
+**UPI: +91 8941951465**. Pay from any UPI app (Google Pay, PhonePe, Paytm, BHIM); international payments are
+welcome too.
+
+However small, every coffee keeps the work going. Thank you!
 
 ## License
 
