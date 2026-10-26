@@ -361,6 +361,11 @@ scripts/                 seed.ts, make-admin.ts, host.sh, copy-monaco.mjs
 
 Built for cracking Infosys SP/DSE. Good luck! 🚀
 
+## Support
+
+CodeCrack is free and open source. If it saves you time or money, you can **buy me a coffee** ☕ over UPI
+(Google Pay, PhonePe, Paytm, BHIM) at **+91 8941951465**. Starring the repository helps too.
+
 ## License
 
 CodeCrack is free and open-source software, licensed under the **GNU Affero General Public License v3.0 or later** ([AGPL-3.0-or-later](LICENSE)).
